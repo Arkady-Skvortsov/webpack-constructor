@@ -1,10 +1,16 @@
 ## Webpack-constructor
 
-# ALERT (⚠️) It's own experience of the library author!
+# ALERT (⚠️) It's own experience of the library author! Download it if you already have a project!
 
 # About
 
 You can build you'r variation of webpack configuration or choose that author created
+
+<p align="center"><img width="400" src="./webpack-constructor.png" /></p>
+
+# Motivation
+
+I'm already tired of watching $100,000 frontend developers post in telegram/slack chats and stuff; "How can webpack be configured?". Damn, just take my bag and don't worry, seriously;
 
 # How to use?
 
@@ -26,10 +32,10 @@ You can build you'r variation of webpack configuration or choose that author cre
   presets: Vue/React/Typescript/Angular/Svelte
 ```
 
-# Webpack Version
+# Mode
 
 ```sh
-  webpack: v5 / v4
+  mode: development/production/both
 ```
 
 # isTypescript
@@ -80,10 +86,10 @@ You can build you'r variation of webpack configuration or choose that author cre
   aliases: yes/no
 ```
 
-# isProd
+# isSourceMaps
 
 ```sh
-  production-mode-config: yes / no
+  source-maps: yes/no
 ```
 
 # DevServer
