@@ -10,7 +10,7 @@ You can build you'r variation of webpack configuration or choose that author cre
 
 # Motivation
 
-I'm already tired of watching $100,000 frontend developers post in telegram/slack chats and stuff; "How can webpack be configured?". Damn, just take my bag and don't worry, seriously;
+I'm already tired of watching $100,000 frontend developers post in telegram/slack/forums chats and stuff: "How can webpack be configured?". Damn, just take my bag and don't worry, seriously;
 
 # How to use?
 
@@ -29,7 +29,7 @@ I'm already tired of watching $100,000 frontend developers post in telegram/slac
 # Presets
 
 ```sh
-  presets: Vue/React/Typescript/Angular/Svelte
+  presets: Vue/React/Typescript/Svelte
 ```
 
 # Mode
