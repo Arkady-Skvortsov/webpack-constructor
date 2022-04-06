@@ -21,10 +21,8 @@ interface webpackConfig {
   context: string;
   entryPoint: string;
   aliasPath: webpackOption;
-  splitting: string;
   htmlTemplate: string;
   htmlTitle: string;
-  cssMinimizerLevel: number;
   LintTypescriptFilesPath: webpackOption;
   tslintFilePath: string;
   outputFolder: string;
@@ -50,8 +48,9 @@ enum preset {
 async function start() {
   const webpackTitle = chalkAnimation.rainbow("Webpack-constructor \n");
 
-  await promise();
-  await webpackTitle.stop();
+  await promise(5000);
+
+  return webpackTitle.stop();
 }
 
 function addSplitting(options: string) {
@@ -63,7 +62,9 @@ function addScriptsForPackageJson(filePath: string, presetOptions: preset) {
   try {
     const content = fs.readFileSync(filePath, "utf-8");
     const jsonContent = JSON.parse(content);
-    const scripts = jsonContent["scripts"];
+    let scripts = jsonContent["scripts"];
+
+    scripts = {};
 
     scripts["webpack:build"] =
       "webpack build --config ./webpack.config.js --stats verbose";
@@ -151,12 +152,6 @@ async function WebpackConfigOptions() {
     message: "What is the folder do you want that be an output?",
   });
 
-  const cssMinimizerLevel = await inquirer.prompt({
-    name: "question_10",
-    type: "input",
-    message: "What is the level of minimization of css (1 to 4)?",
-  });
-
   const lintTypeScriptFilesPath = await inquirer.prompt({
     name: "question_11",
     type: "input",
@@ -178,13 +173,6 @@ async function WebpackConfigOptions() {
     choices: ["production", "development"],
   });
 
-  const webpackSplitting = await inquirer.prompt({
-    name: "question_14",
-    type: "list",
-    message: "What is the splitting do you want?",
-    choices: ["Chunks split", "Code split"],
-  });
-
   return addContent(preset.TYPESCRIPT, {
     devMode: devMode.question_13,
     context: contextPointWrite.question_3,
@@ -192,8 +180,6 @@ async function WebpackConfigOptions() {
     aliasPath: aliasPathWrite.question_5,
     htmlTitle: htmlTitle.question_6,
     htmlTemplate: htmlTemplatePath.question_7,
-    splitting: webpackSplitting.question_14,
-    cssMinimizerLevel: cssMinimizerLevel.question_10,
     LintTypescriptFilesPath: lintTypeScriptFilesPath.question_11,
     tslintFilePath: tslintFilePath.question_12,
     outputFolder: outputFolder.question_9,
@@ -209,9 +195,7 @@ const sourceMaps = (mode: "production" | "development"): string =>
   mode === "development" ? "evel-source-map" : "source-maps";
 
 async function spinner(text: string | preset) {
-  const spnr = createSpinner(
-    `Installation deps for ${text} webpack config`
-  ).start();
+  const spnr = createSpinner(`Creating webpack config for ${text}`).start();
 
   await promise(5000);
 
@@ -254,15 +238,25 @@ async function handleAnswer(answer: string) {
 }
 
 const setScriptFiles = (file: string | any) =>
-  regExp.test(file) ? `"${file.split(" ")}"` : `"${file}"`;
+  regExp.test(file)
+    ? `["${file
+        .split(" ")
+        .map((f: string) => `"${f}"`)
+        .join(", ")}"]`
+    : `"${file}"`;
 
 const setEntryPoint = (entrypoint: string | any) =>
   regExp.test(entrypoint)
-    ? `"${[...entrypoint.split(" ")]}"`
+    ? `[${entrypoint
+        .split(" ")
+        .map((entry: string) => `"${entry}"`)
+        .join(", ")}]`
     : `{main: "${entrypoint}"}`;
 
-const setAlias = (alias: string | any) =>
-  regExp.test(alias)
+const aliasChecked = () => new RegExp(/\*.ts/g);
+
+const setAlias = (alias: string | any) => {
+  return regExp.test(alias)
     ? alias
         .split(" ")
         .map(
@@ -277,6 +271,7 @@ const setAlias = (alias: string | any) =>
         alias.lastIndexOf("/") + 1,
         alias.length
       )}": path.resolve(__dirname, "${alias}")`;
+};
 
 function addContent(type: preset, options: webpackConfig): string {
   let content;
@@ -418,9 +413,7 @@ module.exports = {
     minimize: true,
     minimizer: [
       new CssMinimizerPlugin({
-        minimizerOptions: { level: ${
-          options.cssMinimizerLevel
-        }, parallel: true },
+        minimizerOptions: { level: 2, parallel: true },
       }),
       new TerserPlugin({
         parallel: 3,
@@ -586,7 +579,11 @@ module.exports = {
   }
 }
 
-function installPackages(presetType: preset) {
+async function installPackages(presetType: preset) {
+  let installationSpinner = createSpinner(
+    "Install packages for Typescript"
+  ).start();
+
   if (presetType === "React") {
     execSync("npm i");
     execSync("npm i");
@@ -603,10 +600,16 @@ function installPackages(presetType: preset) {
   }
 
   if (presetType === "Typescript") {
+    await promise(5000);
+
     execSync("npm i webpack webpack-cli webpack-dev-server");
     execSync(
       "npm i -D ts-loader typescript file-loader @babel/core @babel/preset-env @babel/preset-typescript css-loader sass-loader @types/webpack html-webpack-plugin css-minimizer-webpack-plugin clean-webpack-plugin image-webpack-loader imagemin-mozjpeg imagemin-pngquant imagemin-svgo mini-css-extract-plugin terser-webpack-plugin tslint tslint-webpack-plugin"
     );
+
+    installationSpinner.success({
+      text: "Packages for Typescript had been installed",
+    });
   }
 
   if (presetType === "Javascript") {
@@ -651,27 +654,25 @@ function insertInConfig(type: configType, content: string) {
 async function generateWebpackConfig(type: preset) {
   try {
     if (type === preset.TYPESCRIPT) {
-      installPackages(preset.TYPESCRIPT);
-
-      await spinner(preset.TYPESCRIPT);
+      await installPackages(preset.TYPESCRIPT);
 
       fs.writeFileSync("webpack.config.js", await WebpackConfigOptions());
 
       createHelpedFiles(preset.TYPESCRIPT);
 
-      deleteLine("webpack.config.js");
-      deleteLine("tslint.json");
-      deleteLine(".prettierrc");
-      deleteLine("jest.config.js");
-      deleteLine(".babelrc");
+      deleteLine("./webpack.config.js");
+      deleteLine("./tslint.json");
+      deleteLine("./.prettierrc");
+      deleteLine("./jest.config.js");
+      deleteLine("./.babelrc");
 
       addScriptsForPackageJson("./package.json", preset.TYPESCRIPT);
+
+      return figletText(preset.TYPESCRIPT);
     }
 
     if (type === preset.JAVASCRIPT) {
-      installPackages(preset.JAVASCRIPT);
-
-      await spinner(preset.JAVASCRIPT);
+      await installPackages(preset.JAVASCRIPT);
 
       fs.writeFileSync("webpack.config.js", await WebpackConfigOptions());
 
@@ -691,7 +692,7 @@ async function generateWebpackConfig(type: preset) {
 }
 
 async function figletText(preset: preset) {
-  await promise(2000);
+  console.clear();
 
   figlet(
     "Webpack Typescript config had been generated like you wanted, use it like you want))",
@@ -701,6 +702,4 @@ async function figletText(preset: preset) {
   );
 }
 
-//basicPreset();
-
-console.log(setScriptFiles("lib/utils/**/*.ts lib/helpers/**/*.ts"));
+basicPreset();

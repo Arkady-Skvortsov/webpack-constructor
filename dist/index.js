@@ -35,15 +35,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-};
 import * as fs from "fs";
 import { execSync } from "child_process";
 import inquirer from "inquirer";
@@ -79,13 +70,10 @@ function start() {
             switch (_a.label) {
                 case 0:
                     webpackTitle = chalkAnimation.rainbow("Webpack-constructor \n");
-                    return [4 /*yield*/, promise()];
+                    return [4 /*yield*/, promise(5000)];
                 case 1:
                     _a.sent();
-                    return [4 /*yield*/, webpackTitle.stop()];
-                case 2:
-                    _a.sent();
-                    return [2 /*return*/];
+                    return [2 /*return*/, webpackTitle.stop()];
             }
         });
     });
@@ -99,6 +87,7 @@ function addScriptsForPackageJson(filePath, presetOptions) {
         var content = fs.readFileSync(filePath, "utf-8");
         var jsonContent = JSON.parse(content);
         var scripts = jsonContent["scripts"];
+        scripts = {};
         scripts["webpack:build"] =
             "webpack build --config ./webpack.config.js --stats verbose";
         scripts["webpack:watch"] = "webpack --watch";
@@ -163,7 +152,7 @@ var deleteLine = function (file) {
 };
 function WebpackConfigOptions() {
     return __awaiter(this, void 0, void 0, function () {
-        var contextPointWrite, entryPointWrite, aliasPathWrite, htmlTitle, htmlTemplatePath, portWrite, outputFolder, cssMinimizerLevel, lintTypeScriptFilesPath, tslintFilePath, devMode, webpackSplitting;
+        var contextPointWrite, entryPointWrite, aliasPathWrite, htmlTitle, htmlTemplatePath, portWrite, outputFolder, lintTypeScriptFilesPath, tslintFilePath, devMode;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, inquirer.prompt({
@@ -216,18 +205,11 @@ function WebpackConfigOptions() {
                 case 7:
                     outputFolder = _a.sent();
                     return [4 /*yield*/, inquirer.prompt({
-                            name: "question_10",
-                            type: "input",
-                            message: "What is the level of minimization of css (1 to 4)?",
-                        })];
-                case 8:
-                    cssMinimizerLevel = _a.sent();
-                    return [4 /*yield*/, inquirer.prompt({
                             name: "question_11",
                             type: "input",
                             message: "What is the path of you'r .ts file(s)?",
                         })];
-                case 9:
+                case 8:
                     lintTypeScriptFilesPath = _a.sent();
                     return [4 /*yield*/, inquirer.prompt({
                             name: "question_12",
@@ -235,7 +217,7 @@ function WebpackConfigOptions() {
                             message: "What is the path to you'r tslint.json file (default: ./tslint.json) ?",
                             default: "./tslint.json",
                         })];
-                case 10:
+                case 9:
                     tslintFilePath = _a.sent();
                     return [4 /*yield*/, inquirer.prompt({
                             name: "question_13",
@@ -243,16 +225,8 @@ function WebpackConfigOptions() {
                             message: "What is the development mode do you want for webpack?",
                             choices: ["production", "development"],
                         })];
-                case 11:
+                case 10:
                     devMode = _a.sent();
-                    return [4 /*yield*/, inquirer.prompt({
-                            name: "question_14",
-                            type: "list",
-                            message: "What is the splitting do you want?",
-                            choices: ["Chunks split", "Code split"],
-                        })];
-                case 12:
-                    webpackSplitting = _a.sent();
                     return [2 /*return*/, addContent(preset.TYPESCRIPT, {
                             devMode: devMode.question_13,
                             context: contextPointWrite.question_3,
@@ -260,8 +234,6 @@ function WebpackConfigOptions() {
                             aliasPath: aliasPathWrite.question_5,
                             htmlTitle: htmlTitle.question_6,
                             htmlTemplate: htmlTemplatePath.question_7,
-                            splitting: webpackSplitting.question_14,
-                            cssMinimizerLevel: cssMinimizerLevel.question_10,
                             LintTypescriptFilesPath: lintTypeScriptFilesPath.question_11,
                             tslintFilePath: tslintFilePath.question_12,
                             outputFolder: outputFolder.question_9,
@@ -289,8 +261,8 @@ function spinner(text) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    spnr = createSpinner("Installation deps for ".concat(text, " webpack config")).start();
-                    return [4 /*yield*/, promise(2000)];
+                    spnr = createSpinner("Creating webpack config for ".concat(text)).start();
+                    return [4 /*yield*/, promise(5000)];
                 case 1:
                     _a.sent();
                     if (text !== "Custom")
@@ -352,13 +324,22 @@ function handleAnswer(answer) {
     });
 }
 var setScriptFiles = function (file) {
-    return regExp.test(file) ? "\"".concat(file.join(" "), "\"") : "\"".concat(file, "\"");
+    return regExp.test(file)
+        ? "[\"".concat(file
+            .split(" ")
+            .map(function (f) { return "\"".concat(f, "\""); })
+            .join(", "), "\"]")
+        : "\"".concat(file, "\"");
 };
 var setEntryPoint = function (entrypoint) {
     return regExp.test(entrypoint)
-        ? "\"".concat(__spreadArray([], entrypoint.split(" "), true), "\"")
+        ? "[".concat(entrypoint
+            .split(" ")
+            .map(function (entry) { return "\"".concat(entry, "\""); })
+            .join(", "), "]")
         : "{main: \"".concat(entrypoint, "\"}");
 };
+var aliasChecked = function () { return new RegExp(/\*.ts/g); };
 var setAlias = function (alias) {
     return regExp.test(alias)
         ? alias
@@ -378,7 +359,7 @@ function addContent(type, options) {
     if (type === "Svelte") {
     }
     if (type === "Typescript") {
-        content = "\nconst path = require(\"path\");\nconst HtmlWebpackPlugin = require(\"html-webpack-plugin\");\nconst HtmlMinimizerWebpackPlugin = require(\"html-minimizer-webpack-plugin\");\nconst MiniCssExtractPlugin = require(\"mini-css-extract-plugin\");\nconst CssMinimizerPlugin = require(\"css-minimizer-webpack-plugin\");\nconst TerserPlugin = require(\"terser-webpack-plugin\");\nconst TsLintPlugin = require(\"tslint-webpack-plugin\");\nconst CopyPlugin = require(\"copy-webpack-plugin\");\nconst { CleanWebpackPlugin } = require(\"clean-webpack-plugin\");\n\nmodule.exports = {\n  context: path.resolve(__dirname, \"".concat(options.context, "\"),\n  mode: \"").concat(options.devMode, "\",\n  entry: ").concat(setEntryPoint(options.entryPoint), ",\n  devtool: \"").concat(sourceMaps(options.devMode), "\",\n  module: {\n    rules: [\n      {\n        test: /.ts$/,\n        exclude: /node_modules/,\n        use: \"ts-loader\",\n      },\n      {\n        test: /.s(a|c)ss$/,\n        use: [MiniCssExtractPlugin.loader, \"css-loader\", \"sass-loader\"],\n      },\n      {\n        test: /.html$/,\n        loader: \"html-loader\",\n      },\n      {\n        test: /.(png|jpe?g|gif|webp)$/,\n        use: [\n          \"file-loader\",\n          {\n            loader: \"image-webpack-loader\",\n            options: {\n              mozjpeg: {\n                progressive: true,\n              },\n              optipng: {\n                enabled: false,\n              },\n              pngquant: {\n                quality: [0.65, 0.9],\n                speed: 4,\n              },\n              gifsicle: {\n                interlaced: false,\n              },\n              webp: {\n                quality: 85,\n              },\n            },\n          },\n        ],\n      },\n      {\n        test: /.(woff(2)?|ttf|eot|svg)(?v=d+.d+.d+)?$/,\n        use: {\n          loader: \"file-loader\",\n          options: {\n            name: \"[name].[ext]\",\n            outputPath: \"fonts/\",\n          },\n        },\n      },\n    ],\n  },\n  resolve: {\n    alias: {\n      ").concat(setAlias(options.aliasPath), "\n    },\n    extensions: [\n      \".ts\",\n      \".html\",\n      \".sass\",\n      \".scss\",\n      \".css\",\n      \".png\",\n      \".jpg\",\n      \".jpeg\",\n      \".webp\",\n    ],\n    symlinks: false,\n    cacheWithContext: false,\n  },\n  plugins: [\n    new HtmlWebpackPlugin({\n      title: \"").concat(options.htmlTitle, "\",\n      template: \"").concat(options.htmlTemplate, "\",\n      minify: {\n        collapseWhiteSpaces: true,\n        removeAttributeQuotes: true,\n        removeComments: true,\n      },\n    }),\n    new MiniCssExtractPlugin({\n      filename: \"[name].[contenthash].css\",\n    }),\n    new TSLintPlugin({\n      files: [").concat(setScriptFiles(options.LintTypescriptFilesPath), "],\n      project: \"").concat(options.tslintFilePath, "\",\n      warningsAsError: true\n    }),\n    new CleanWebpackPlugin(),\n  ],\n  optimization: {\n    splitChunks: {\n      chunks: \"all\",\n      maxInitialRequest: Infinity,\n      minsize: 0,\n      cacheGroups: {\n        vendor: {\n          test: /[\\/]node_modules[\\/]/,\n          name(module) {\n            const packageTitle = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];\n\n            return 'npm.' + packageTitle.replace('@', '');\n          }\n        }\n      }\n    },\n    minimize: true,\n    minimizer: [\n      new CssMinimizerPlugin({\n        minimizerOptions: { level: ").concat(options.cssMinimizerLevel, ", parallel: true },\n      }),\n      new TerserPlugin({\n        parallel: 3,\n        terserOptions: {\n          format: {\n            comments: false,\n          },\n        },\n        extractComments: false,\n      }),\n    ],\n  },\n  output: {\n    filename: \"[name].[contenthash].js\",\n    path: path.resolve(__dirname, \"").concat(options.outputFolder, "\"),\n  },\n  devServer: {\n    port: ").concat(options.devPort, ",\n    compress: true,\n  },\n};");
+        content = "\nconst path = require(\"path\");\nconst HtmlWebpackPlugin = require(\"html-webpack-plugin\");\nconst HtmlMinimizerWebpackPlugin = require(\"html-minimizer-webpack-plugin\");\nconst MiniCssExtractPlugin = require(\"mini-css-extract-plugin\");\nconst CssMinimizerPlugin = require(\"css-minimizer-webpack-plugin\");\nconst TerserPlugin = require(\"terser-webpack-plugin\");\nconst TsLintPlugin = require(\"tslint-webpack-plugin\");\nconst CopyPlugin = require(\"copy-webpack-plugin\");\nconst { CleanWebpackPlugin } = require(\"clean-webpack-plugin\");\n\nmodule.exports = {\n  context: path.resolve(__dirname, \"".concat(options.context, "\"),\n  mode: \"").concat(options.devMode, "\",\n  entry: ").concat(setEntryPoint(options.entryPoint), ",\n  devtool: \"").concat(sourceMaps(options.devMode), "\",\n  module: {\n    rules: [\n      {\n        test: /.ts$/,\n        exclude: /node_modules/,\n        use: \"ts-loader\",\n      },\n      {\n        test: /.s(a|c)ss$/,\n        use: [MiniCssExtractPlugin.loader, \"css-loader\", \"sass-loader\"],\n      },\n      {\n        test: /.html$/,\n        loader: \"html-loader\",\n      },\n      {\n        test: /.(png|jpe?g|gif|webp)$/,\n        use: [\n          \"file-loader\",\n          {\n            loader: \"image-webpack-loader\",\n            options: {\n              mozjpeg: {\n                progressive: true,\n              },\n              optipng: {\n                enabled: false,\n              },\n              pngquant: {\n                quality: [0.65, 0.9],\n                speed: 4,\n              },\n              gifsicle: {\n                interlaced: false,\n              },\n              webp: {\n                quality: 85,\n              },\n            },\n          },\n        ],\n      },\n      {\n        test: /.(woff(2)?|ttf|eot|svg)(?v=d+.d+.d+)?$/,\n        use: {\n          loader: \"file-loader\",\n          options: {\n            name: \"[name].[ext]\",\n            outputPath: \"fonts/\",\n          },\n        },\n      },\n    ],\n  },\n  resolve: {\n    alias: {\n      ").concat(setAlias(options.aliasPath), "\n    },\n    extensions: [\n      \".ts\",\n      \".html\",\n      \".sass\",\n      \".scss\",\n      \".css\",\n      \".png\",\n      \".jpg\",\n      \".jpeg\",\n      \".webp\",\n    ],\n    symlinks: false,\n    cacheWithContext: false,\n  },\n  plugins: [\n    new HtmlWebpackPlugin({\n      title: \"").concat(options.htmlTitle, "\",\n      template: \"").concat(options.htmlTemplate, "\",\n      minify: {\n        collapseWhiteSpaces: true,\n        removeAttributeQuotes: true,\n        removeComments: true,\n      },\n    }),\n    new MiniCssExtractPlugin({\n      filename: \"[name].[contenthash].css\",\n    }),\n    new TSLintPlugin({\n      files: [").concat(setScriptFiles(options.LintTypescriptFilesPath), "],\n      project: \"").concat(options.tslintFilePath, "\",\n      warningsAsError: true\n    }),\n    new CleanWebpackPlugin(),\n  ],\n  optimization: {\n    splitChunks: {\n      chunks: \"all\",\n      maxInitialRequest: Infinity,\n      minsize: 0,\n      cacheGroups: {\n        vendor: {\n          test: /[\\/]node_modules[\\/]/,\n          name(module) {\n            const packageTitle = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];\n\n            return 'npm.' + packageTitle.replace('@', '');\n          }\n        }\n      }\n    },\n    minimize: true,\n    minimizer: [\n      new CssMinimizerPlugin({\n        minimizerOptions: { level: 2, parallel: true },\n      }),\n      new TerserPlugin({\n        parallel: 3,\n        terserOptions: {\n          format: {\n            comments: false,\n          },\n        },\n        extractComments: false,\n      }),\n    ],\n  },\n  output: {\n    filename: \"[name].[contenthash].js\",\n    path: path.resolve(__dirname, \"").concat(options.outputFolder, "\"),\n  },\n  devServer: {\n    port: ").concat(options.devPort, ",\n    compress: true,\n  },\n};");
     }
     return content;
 }
@@ -397,26 +378,43 @@ function createHelpedFiles(presetType) {
     }
 }
 function installPackages(presetType) {
-    if (presetType === "React") {
-        execSync("npm i");
-        execSync("npm i");
-    }
-    if (presetType === "Vue") {
-        execSync("");
-        execSync("");
-    }
-    if (presetType === "Svelte") {
-        execSync("");
-        execSync("");
-    }
-    if (presetType === "Typescript") {
-        execSync("npm i webpack webpack-cli webpack-dev-server");
-        execSync("npm i -D ts-loader typescript file-loader @babel/core @babel/preset-env @babel/preset-typescript css-loader sass-loader @types/webpack html-webpack-plugin css-minimizer-webpack-plugin clean-webpack-plugin image-webpack-loader imagemin-mozjpeg imagemin-pngquant imagemin-svgo mini-css-extract-plugin terser-webpack-plugin tslint tslint-webpack-plugin");
-    }
-    if (presetType === "Javascript") {
-        execSync("npm i webpack webpack-cli webpack-dev-server");
-        execSync("npm i -D file-loader @babel/core @babel/preset-env babel-loader css-loader sass-loader @types/webpack html-webpack-plugin css-minimizer-webpack-plugin clean-webpack-plugin image-webpack-loader imagemin-loader imagemin-mozjpeg imagemin-pngquant imagemin-svgo mini-css-extract-plugin terser-webpack-plugin");
-    }
+    return __awaiter(this, void 0, void 0, function () {
+        var installationSpinner;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    installationSpinner = createSpinner("Install packages for Typescript").start();
+                    if (presetType === "React") {
+                        execSync("npm i");
+                        execSync("npm i");
+                    }
+                    if (presetType === "Vue") {
+                        execSync("");
+                        execSync("");
+                    }
+                    if (presetType === "Svelte") {
+                        execSync("");
+                        execSync("");
+                    }
+                    if (!(presetType === "Typescript")) return [3 /*break*/, 2];
+                    return [4 /*yield*/, promise(5000)];
+                case 1:
+                    _a.sent();
+                    execSync("npm i webpack webpack-cli webpack-dev-server");
+                    execSync("npm i -D ts-loader typescript file-loader @babel/core @babel/preset-env @babel/preset-typescript css-loader sass-loader @types/webpack html-webpack-plugin css-minimizer-webpack-plugin clean-webpack-plugin image-webpack-loader imagemin-mozjpeg imagemin-pngquant imagemin-svgo mini-css-extract-plugin terser-webpack-plugin tslint tslint-webpack-plugin");
+                    installationSpinner.success({
+                        text: "Packages for Typescript had been installed",
+                    });
+                    _a.label = 2;
+                case 2:
+                    if (presetType === "Javascript") {
+                        execSync("npm i webpack webpack-cli webpack-dev-server");
+                        execSync("npm i -D file-loader @babel/core @babel/preset-env babel-loader css-loader sass-loader @types/webpack html-webpack-plugin css-minimizer-webpack-plugin clean-webpack-plugin image-webpack-loader imagemin-loader imagemin-mozjpeg imagemin-pngquant imagemin-svgo mini-css-extract-plugin terser-webpack-plugin");
+                    }
+                    return [2 /*return*/];
+            }
+        });
+    });
 }
 function insertInConfig(type, content) {
     try {
@@ -451,10 +449,9 @@ function generateWebpackConfig(type) {
         return __generator(this, function (_g) {
             switch (_g.label) {
                 case 0:
-                    _g.trys.push([0, 7, , 8]);
-                    if (!(type === preset.TYPESCRIPT)) return [3 /*break*/, 3];
-                    installPackages(preset.TYPESCRIPT);
-                    return [4 /*yield*/, spinner(preset.TYPESCRIPT)];
+                    _g.trys.push([0, 8, , 9]);
+                    if (!(type === preset.TYPESCRIPT)) return [3 /*break*/, 4];
+                    return [4 /*yield*/, installPackages(preset.TYPESCRIPT)];
                 case 1:
                     _g.sent();
                     _b = (_a = fs).writeFileSync;
@@ -463,23 +460,25 @@ function generateWebpackConfig(type) {
                 case 2:
                     _b.apply(_a, _c.concat([_g.sent()]));
                     createHelpedFiles(preset.TYPESCRIPT);
-                    deleteLine("webpack.config.js");
-                    deleteLine("tslint.json");
-                    deleteLine(".prettierrc");
-                    deleteLine("jest.config.js");
-                    deleteLine(".babelrc");
+                    deleteLine("./webpack.config.js");
+                    deleteLine("./tslint.json");
+                    deleteLine("./.prettierrc");
+                    deleteLine("./jest.config.js");
+                    deleteLine("./.babelrc");
                     addScriptsForPackageJson("./package.json", preset.TYPESCRIPT);
-                    _g.label = 3;
+                    return [4 /*yield*/, figletText(preset.TYPESCRIPT)];
                 case 3:
-                    if (!(type === preset.JAVASCRIPT)) return [3 /*break*/, 6];
-                    installPackages(preset.JAVASCRIPT);
-                    return [4 /*yield*/, spinner(preset.JAVASCRIPT)];
+                    _g.sent();
+                    _g.label = 4;
                 case 4:
+                    if (!(type === preset.JAVASCRIPT)) return [3 /*break*/, 7];
+                    return [4 /*yield*/, installPackages(preset.JAVASCRIPT)];
+                case 5:
                     _g.sent();
                     _e = (_d = fs).writeFileSync;
                     _f = ["webpack.config.js"];
                     return [4 /*yield*/, WebpackConfigOptions()];
-                case 5:
+                case 6:
                     _e.apply(_d, _f.concat([_g.sent()]));
                     createHelpedFiles(preset.JAVASCRIPT);
                     deleteLine("eslint.json");
@@ -488,13 +487,13 @@ function generateWebpackConfig(type) {
                     deleteLine("jest.config.js");
                     deleteLine("webpack.config.js");
                     addScriptsForPackageJson("./package.json", preset.JAVASCRIPT);
-                    _g.label = 6;
-                case 6: return [3 /*break*/, 8];
-                case 7:
+                    _g.label = 7;
+                case 7: return [3 /*break*/, 9];
+                case 8:
                     e_1 = _g.sent();
                     console.log(e_1);
-                    return [3 /*break*/, 8];
-                case 8: return [2 /*return*/];
+                    return [3 /*break*/, 9];
+                case 9: return [2 /*return*/];
             }
         });
     });
@@ -502,18 +501,13 @@ function generateWebpackConfig(type) {
 function figletText(preset) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, promise(2000)];
-                case 1:
-                    _a.sent();
-                    figlet("Webpack Typescript config had been generated like you wanted, use it like you want))", function (err, data) {
-                        console.log(gradient.passion.multiline(data));
-                    });
-                    return [2 /*return*/];
-            }
+            console.clear();
+            figlet("Webpack Typescript config had been generated like you wanted, use it like you want))", function (err, data) {
+                console.log(gradient.passion.multiline(data));
+            });
+            return [2 /*return*/];
         });
     });
 }
-//basicPreset();
-console.log(setScriptFiles("lib/utils/**/*.ts lib/helpers/**/*.ts"));
+basicPreset();
 //# sourceMappingURL=index.js.map
