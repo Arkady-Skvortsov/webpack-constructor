@@ -1,0 +1,3 @@
+const chooseWebpackVersion = () => {};
+
+export { chooseWebpackVersion };

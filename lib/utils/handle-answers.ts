@@ -1,0 +1,3 @@
+const firstChoose = () => {};
+
+export { firstChoose };

@@ -4,17 +4,28 @@ import * as fs from "fs";
 import { execSync } from "child_process";
 import chalk from "chalk";
 import inquirer from "inquirer";
-import * as gradient from "gradient-string";
+import gradient from "gradient-string";
 import chalkAnimation from "chalk-animation";
 import figlet from "figlet";
 import { createSpinner } from "nanospinner";
+import { generateConstants } from "./utils/helpers/constants";
+import {
+  LinterChoose,
+  setWebpackNotifierPlugin,
+} from "./utils/helpers/plugins";
+import {
+  setCSSRuleUse,
+  optimizeProductionCSS,
+  setCssPlugin,
+  outputFileName,
+  isSourceMaps,
+} from "./utils/dev-mode";
 
 const promise = (ms = 5000) => new Promise((r) => setTimeout(r, ms));
 
 const regExp = new RegExp(/^.+\s.+$/, "g");
 
 type webpackOption = string | string[];
-type splittingWebpack = "chunks Splitting" | "Code splitting";
 
 interface webpackConfig {
   devMode: "production" | "development";
@@ -27,14 +38,7 @@ interface webpackConfig {
   tslintFilePath: string;
   outputFolder: string;
   devPort: number;
-}
-
-enum configType {
-  ESLINT = "Eslint",
-  TSLINT = "Tslint",
-  PRETTIER = "Prettier",
-  BABEL = "Babel",
-  JEST = "Jest",
+  watchFiles: string;
 }
 
 enum preset {
@@ -66,11 +70,13 @@ function addScriptsForPackageJson(filePath: string, presetOptions: preset) {
 
     scripts = {};
 
-    scripts["webpack:build"] =
-      "webpack build --config ./webpack.config.js --stats verbose";
-    scripts["webpack:watch"] = "webpack --watch";
+    scripts[
+      "webpack:build"
+    ] = `webpack build --config ./webpack.config.js --mode development`;
+    scripts["webpack:watch"] = "webpack --watch --config ./webpack.config.js";
     scripts["webpack:start"] = "webpack serve --open";
     scripts["webpack:dev"] = "webpack-dev-server";
+    scripts["webpack:run-pwa"] = `http-server ./dist`;
 
     fs.appendFileSync(filePath, JSON.stringify(scripts));
   } catch (e) {
@@ -113,7 +119,7 @@ async function WebpackConfigOptions() {
   const contextPointWrite = await inquirer.prompt({
     name: "question_3",
     type: "input",
-    message: "What is the context would be in Webpack config?",
+    message: "What is the context would be in Webpack config ?",
   });
 
   const entryPointWrite = await inquirer.prompt({
@@ -137,25 +143,27 @@ async function WebpackConfigOptions() {
   const htmlTemplatePath = await inquirer.prompt({
     name: "question_7",
     type: "input",
-    message: "What is the html template would be in webpack config?",
+    message: "What is the html template would be in webpack config ?",
   });
 
   const portWrite = await inquirer.prompt({
     name: "question_8",
     type: "input",
-    message: "What is the port would be in Dev Server?",
+    message: "What is the port would be in Dev Server ?",
+    default: 3500,
   });
 
   const outputFolder = await inquirer.prompt({
     name: "question_9",
     type: "input",
-    message: "What is the folder do you want that be an output?",
+    message: "What is the folder do you want that be an output ?",
   });
 
   const lintTypeScriptFilesPath = await inquirer.prompt({
     name: "question_11",
     type: "input",
     message: "What is the path of you'r .ts file(s)?",
+    default: contextPointWrite.question_3,
   });
 
   const tslintFilePath = await inquirer.prompt({
@@ -169,21 +177,30 @@ async function WebpackConfigOptions() {
   const devMode = await inquirer.prompt({
     name: "question_13",
     type: "list",
-    message: "What is the development mode do you want for webpack?",
-    choices: ["production", "development"],
+    message: "What is the development mode do you want for webpack ?",
+    choices: ["production", "development", "both"],
+  });
+
+  const watchFilesPath = await inquirer.prompt({
+    name: "question_14",
+    type: "input",
+    message:
+      "What is the files do you want to watch for changes with starting devServer ?",
+    default: contextPointWrite.question_3,
   });
 
   return addContent(preset.TYPESCRIPT, {
-    devMode: devMode.question_13,
     context: contextPointWrite.question_3,
     entryPoint: entryPointWrite.question_4,
     aliasPath: aliasPathWrite.question_5,
     htmlTitle: htmlTitle.question_6,
     htmlTemplate: htmlTemplatePath.question_7,
+    devPort: portWrite.question_8,
+    outputFolder: outputFolder.question_9,
     LintTypescriptFilesPath: lintTypeScriptFilesPath.question_11,
     tslintFilePath: tslintFilePath.question_12,
-    outputFolder: outputFolder.question_9,
-    devPort: portWrite.question_8,
+    devMode: devMode.question_13,
+    watchFiles: watchFilesPath.question_14,
   });
 }
 
@@ -253,10 +270,8 @@ const setEntryPoint = (entrypoint: string | any) =>
         .join(", ")}]`
     : `{main: "${entrypoint}"}`;
 
-const aliasChecked = () => new RegExp(/\*.ts/g);
-
-const setAlias = (alias: string | any) => {
-  return regExp.test(alias)
+const setAlias = (alias: string | any) =>
+  regExp.test(alias)
     ? alias
         .split(" ")
         .map(
@@ -271,31 +286,21 @@ const setAlias = (alias: string | any) => {
         alias.lastIndexOf("/") + 1,
         alias.length
       )}": path.resolve(__dirname, "${alias}")`;
-};
 
 function addContent(type: preset, options: webpackConfig): string {
-  let content;
-
-  if (type === "Vue") {
-  }
-
-  if (type === "React") {
-  }
-
-  if (type === "Svelte") {
-  }
-
-  if (type === "Typescript") {
-    content = `
+  return `
 const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const HtmlMinimizerWebpackPlugin = require("html-minimizer-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
-const TerserPlugin = require("terser-webpack-plugin");
-const TsLintPlugin = require("tslint-webpack-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlMinimizerWebpackPlugin = require('html-minimizer-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const TsLintPlugin = require('tslint-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const WorkboxPlugin = require('workbox-webpack-plugin');
+const WebpackNotifierPlugin = require('webpack-nofitier');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = {
   context: path.resolve(__dirname, "${options.context}"),
@@ -311,7 +316,7 @@ module.exports = {
       },
       {
         test: /\.s(a|c)ss$/,
-        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+        use: [${setCSSRuleUse}, "css-loader", "sass-loader"],
       },
       {
         test: /\.html$/,
@@ -376,6 +381,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
+      filename: "${options.htmlTemplate}",
       title: "${options.htmlTitle}",
       template: "${options.htmlTemplate}",
       minify: {
@@ -384,15 +390,14 @@ module.exports = {
         removeComments: true,
       },
     }),
-    new MiniCssExtractPlugin({
-      filename: "[name].[contenthash].css",
-    }),
-    new TSLintPlugin({
-      files: [${setScriptFiles(options.LintTypescriptFilesPath)}],
-      project: "${options.tslintFilePath}",
-      warningsAsError: true
-    }),
+    ${setCssPlugin(options.devMode, type)}
+    ${LinterChoose("Typescript", options)}
     new CleanWebpackPlugin(),
+    new WorkboxPlugin.GenerateSW({
+      clientsClaim: true,
+      skipWaiting: true,
+    }),
+    ${setWebpackNotifierPlugin(options.devMode)}
   ],
   optimization: {
     splitChunks: {
@@ -412,11 +417,11 @@ module.exports = {
     },
     minimize: true,
     minimizer: [
-      new CssMinimizerPlugin({
-        minimizerOptions: { level: 2, parallel: true },
-      }),
+      ${optimizeProductionCSS(options.devMode)}
       new TerserPlugin({
         parallel: 3,
+        cache: true,
+        sourceMap: ${isSourceMaps(options.devMode)},
         terserOptions: {
           format: {
             comments: false,
@@ -427,184 +432,50 @@ module.exports = {
     ],
   },
   output: {
-    filename: "[name].[contenthash].js",
+    filename: "${outputFileName(options.devMode, "js")}",
     path: path.resolve(__dirname, "${options.outputFolder}"),
   },
   devServer: {
     port: ${options.devPort},
     compress: true,
+    watchFiles: {
+      paths: ['src/**/*.php', 'public/**/*'],
+      options: {
+        usePolling: false,
+      },
+    },
   },
 };`;
-  }
-  return content as string;
-}
-
-function createHelpedFiles(presetType: preset) {
-  if (presetType === "Javascript") {
-    insertInConfig(configType.ESLINT, ``);
-    insertInConfig(configType.BABEL, ``);
-    insertInConfig(configType.JEST, ``);
-    insertInConfig(configType.PRETTIER, ``);
-  }
-
-  if (presetType === "Typescript") {
-    insertInConfig(
-      configType.TSLINT,
-      `
-{
-    "defaultSeverity": "error",
-    "extends": [
-      "tslint:all",
-      "tslint-config-prettier",
-      "tslint-plugin-prettier"
-    ],
-    "jsRules": {},
-    "rules": {
-       "prettier": true,
-  "cyclomatic-complexity": false,
-  "increment-decrement": false,
-  "newline-before-return": false,
-  "no-parameter-properties": false,
-  "no-parameter-reassignment": false,
-  "no-unused-variable": false,
-  "typedef": false,
-  "unnecessary-else": false,
-  "comment-format": {
-    "options": [
-      "check-space"
-    ]
-  },
-  "member-access": true,
-  "only-arrow-functions": {
-    "options": [
-      "allow-declarations",
-      "allow-named-functions"
-    ]
-  },
-  "completed-docs": false,
-  "no-any": true,
-  "no-magic-numbers": true,
-  "no-non-null-assertion": false,
-  "no-null-keyword": false,
-  "no-require-imports": false,
-  "no-unbound-method": false,
-  "no-unnecessary-qualifier": false,
-  "no-use-before-declare": false,
-  "no-void-expression": false,
-  "prefer-function-over-method": false,
-  "strict-comparisons": false,
-  "strict-type-predicates": false,
-  "triple-equals": {
-    "options": [
-      "allow-undefined-check"
-    ]
-  },
-  "ban": {
-    "options": [
-      [
-        "describe",
-        "only"
-      ],
-      [
-        "it",
-        "only"
-      ]
-    ]
-  },
-  "interface-name": false,
-  "file-header": {
-    "options": [
-      "Copyright \\\d{4} Palantir Technologies, Inc."
-    ]
-  },
-  "max-classes-per-file": false,
-  "member-ordering": {
-    "options": {
-      "order": "statics-first"
-    }
-  },
-  "no-console": {
-    "options": [
-      "log"
-    ]
-  },
-  "no-switch-case-fall-through": true,
-  "strict-boolean-expressions": {
-    "options": [
-      "allow-boolean-or-undefined"
-    ]
-  },
-      "switch-default": false,
-      "variable-name": {
-        "options": [
-          "ban-keywords",
-          "check-format",
-          "allow-leading-underscore",
-          "allow-pascal-case"
-        ]
-      },
-      "linebreak-style": false
-    },
-    "rulesDirectory": []
-}`
-    );
-    insertInConfig(
-      configType.PRETTIER,
-      `
-{
-  "semi": true,
-  "trailingComma": "none",
-  "singleQuote": true,
-  "printWidth": 80
-}
-      `
-    );
-    insertInConfig(
-      configType.BABEL,
-      `
-{
-  "presets": ["@babel/preset-env", "@babel/typescript"]
-}
-      `
-    );
-    insertInConfig(
-      configType.JEST,
-      `
-module.exports = { 
-  preset: 'ts-jest', 
-  testEnvironment: true 
-}
-      `
-    );
-  }
 }
 
 async function installPackages(presetType: preset) {
   let installationSpinner = createSpinner(
-    "Install packages for Typescript"
+    `Install packages for ${presetType}`
   ).start();
 
   if (presetType === "React") {
-    execSync("npm i");
-    execSync("npm i");
+    execSync(
+      "npm i -D webpack webpack-cli webpack-dev-server css-loader node-sass file-loader typescript @types/webpack sass-loader babel-loader @babel/core @babel/preset-react css-minimizer-webpack-plugin clean-webpack-plugin node-sass image-webpack-loader imagemin-mozjpeg imagemin-mozjpeg imagemin-pngquant imagemin-svgo mini-css-extract-plugin tslint terser-webpack-plugin tslint-webpack-plugin uglify-js webpack-notifier copy-webpack-plugin"
+    );
   }
 
   if (presetType === "Vue") {
-    execSync("");
-    execSync("");
+    execSync(
+      "npm i -D  webpack webpack-cli webpack-dev-server ts-loader typescript file-loader vue-loader vue-style-loader babel-loader css-loader sass-loader @types/webpack @babel/core @babel/preset-env @babel/preset-typescript css-minimizer-webpack-plugin clean-webpack-plugin node-sass image-webpack-loader imagemin-mozjpeg imagemin-pngquant imagemin-svgo mini-css-extract-plugin tslint terser-webpack-plugin tslint-webpack-plugin uglify-js vue-style-loader vue-server-renderer webpack-notifier copy-webpack-plugin"
+    );
   }
 
   if (presetType === "Svelte") {
-    execSync("");
-    execSync("");
+    execSync(
+      "npm i -D  webpack webpack-cli webpack-dev-server ts-loader typescript file-loader svelter-loader css-loader sass-loader @types/webpack css-minimizer-webpack-plugin clean-webpack-plugin node-sass image-webpack-loader imagemin-mozjpeg imagemin-pngquant imagemin-svgo mini-css-extract-plugin webpack-notifier copy-webpack-plugin"
+    );
   }
 
   if (presetType === "Typescript") {
     await promise(5000);
 
-    execSync("npm i webpack webpack-cli webpack-dev-server");
     execSync(
-      "npm i -D ts-loader typescript file-loader @babel/core @babel/preset-env @babel/preset-typescript css-loader sass-loader @types/webpack html-webpack-plugin css-minimizer-webpack-plugin clean-webpack-plugin image-webpack-loader imagemin-mozjpeg imagemin-pngquant imagemin-svgo mini-css-extract-plugin terser-webpack-plugin tslint tslint-webpack-plugin"
+      "npm i -D  webpack webpack-cli webpack-dev-server ts-loader typescript file-loader css-loader sass-loader @types/webpack html-webpack-plugin css-minimizer-webpack-plugin clean-webpack-plugin node-sass image-webpack-loader imagemin-mozjpeg imagemin-pngquant imagemin-svgo mini-css-extract-plugin terser-webpack-plugin tslint tslint-webpack-plugin uglify-js workbox-webpack-plugin http-server webpack-notifier copy-webpack-plugin"
     );
 
     installationSpinner.success({
@@ -613,41 +484,15 @@ async function installPackages(presetType: preset) {
   }
 
   if (presetType === "Javascript") {
-    execSync("npm i webpack webpack-cli webpack-dev-server");
+    await promise(5000);
+
     execSync(
-      "npm i -D file-loader @babel/core @babel/preset-env babel-loader css-loader sass-loader @types/webpack html-webpack-plugin css-minimizer-webpack-plugin clean-webpack-plugin image-webpack-loader imagemin-loader imagemin-mozjpeg imagemin-pngquant imagemin-svgo mini-css-extract-plugin terser-webpack-plugin"
+      "npm i -D webpack webpack-cli webpack-dev-server file-loader @babel/core @babel/preset-env @babel/plugin-transform-runtime babel-loader css-loader sass-loader @types/webpack html-webpack-plugin css-minimizer-webpack-plugin clean-webpack-plugin image-webpack-loader imagemin-loader imagemin-mozjpeg imagemin-pngquant imagemin-svgo mini-css-extract-plugin terser-webpack-plugin uglify-js workbox-webpack-plugin http-server webpack-notifier copy-webpack-plugin"
     );
-  }
-}
 
-function insertInConfig(type: configType, content: string) {
-  try {
-    if (type === "Tslint") {
-      fs.writeFileSync("tslint.json", content);
-      deleteLine("tslint.json");
-    }
-
-    if (type === "Eslint") {
-      fs.writeFileSync("eslint.json", content);
-      deleteLine("eslint.json");
-    }
-
-    if (type === "Prettier") {
-      fs.writeFileSync(".prettierrc", content);
-      deleteLine(".prettierrc");
-    }
-
-    if (type === "Babel") {
-      fs.writeFileSync(".babelrc", content);
-      deleteLine(".babelrc");
-    }
-
-    if (type === "Jest") {
-      fs.writeFileSync("jest.config.js", content);
-      deleteLine("jest.config.js");
-    }
-  } catch (e) {
-    console.log(e);
+    installationSpinner.success({
+      text: "Packages for Javascript had been installed",
+    });
   }
 }
 
@@ -658,33 +503,23 @@ async function generateWebpackConfig(type: preset) {
 
       fs.writeFileSync("webpack.config.js", await WebpackConfigOptions());
 
-      createHelpedFiles(preset.TYPESCRIPT);
+      await figletText(preset.TYPESCRIPT);
 
-      deleteLine("./webpack.config.js");
-      deleteLine("./tslint.json");
-      deleteLine("./.prettierrc");
-      deleteLine("./jest.config.js");
-      deleteLine("./.babelrc");
+      deleteLine("webpack.config.js");
 
       addScriptsForPackageJson("./package.json", preset.TYPESCRIPT);
-
-      return figletText(preset.TYPESCRIPT);
     }
 
     if (type === preset.JAVASCRIPT) {
-      await installPackages(preset.JAVASCRIPT);
+      await installPackages(preset.TYPESCRIPT);
 
       fs.writeFileSync("webpack.config.js", await WebpackConfigOptions());
 
-      createHelpedFiles(preset.JAVASCRIPT);
+      addScriptsForPackageJson("./package.json", preset.JAVASCRIPT);
 
-      deleteLine("eslint.json");
-      deleteLine(".prettierrc");
-      deleteLine(".babelrc");
-      deleteLine("jest.config.js");
       deleteLine("webpack.config.js");
 
-      addScriptsForPackageJson("./package.json", preset.JAVASCRIPT);
+      await figletText(preset.JAVASCRIPT);
     }
   } catch (e) {
     console.log(e);
@@ -695,9 +530,16 @@ async function figletText(preset: preset) {
   console.clear();
 
   figlet(
-    "Webpack Typescript config had been generated like you wanted, use it like you want))",
+    `Webpack ${preset} config had been generated`,
+    {
+      font: "Ghost",
+      horizontalLayout: "default",
+      verticalLayout: "default",
+      width: 200,
+      whitespaceBreak: true,
+    },
     (err, data) => {
-      console.log(gradient.passion.multiline(data));
+      console.log(gradient.instagram(data));
     }
   );
 }

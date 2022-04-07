@@ -32,6 +32,12 @@ I'm already tired of watching $100,000 frontend developers post in telegram/slac
   presets: Vue/React/Typescript/Svelte
 ```
 
+# Webpack Version
+
+```sh
+  webpackVersion: 4/5
+```
+
 # Mode
 
 ```sh
