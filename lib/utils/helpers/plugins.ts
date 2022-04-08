@@ -1,6 +1,7 @@
-import { webpackMode, linterChoose } from "./types";
+import { webpackMode } from "./types";
 import { setScriptFiles } from "../webpack-set.content";
 import { webpackConfig } from "./interfaces";
+import { preset } from "./enum";
 
 const setWebpackNotifierPlugin = (mode: webpackMode) =>
   mode === "production"
@@ -14,7 +15,7 @@ new WebpackNotifierPlugin({
 })`
     : null;
 
-const LinterChoose = (lang: linterChoose, options: webpackConfig) =>
+const LinterChoose = (lang: preset, options: webpackConfig) =>
   lang === "Typescript"
     ? `
 new TSLintPlugin({

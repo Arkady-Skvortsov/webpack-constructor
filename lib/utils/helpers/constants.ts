@@ -1,21 +1,23 @@
 import { preset } from "./enum";
+import { stringParser } from "./parser";
 
 const whitespace = new RegExp(/^.+\s.+$/, "g");
 
 const generateConstants = (presetType: preset) => {
   const constants =
     presetType === "Typescript"
-      ? ("const TsLintPlugin = require('tslint-webpack-plugin');\n".split(""),
-        "const WebpackNotifierPlugin = require('workbox-webpack-plugin');".split(
-          ""
+      ? (stringParser('const TsLintPlugin = require("tslint-webpack-plugin")'),
+        stringParser(
+          'const WebpackNotifierPlugin = require("workbox-webpack-plugin")'
         ))
       : presetType === "Javascript"
-      ? "const WebpackNotifierPlugin = require('workbox-webpack-plugin');".split(
-          ""
-        )
+      ? (stringParser(
+          'const WebpackNotifierPlugin = require("workbox-webpack-plugin")'
+        ),
+        stringParser('const ESLintPlugin = require("eslint-webpack-plugin")'))
       : presetType === "Vue"
-      ? "const { VueLoaderPlugin } = require('vue-loader/lib/plugin');\n".split(
-          ""
+      ? stringParser(
+          'const { VueLoaderPlugin } = require("vue-loader/lib/plugin")'
         )
       : presetType === "React"
       ? null
@@ -33,7 +35,6 @@ const TerserPlugin = require('terser-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WebpackNotifierPlugin = require('webpack-nofitier');
-const ESLintPlugin = require('eslint-webpack-plugin');
 ${constants}
 `;
 };

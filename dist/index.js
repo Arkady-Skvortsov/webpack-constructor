@@ -66,12 +66,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var fs = __importStar(require("fs"));
 var child_process_1 = require("child_process");
 var inquirer_1 = __importDefault(require("inquirer"));
-var gradient_string_1 = __importDefault(require("gradient-string"));
 var chalk_animation_1 = __importDefault(require("chalk-animation"));
-var figlet_1 = __importDefault(require("figlet"));
 var nanospinner_1 = require("nanospinner");
+var constants_1 = require("./utils/helpers/constants");
 var plugins_1 = require("./utils/helpers/plugins");
 var dev_mode_1 = require("./utils/dev-mode");
+var loaders_1 = require("./utils/helpers/loaders");
 var promise = function (ms) {
     if (ms === void 0) { ms = 5000; }
     return new Promise(function (r) { return setTimeout(r, ms); });
@@ -91,7 +91,7 @@ function start() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    webpackTitle = chalk_animation_1.default.rainbow("Webpack-constructor \n");
+                    webpackTitle = chalk_animation_1.default.rainbow("Webpack-constructor\n");
                     return [4 /*yield*/, promise(5000)];
                 case 1:
                     _a.sent();
@@ -99,10 +99,6 @@ function start() {
             }
         });
     });
-}
-function addSplitting(options) {
-    if (options === "") {
-    }
 }
 function addScriptsForPackageJson(filePath, presetOptions) {
     try {
@@ -115,7 +111,7 @@ function addScriptsForPackageJson(filePath, presetOptions) {
         scripts["webpack:start"] = "webpack serve --open";
         scripts["webpack:dev"] = "webpack-dev-server";
         scripts["webpack:run-pwa"] = "http-server ./dist";
-        fs.appendFileSync(filePath, JSON.stringify(scripts));
+        fs.writeFileSync(filePath, JSON.stringify(scripts));
     }
     catch (e) {
         console.log(e);
@@ -174,7 +170,7 @@ var deleteLine = function (file) {
 };
 function WebpackConfigOptions() {
     return __awaiter(this, void 0, void 0, function () {
-        var contextPointWrite, entryPointWrite, aliasPathWrite, htmlTitle, htmlTemplatePath, portWrite, outputFolder, lintTypeScriptFilesPath, tslintFilePath, devMode;
+        var contextPointWrite, entryPointWrite, aliasPathWrite, htmlTitle, htmlTemplatePath, portWrite, outputFolder, lintTypeScriptFilesPath, tslintFilePath, devMode, watchFilesPath;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, inquirer_1.default.prompt({
@@ -187,21 +183,21 @@ function WebpackConfigOptions() {
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_4",
                             type: "input",
-                            message: "What is the entry point(s) would be in webpack config ?",
+                            message: "What is the entry point(s) would be in webpack config?",
                         })];
                 case 2:
                     entryPointWrite = _a.sent();
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_5",
                             type: "input",
-                            message: "What is the alias(es) would be in webpack config ?",
+                            message: "What is the alias(es) would be in webpack config?",
                         })];
                 case 3:
                     aliasPathWrite = _a.sent();
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_6",
                             type: "input",
-                            message: "What is the title do you want in html page ?",
+                            message: "What is the title do you want in html page?",
                         })];
                 case 4:
                     htmlTitle = _a.sent();
@@ -216,6 +212,7 @@ function WebpackConfigOptions() {
                             name: "question_8",
                             type: "input",
                             message: "What is the port would be in Dev Server?",
+                            default: 3500,
                         })];
                 case 6:
                     portWrite = _a.sent();
@@ -230,13 +227,14 @@ function WebpackConfigOptions() {
                             name: "question_11",
                             type: "input",
                             message: "What is the path of you'r .ts file(s)?",
+                            default: contextPointWrite.question_3,
                         })];
                 case 8:
                     lintTypeScriptFilesPath = _a.sent();
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_12",
                             type: "input",
-                            message: "What is the path to you'r tslint.json file (default: ./tslint.json) ?",
+                            message: "What is the path to you'r tslint.json file (default: ./tslint.json)?",
                             default: "./tslint.json",
                         })];
                 case 9:
@@ -249,17 +247,25 @@ function WebpackConfigOptions() {
                         })];
                 case 10:
                     devMode = _a.sent();
+                    return [4 /*yield*/, inquirer_1.default.prompt({
+                            name: "question_14",
+                            type: "input",
+                            message: "What is the files do you want to watch for changes with starting devServer?",
+                        })];
+                case 11:
+                    watchFilesPath = _a.sent();
                     return [2 /*return*/, addContent(preset.TYPESCRIPT, {
-                            devMode: devMode.question_13,
                             context: contextPointWrite.question_3,
                             entryPoint: entryPointWrite.question_4,
                             aliasPath: aliasPathWrite.question_5,
                             htmlTitle: htmlTitle.question_6,
                             htmlTemplate: htmlTemplatePath.question_7,
+                            devPort: portWrite.question_8,
+                            outputFolder: outputFolder.question_9,
                             LintTypescriptFilesPath: lintTypeScriptFilesPath.question_11,
                             tslintFilePath: tslintFilePath.question_12,
-                            outputFolder: outputFolder.question_9,
-                            devPort: portWrite.question_8,
+                            devMode: devMode.question_13,
+                            watchFiles: watchFilesPath.question_14,
                         })];
             }
         });
@@ -372,7 +378,7 @@ var setAlias = function (alias) {
         : "\"@/".concat(alias.substring(alias.lastIndexOf("/") + 1, alias.length), "\": path.resolve(__dirname, \"").concat(alias, "\")");
 };
 function addContent(type, options) {
-    return "\nconst path = require(\"path\");\nconst HtmlWebpackPlugin = require('html-webpack-plugin');\nconst HtmlMinimizerWebpackPlugin = require('html-minimizer-webpack-plugin');\nconst MiniCssExtractPlugin = require('mini-css-extract-plugin');\nconst CssMinimizerPlugin = require('css-minimizer-webpack-plugin');\nconst TerserPlugin = require('terser-webpack-plugin');\nconst TsLintPlugin = require('tslint-webpack-plugin');\nconst CopyPlugin = require('copy-webpack-plugin');\nconst { CleanWebpackPlugin } = require('clean-webpack-plugin');\nconst WorkboxPlugin = require('workbox-webpack-plugin');\nconst WebpackNotifierPlugin = require('webpack-nofitier');\nconst ESLintPlugin = require('eslint-webpack-plugin');\n\nmodule.exports = {\n  context: path.resolve(__dirname, \"".concat(options.context, "\"),\n  mode: \"").concat(options.devMode, "\",\n  entry: ").concat(setEntryPoint(options.entryPoint), ",\n  devtool: \"").concat(sourceMaps(options.devMode), "\",\n  module: {\n    rules: [\n      {\n        test: /.ts$/,\n        exclude: /node_modules/,\n        use: \"ts-loader\",\n      },\n      {\n        test: /.s(a|c)ss$/,\n        use: [").concat(dev_mode_1.setCSSRuleUse, ", \"css-loader\", \"sass-loader\"],\n      },\n      {\n        test: /.html$/,\n        loader: \"html-loader\",\n      },\n      {\n        test: /.(png|jpe?g|gif|webp)$/,\n        use: [\n          \"file-loader\",\n          {\n            loader: \"image-webpack-loader\",\n            options: {\n              mozjpeg: {\n                progressive: true,\n              },\n              optipng: {\n                enabled: false,\n              },\n              pngquant: {\n                quality: [0.65, 0.9],\n                speed: 4,\n              },\n              gifsicle: {\n                interlaced: false,\n              },\n              webp: {\n                quality: 85,\n              },\n            },\n          },\n        ],\n      },\n      {\n        test: /.(woff(2)?|ttf|eot|svg)(?v=d+.d+.d+)?$/,\n        use: {\n          loader: \"file-loader\",\n          options: {\n            name: \"[name].[ext]\",\n            outputPath: \"fonts/\",\n          },\n        },\n      },\n    ],\n  },\n  resolve: {\n    alias: {\n      ").concat(setAlias(options.aliasPath), "\n    },\n    extensions: [\n      \".ts\",\n      \".html\",\n      \".sass\",\n      \".scss\",\n      \".css\",\n      \".png\",\n      \".jpg\",\n      \".jpeg\",\n      \".webp\",\n    ],\n    symlinks: false,\n    cacheWithContext: false,\n  },\n  plugins: [\n    new HtmlWebpackPlugin({\n      filename: \"").concat(options.htmlTemplate, "\",\n      title: \"").concat(options.htmlTitle, "\",\n      template: \"").concat(options.htmlTemplate, "\",\n      minify: {\n        collapseWhiteSpaces: true,\n        removeAttributeQuotes: true,\n        removeComments: true,\n      },\n    }),\n    ").concat((0, dev_mode_1.setCssPlugin)(options.devMode, type), "\n    ").concat((0, plugins_1.LinterChoose)("Typescript", options), "\n    new CleanWebpackPlugin(),\n    new WorkboxPlugin.GenerateSW({\n      clientsClaim: true,\n      skipWaiting: true,\n    }),\n    ").concat((0, plugins_1.setWebpackNotifierPlugin)(options.devMode), "\n  ],\n  optimization: {\n    splitChunks: {\n      chunks: \"all\",\n      maxInitialRequest: Infinity,\n      minsize: 0,\n      cacheGroups: {\n        vendor: {\n          test: /[\\/]node_modules[\\/]/,\n          name(module) {\n            const packageTitle = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];\n\n            return 'npm.' + packageTitle.replace('@', '');\n          }\n        }\n      }\n    },\n    minimize: true,\n    minimizer: [\n      ").concat((0, dev_mode_1.optimizeProductionCSS)(options.devMode), "\n      new TerserPlugin({\n        parallel: 3,\n        cache: true,\n        sourceMap: ").concat((0, dev_mode_1.isSourceMaps)(options.devMode), ",\n        terserOptions: {\n          format: {\n            comments: false,\n          },\n        },\n        extractComments: false,\n      }),\n    ],\n  },\n  output: {\n    filename: \"").concat((0, dev_mode_1.outputFileName)(options.devMode, "js"), "\",\n    path: path.resolve(__dirname, \"").concat(options.outputFolder, "\"),\n  },\n  devServer: {\n    port: ").concat(options.devPort, ",\n    compress: true,\n    watchFiles: {\n      paths: ['src/**/*.php', 'public/**/*'],\n      options: {\n        usePolling: false,\n      },\n    },\n  },\n};");
+    return "\n".concat((0, constants_1.generateConstants)(type), "\nmodule.exports = {\n  context: path.resolve(__dirname, \"").concat(options.context, "\"),\n  mode: \"").concat(options.devMode, "\",\n  entry: ").concat(setEntryPoint(options.entryPoint), ",\n  devtool: \"").concat(sourceMaps(options.devMode), "\",\n  module: {\n    rules: [\n      ").concat((0, loaders_1.langLoader)(type), "\n      {\n        test: /.s(a|c)ss$/,\n        use: [").concat((0, dev_mode_1.setCSSRuleUse)(options.devMode), ", \"css-loader\", \"sass-loader\"],\n      },\n      {\n        test: /.html$/,\n        loader: \"html-loader\",\n      },\n      {\n        test: /.(png|jpe?g|gif|webp)$/,\n        use: [\n          \"file-loader\",\n          {\n            loader: \"image-webpack-loader\",\n            options: {\n              mozjpeg: {\n                progressive: true,\n              },\n              optipng: {\n                enabled: false,\n              },\n              pngquant: {\n                quality: [0.65, 0.9],\n                speed: 4,\n              },\n              gifsicle: {\n                interlaced: false,\n              },\n              webp: {\n                quality: 85,\n              },\n            },\n          },\n        ],\n      },\n      {\n        test: /.(woff(2)?|ttf|eot|svg)(?v=d+.d+.d+)?$/,\n        use: {\n          loader: \"file-loader\",\n          options: {\n            name: \"[name].[ext]\",\n            outputPath: \"fonts/\",\n          },\n        },\n      },\n    ],\n  },\n  resolve: {\n    alias: {\n      ").concat(setAlias(options.aliasPath), "\n    },\n    extensions: [\n      \".ts\",\n      \".html\",\n      \".sass\",\n      \".scss\",\n      \".css\",\n      \".png\",\n      \".jpg\",\n      \".jpeg\",\n      \".webp\",\n    ],\n    symlinks: false,\n    cacheWithContext: false,\n  },\n  plugins: [\n    new HtmlWebpackPlugin({\n      filename: \"").concat(options.htmlTemplate, "\",\n      title: \"").concat(options.htmlTitle, "\",\n      template: \"").concat(options.htmlTemplate, "\",\n      minify: {\n        collapseWhiteSpaces: true,\n        removeAttributeQuotes: true,\n        removeComments: true,\n      },\n    }),\n    ").concat((0, dev_mode_1.setCssPlugin)(options.devMode, type), "\n    ").concat((0, plugins_1.LinterChoose)(type, options), "\n    new CleanWebpackPlugin(),\n    ").concat((0, plugins_1.setWebpackNotifierPlugin)(options.devMode), "\n  ],\n  optimization: {\n    splitChunks: {\n      chunks: \"all\",\n      maxInitialRequest: Infinity,\n      minsize: 0,\n      cacheGroups: {\n        vendor: {\n          test: /[\\/]node_modules[\\/]/,\n          name(module) {\n            const packageTitle = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];\n\n            return 'npm.' + packageTitle.replace('@', '');\n          }\n        }\n      }\n    },\n    minimize: true,\n    minimizer: [\n      ").concat((0, dev_mode_1.optimizeProductionCSS)(options.devMode), "\n      new TerserPlugin({\n        parallel: 3,\n        cache: true,\n        sourceMap: ").concat((0, dev_mode_1.isSourceMaps)(options.devMode), ",\n        terserOptions: {\n          format: {\n            comments: false,\n          },\n        },\n        extractComments: false,\n      }),\n    ],\n  },\n  output: {\n    filename: \"").concat((0, dev_mode_1.outputFileName)(options.devMode, "js"), "\",\n    path: path.resolve(__dirname, \"").concat(options.outputFolder, "\"),\n  },\n  devServer: {\n    port: ").concat(options.devPort, ",\n    compress: true,\n    watchFiles: {\n      paths: [").concat((0, dev_mode_1.setWatchFiles)(options.watchFiles), "],\n      options: {\n        usePolling: false,\n      },\n    },\n  },\n};");
 }
 function installPackages(presetType) {
     return __awaiter(this, void 0, void 0, function () {
@@ -416,69 +422,48 @@ function installPackages(presetType) {
 }
 function generateWebpackConfig(type) {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, _b, _c, _d, _e, _f, e_1;
-        return __generator(this, function (_g) {
-            switch (_g.label) {
+        var _a, _b, _c, e_1;
+        return __generator(this, function (_d) {
+            switch (_d.label) {
                 case 0:
-                    _g.trys.push([0, 10, , 11]);
+                    _d.trys.push([0, 5, , 6]);
                     if (!(type === preset.TYPESCRIPT)) return [3 /*break*/, 4];
                     return [4 /*yield*/, installPackages(preset.TYPESCRIPT)];
                 case 1:
-                    _g.sent();
+                    _d.sent();
                     _b = (_a = fs).writeFileSync;
                     _c = ["webpack.config.js"];
                     return [4 /*yield*/, WebpackConfigOptions()];
                 case 2:
-                    _b.apply(_a, _c.concat([_g.sent()]));
+                    _b.apply(_a, _c.concat([_d.sent()]));
                     deleteLine("webpack.config.js");
                     addScriptsForPackageJson("./package.json", preset.TYPESCRIPT);
                     return [4 /*yield*/, figletText(preset.TYPESCRIPT)];
                 case 3:
-                    _g.sent();
-                    _g.label = 4;
-                case 4:
-                    if (!(type === preset.JAVASCRIPT)) return [3 /*break*/, 9];
-                    return [4 /*yield*/, installPackages(preset.TYPESCRIPT)];
+                    _d.sent();
+                    _d.label = 4;
+                case 4: return [3 /*break*/, 6];
                 case 5:
-                    _g.sent();
-                    _e = (_d = fs).writeFileSync;
-                    _f = ["webpack.config.js"];
-                    return [4 /*yield*/, WebpackConfigOptions()];
-                case 6:
-                    _e.apply(_d, _f.concat([_g.sent()]));
-                    addScriptsForPackageJson("./package.json", preset.JAVASCRIPT);
-                    deleteLine("webpack.config.js");
-                    return [4 /*yield*/, promise(2000)];
-                case 7:
-                    _g.sent();
-                    return [4 /*yield*/, figletText(preset.JAVASCRIPT)];
-                case 8:
-                    _g.sent();
-                    _g.label = 9;
-                case 9: return [3 /*break*/, 11];
-                case 10:
-                    e_1 = _g.sent();
+                    e_1 = _d.sent();
                     console.log(e_1);
-                    return [3 /*break*/, 11];
-                case 11: return [2 /*return*/];
+                    return [3 /*break*/, 6];
+                case 6: return [2 /*return*/];
             }
         });
     });
 }
 function figletText(preset) {
     return __awaiter(this, void 0, void 0, function () {
+        var animation;
         return __generator(this, function (_a) {
-            console.clear();
-            (0, figlet_1.default)("Webpack ".concat(preset, " config had been generated"), {
-                font: "Ghost",
-                horizontalLayout: "default",
-                verticalLayout: "default",
-                width: 200,
-                whitespaceBreak: true,
-            }, function (err, data) {
-                console.log(gradient_string_1.default.instagram(data));
-            });
-            return [2 /*return*/];
+            switch (_a.label) {
+                case 0:
+                    animation = chalk_animation_1.default.rainbow("Webpack ".concat(preset, " config had been generated!\nYou can support author here: https://www.buymeacoffee.com/ArkashaS"));
+                    return [4 /*yield*/, promise(10000)];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/, animation.stop()];
+            }
         });
     });
 }
