@@ -72,10 +72,7 @@ var constants_1 = require("./utils/helpers/constants");
 var plugins_1 = require("./utils/helpers/plugins");
 var dev_mode_1 = require("./utils/dev-mode");
 var loaders_1 = require("./utils/helpers/loaders");
-var promise = function (ms) {
-    if (ms === void 0) { ms = 5000; }
-    return new Promise(function (r) { return setTimeout(r, ms); });
-};
+var promise_1 = require("./utils/helpers/promise");
 var regExp = new RegExp(/^.+\s.+$/, "g");
 var preset;
 (function (preset) {
@@ -92,7 +89,7 @@ function start() {
             switch (_a.label) {
                 case 0:
                     webpackTitle = chalk_animation_1.default.rainbow("Webpack-constructor\n");
-                    return [4 /*yield*/, promise(5000)];
+                    return [4 /*yield*/, (0, promise_1.promise)(5000)];
                 case 1:
                     _a.sent();
                     return [2 /*return*/, webpackTitle.stop()];
@@ -105,12 +102,13 @@ function addScriptsForPackageJson(filePath, presetOptions) {
         var content = fs.readFileSync(filePath, "utf-8");
         var jsonContent = JSON.parse(content);
         var scripts = jsonContent["scripts"];
-        scripts = {};
-        scripts["webpack:build"] = "webpack build --config ./webpack.config.js --mode development";
-        scripts["webpack:watch"] = "webpack --watch --config ./webpack.config.js";
-        scripts["webpack:start"] = "webpack serve --open";
-        scripts["webpack:dev"] = "webpack-dev-server";
-        scripts["webpack:run-pwa"] = "http-server ./dist";
+        scripts = {
+            "webpack:build": "webpack build --config ./webpack.config.js --mode development",
+            "webpack:watch": "webpack --watch --config ./webpack.config.js",
+            "webpack:start": "webpack serve --open",
+            "webpack:dev": "webpack-dev-server",
+            "webpack:run-pwa": "http-server ./dist",
+        };
         fs.writeFileSync(filePath, JSON.stringify(scripts));
     }
     catch (e) {
@@ -251,6 +249,7 @@ function WebpackConfigOptions() {
                             name: "question_14",
                             type: "input",
                             message: "What is the files do you want to watch for changes with starting devServer?",
+                            default: contextPointWrite.question_3,
                         })];
                 case 11:
                     watchFilesPath = _a.sent();
@@ -290,7 +289,7 @@ function spinner(text) {
             switch (_a.label) {
                 case 0:
                     spnr = (0, nanospinner_1.createSpinner)("Creating webpack config for ".concat(text)).start();
-                    return [4 /*yield*/, promise(5000)];
+                    return [4 /*yield*/, (0, promise_1.promise)(5000)];
                 case 1:
                     _a.sent();
                     if (text !== "Custom")
@@ -378,7 +377,7 @@ var setAlias = function (alias) {
         : "\"@/".concat(alias.substring(alias.lastIndexOf("/") + 1, alias.length), "\": path.resolve(__dirname, \"").concat(alias, "\")");
 };
 function addContent(type, options) {
-    return "\n".concat((0, constants_1.generateConstants)(type), "\nmodule.exports = {\n  context: path.resolve(__dirname, \"").concat(options.context, "\"),\n  mode: \"").concat(options.devMode, "\",\n  entry: ").concat(setEntryPoint(options.entryPoint), ",\n  devtool: \"").concat(sourceMaps(options.devMode), "\",\n  module: {\n    rules: [\n      ").concat((0, loaders_1.langLoader)(type), "\n      {\n        test: /.s(a|c)ss$/,\n        use: [").concat((0, dev_mode_1.setCSSRuleUse)(options.devMode), ", \"css-loader\", \"sass-loader\"],\n      },\n      {\n        test: /.html$/,\n        loader: \"html-loader\",\n      },\n      {\n        test: /.(png|jpe?g|gif|webp)$/,\n        use: [\n          \"file-loader\",\n          {\n            loader: \"image-webpack-loader\",\n            options: {\n              mozjpeg: {\n                progressive: true,\n              },\n              optipng: {\n                enabled: false,\n              },\n              pngquant: {\n                quality: [0.65, 0.9],\n                speed: 4,\n              },\n              gifsicle: {\n                interlaced: false,\n              },\n              webp: {\n                quality: 85,\n              },\n            },\n          },\n        ],\n      },\n      {\n        test: /.(woff(2)?|ttf|eot|svg)(?v=d+.d+.d+)?$/,\n        use: {\n          loader: \"file-loader\",\n          options: {\n            name: \"[name].[ext]\",\n            outputPath: \"fonts/\",\n          },\n        },\n      },\n    ],\n  },\n  resolve: {\n    alias: {\n      ").concat(setAlias(options.aliasPath), "\n    },\n    extensions: [\n      \".ts\",\n      \".html\",\n      \".sass\",\n      \".scss\",\n      \".css\",\n      \".png\",\n      \".jpg\",\n      \".jpeg\",\n      \".webp\",\n    ],\n    symlinks: false,\n    cacheWithContext: false,\n  },\n  plugins: [\n    new HtmlWebpackPlugin({\n      filename: \"").concat(options.htmlTemplate, "\",\n      title: \"").concat(options.htmlTitle, "\",\n      template: \"").concat(options.htmlTemplate, "\",\n      minify: {\n        collapseWhiteSpaces: true,\n        removeAttributeQuotes: true,\n        removeComments: true,\n      },\n    }),\n    ").concat((0, dev_mode_1.setCssPlugin)(options.devMode, type), "\n    ").concat((0, plugins_1.LinterChoose)(type, options), "\n    new CleanWebpackPlugin(),\n    ").concat((0, plugins_1.setWebpackNotifierPlugin)(options.devMode), "\n  ],\n  optimization: {\n    splitChunks: {\n      chunks: \"all\",\n      maxInitialRequest: Infinity,\n      minsize: 0,\n      cacheGroups: {\n        vendor: {\n          test: /[\\/]node_modules[\\/]/,\n          name(module) {\n            const packageTitle = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];\n\n            return 'npm.' + packageTitle.replace('@', '');\n          }\n        }\n      }\n    },\n    minimize: true,\n    minimizer: [\n      ").concat((0, dev_mode_1.optimizeProductionCSS)(options.devMode), "\n      new TerserPlugin({\n        parallel: 3,\n        cache: true,\n        sourceMap: ").concat((0, dev_mode_1.isSourceMaps)(options.devMode), ",\n        terserOptions: {\n          format: {\n            comments: false,\n          },\n        },\n        extractComments: false,\n      }),\n    ],\n  },\n  output: {\n    filename: \"").concat((0, dev_mode_1.outputFileName)(options.devMode, "js"), "\",\n    path: path.resolve(__dirname, \"").concat(options.outputFolder, "\"),\n  },\n  devServer: {\n    port: ").concat(options.devPort, ",\n    compress: true,\n    watchFiles: {\n      paths: [").concat((0, dev_mode_1.setWatchFiles)(options.watchFiles), "],\n      options: {\n        usePolling: false,\n      },\n    },\n  },\n};");
+    return "\n".concat((0, constants_1.generateConstants)(type), "\nmodule.exports = {\n  context: path.resolve(__dirname, \"").concat(options.context, "\"),\n  mode: \"").concat(options.devMode, "\",\n  entry: ").concat(setEntryPoint(options.entryPoint), ",\n  devtool: \"").concat(sourceMaps(options.devMode), "\",\n  module: {\n    rules: [\n      ").concat((0, loaders_1.langLoader)(type), "\n      {\n        test: /.s(a|c)ss$/,\n        use: [").concat((0, dev_mode_1.setCSSRuleUse)(options.devMode), ", \"css-loader\", \"sass-loader\"],\n      },\n      {\n        test: /.html$/,\n        loader: \"html-loader\",\n      },\n      {\n        test: /.(png|jpe?g|gif|webp)$/,\n        use: [\n          \"file-loader\",\n          {\n            loader: \"image-webpack-loader\",\n            options: {\n              mozjpeg: {\n                progressive: true,\n              },\n              optipng: {\n                enabled: false,\n              },\n              pngquant: {\n                quality: [0.65, 0.9],\n                speed: 4,\n              },\n              gifsicle: {\n                interlaced: false,\n              },\n              webp: {\n                quality: 85,\n              },\n            },\n          },\n        ],\n      },\n      {\n        test: /.(woff(2)?|ttf|eot|svg)(?v=d+.d+.d+)?$/,\n        use: {\n          loader: \"file-loader\",\n          options: {\n            name: \"[name].[ext]\",\n            outputPath: \"fonts/\",\n          },\n        },\n      },\n    ],\n  },\n  resolve: {\n    alias: {\n      ").concat(setAlias(options.aliasPath), "\n    },\n    extensions: [\n      \".ts\",\n      \".html\",\n      \".sass\",\n      \".scss\",\n      \".css\",\n      \".png\",\n      \".jpg\",\n      \".jpeg\",\n      \".webp\",\n    ],\n    symlinks: false,\n    cacheWithContext: false,\n  },\n  plugins: [\n    new HtmlWebpackPlugin({\n      filename: \"").concat(options.htmlTemplate, "\",\n      title: \"").concat(options.htmlTitle, "\",\n      template: \"").concat(options.htmlTemplate, "\",\n      minify: {\n        collapseWhiteSpaces: true,\n        removeAttributeQuotes: true,\n        removeComments: true,\n      },\n    }),\n    ").concat((0, dev_mode_1.setCssPlugin)(options.devMode, type), "\n    ").concat((0, plugins_1.LinterChoose)(type, options), "\n    new CleanWebpackPlugin(),\n    ").concat((0, plugins_1.setWebpackNotifierPlugin)(options.devMode), "\n  ],\n  optimization: {\n    splitChunks: {\n      chunks: \"all\",\n      maxInitialRequest: Infinity,\n      minsize: 0,\n      cacheGroups: {\n        vendor: {\n          test: /[\\/]node_modules[\\/]/,\n          name(module) {\n            const packageTitle = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];\n\n            return 'npm.' + packageTitle.replace('@', '');\n          }\n        }\n      }\n    },\n    minimize: true,\n    minimizer: [\n      ").concat((0, dev_mode_1.optimizeProductionCSS)(options.devMode), "\n      new HtmlMinimizerPlugin(),\n      new TerserPlugin({\n        parallel: 3,\n        cache: true,\n        sourceMap: ").concat((0, dev_mode_1.isSourceMaps)(options.devMode), ",\n        terserOptions: {\n          format: {\n            comments: false,\n          },\n        },\n        extractComments: false,\n      }),\n    ],\n  },\n  output: {\n    filename: \"").concat((0, dev_mode_1.outputFileName)(options.devMode, "js"), "\",\n    path: path.resolve(__dirname, \"").concat(options.outputFolder, "\"),\n  },\n  devServer: {\n    port: ").concat(options.devPort, ",\n    compress: true,\n    watchFiles: {\n      paths: [").concat((0, dev_mode_1.setWatchFiles)(options.watchFiles), "],\n      options: {\n        usePolling: false,\n      },\n    },\n  },\n};");
 }
 function installPackages(presetType) {
     return __awaiter(this, void 0, void 0, function () {
@@ -397,7 +396,7 @@ function installPackages(presetType) {
                         (0, child_process_1.execSync)("npm i -D  webpack webpack-cli webpack-dev-server ts-loader typescript file-loader svelter-loader css-loader sass-loader @types/webpack css-minimizer-webpack-plugin clean-webpack-plugin node-sass image-webpack-loader imagemin-mozjpeg imagemin-pngquant imagemin-svgo mini-css-extract-plugin webpack-notifier copy-webpack-plugin");
                     }
                     if (!(presetType === "Typescript")) return [3 /*break*/, 2];
-                    return [4 /*yield*/, promise(5000)];
+                    return [4 /*yield*/, (0, promise_1.promise)(5000)];
                 case 1:
                     _a.sent();
                     (0, child_process_1.execSync)("npm i -D  webpack webpack-cli webpack-dev-server ts-loader typescript file-loader css-loader sass-loader @types/webpack html-webpack-plugin css-minimizer-webpack-plugin clean-webpack-plugin node-sass image-webpack-loader imagemin-mozjpeg imagemin-pngquant imagemin-svgo mini-css-extract-plugin terser-webpack-plugin tslint tslint-webpack-plugin uglify-js workbox-webpack-plugin http-server webpack-notifier copy-webpack-plugin");
@@ -407,7 +406,7 @@ function installPackages(presetType) {
                     _a.label = 2;
                 case 2:
                     if (!(presetType === "Javascript")) return [3 /*break*/, 4];
-                    return [4 /*yield*/, promise(5000)];
+                    return [4 /*yield*/, (0, promise_1.promise)(5000)];
                 case 3:
                     _a.sent();
                     (0, child_process_1.execSync)("npm i -D webpack webpack-cli webpack-dev-server file-loader @babel/core @babel/preset-env @babel/plugin-transform-runtime babel-loader css-loader sass-loader @types/webpack html-webpack-plugin css-minimizer-webpack-plugin clean-webpack-plugin image-webpack-loader imagemin-loader imagemin-mozjpeg imagemin-pngquant imagemin-svgo mini-css-extract-plugin terser-webpack-plugin uglify-js workbox-webpack-plugin http-server webpack-notifier copy-webpack-plugin");
@@ -458,8 +457,8 @@ function figletText(preset) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    animation = chalk_animation_1.default.rainbow("Webpack ".concat(preset, " config had been generated!\nYou can support author here: https://www.buymeacoffee.com/ArkashaS"));
-                    return [4 /*yield*/, promise(10000)];
+                    animation = chalk_animation_1.default.rainbow("Webpack ".concat(preset, " config had been generated!\n"));
+                    return [4 /*yield*/, (0, promise_1.promise)(10000)];
                 case 1:
                     _a.sent();
                     return [2 /*return*/, animation.stop()];

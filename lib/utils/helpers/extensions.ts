@@ -1,7 +1,3 @@
-const extensions = {
-  Javascript: "js",
-  Css: "css",
-  Html: "html",
-};
+const generateExtensions = () => ``;
 
-export { extensions };
+export { generateExtensions };

@@ -1,6 +1,6 @@
 type webpackOption = string | string[];
 type splittingWebpack = "chunks Splitting" | "Code Splitting";
-type webpackConfigType = "preset" | "custom";
+type webpackConfigType = "Preset" | "Custom";
 type webpackMode = "production" | "development";
 type linterChoose = "Typescript" | "Javascript";
 type cssLoader = "(Sass/Scss)" | "Less" | "Stylus" | "PostCss";

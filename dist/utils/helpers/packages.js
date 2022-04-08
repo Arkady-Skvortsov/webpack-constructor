@@ -36,42 +36,39 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateWebpackConfig = exports.setEntryPoint = exports.setScriptFiles = exports.setSourceMaps = exports.setAlias = void 0;
-var constants_1 = require("./helpers/constants");
-var setAlias = function (alias) {
-    return typeof alias === "string"
-        ? "\"@/".concat(alias.substring(alias.lastIndexOf("/") + 1, alias.length), "\": path.resolve(__dirname, \"").concat(alias, "\")")
-        : alias
-            .map(function (al) {
-            return "\"@/".concat(al.substring(al.lastIndexOf("/") + 1, al.length), "\": path.resolve(__dirname, \"").concat(al, "\")");
-        })
-            .join(", ");
-};
-exports.setAlias = setAlias;
-var setScriptFiles = function (file) {
-    return constants_1.whitespace.test(file)
-        ? "[\"".concat(file
-            .split(" ")
-            .map(function (f) { return "\"".concat(f, "\""); })
-            .join(", "), "\"]")
-        : "\"".concat(file, "\"");
-};
-exports.setScriptFiles = setScriptFiles;
-var setEntryPoint = function (entrypoint) {
-    return constants_1.whitespace.test(entrypoint)
-        ? "[".concat(entrypoint
-            .split(" ")
-            .map(function (entry) { return "\"".concat(entry, "\""); })
-            .join(", "), "]")
-        : "{main: \"".concat(entrypoint, "\"}");
-};
-exports.setEntryPoint = setEntryPoint;
-var setSourceMaps = function (mode) {
-    return mode === "production" ? "source-maps" : "eval-source-map";
-};
-exports.setSourceMaps = setSourceMaps;
-var generateWebpackConfig = function (optionsPreset) { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
-    return [2 /*return*/];
-}); }); };
-exports.generateWebpackConfig = generateWebpackConfig;
-//# sourceMappingURL=webpack-set.content.js.map
+exports.installPackagesForPresets = void 0;
+var child_process_1 = require("child_process");
+var nanospinner_1 = require("nanospinner");
+var promise_1 = require("./promise");
+var parser_1 = require("./parser");
+function installPackagesForPresets(presetType) {
+    return __awaiter(this, void 0, void 0, function () {
+        var installationSpinner;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    installationSpinner = (0, nanospinner_1.createSpinner)("Install packages for ".concat(presetType)).start();
+                    return [4 /*yield*/, (0, promise_1.promise)()];
+                case 1:
+                    _a.sent();
+                    (0, child_process_1.execSync)("npm i -D webpack webpack-cli webpack-dev-server css-loader file-loader @types/webpack clean-webpack-plugin node-sass sass-loader image-webpack-loader imagemin-mozjpeg imagemin-svgo imagemin-pngquant terser-webpack-plugin uglify-js webpack-notifier copy-webpack-plugin ".concat(presetType === "Typescript"
+                        ? "typescript ts-loader tslint tslint-webpack-plugin @babel/plugin-transform-runtime"
+                        : presetType === "Javascript"
+                            ? "@babel/core babel-loader @babel/preset-env @babel/plugin-transform-runtime"
+                            : presetType === "React"
+                                ? "@babel/core babel-loader @babel/preset-react @babel/plugin-transform-runtime"
+                                : presetType === "Vue"
+                                    ? "vue-style-loader vue-loader vue-server-renderer"
+                                    : presetType === "Svelte"
+                                        ? "svelte-loader"
+                                        : (0, parser_1.stringParser)("")));
+                    installationSpinner.success({
+                        text: "Packages for ".concat(presetType, " had been installed"),
+                    });
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.installPackagesForPresets = installPackagesForPresets;
+//# sourceMappingURL=packages.js.map

@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -36,42 +59,25 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateWebpackConfig = exports.setEntryPoint = exports.setScriptFiles = exports.setSourceMaps = exports.setAlias = void 0;
-var constants_1 = require("./helpers/constants");
-var setAlias = function (alias) {
-    return typeof alias === "string"
-        ? "\"@/".concat(alias.substring(alias.lastIndexOf("/") + 1, alias.length), "\": path.resolve(__dirname, \"").concat(alias, "\")")
-        : alias
-            .map(function (al) {
-            return "\"@/".concat(al.substring(al.lastIndexOf("/") + 1, al.length), "\": path.resolve(__dirname, \"").concat(al, "\")");
-        })
-            .join(", ");
-};
-exports.setAlias = setAlias;
-var setScriptFiles = function (file) {
-    return constants_1.whitespace.test(file)
-        ? "[\"".concat(file
-            .split(" ")
-            .map(function (f) { return "\"".concat(f, "\""); })
-            .join(", "), "\"]")
-        : "\"".concat(file, "\"");
-};
-exports.setScriptFiles = setScriptFiles;
-var setEntryPoint = function (entrypoint) {
-    return constants_1.whitespace.test(entrypoint)
-        ? "[".concat(entrypoint
-            .split(" ")
-            .map(function (entry) { return "\"".concat(entry, "\""); })
-            .join(", "), "]")
-        : "{main: \"".concat(entrypoint, "\"}");
-};
-exports.setEntryPoint = setEntryPoint;
-var setSourceMaps = function (mode) {
-    return mode === "production" ? "source-maps" : "eval-source-map";
-};
-exports.setSourceMaps = setSourceMaps;
-var generateWebpackConfig = function (optionsPreset) { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
-    return [2 /*return*/];
-}); }); };
-exports.generateWebpackConfig = generateWebpackConfig;
-//# sourceMappingURL=webpack-set.content.js.map
+exports.parseString = exports.figletText = void 0;
+var chalkAnimation = __importStar(require("chalk-animation"));
+var promise_1 = require("./helpers/promise");
+function figletText(preset) {
+    return __awaiter(this, void 0, void 0, function () {
+        var animation;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    animation = chalkAnimation.rainbow("Webpack ".concat(preset, " config had been generated!\n"));
+                    return [4 /*yield*/, (0, promise_1.promise)(10000)];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/, animation.stop()];
+            }
+        });
+    });
+}
+exports.figletText = figletText;
+var parseString = function (str) { return str.split(" ").join(" "); };
+exports.parseString = parseString;
+//# sourceMappingURL=text.js.map

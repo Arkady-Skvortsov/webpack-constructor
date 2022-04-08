@@ -22,8 +22,7 @@ import {
   setWatchFiles,
 } from "./utils/dev-mode";
 import { langLoader } from "./utils/helpers/loaders";
-
-const promise = (ms = 5000) => new Promise((r) => setTimeout(r, ms));
+import { promise } from "./utils/helpers/promise";
 
 const regExp = new RegExp(/^.+\s.+$/, "g");
 
@@ -65,15 +64,14 @@ function addScriptsForPackageJson(filePath: string, presetOptions: preset) {
     const jsonContent = JSON.parse(content);
     let scripts = jsonContent["scripts"];
 
-    scripts = {};
-
-    scripts[
-      "webpack:build"
-    ] = `webpack build --config ./webpack.config.js --mode development`;
-    scripts["webpack:watch"] = "webpack --watch --config ./webpack.config.js";
-    scripts["webpack:start"] = "webpack serve --open";
-    scripts["webpack:dev"] = "webpack-dev-server";
-    scripts["webpack:run-pwa"] = `http-server ./dist`;
+    scripts = {
+      "webpack:build":
+        "webpack build --config ./webpack.config.js --mode development",
+      "webpack:watch": "webpack --watch --config ./webpack.config.js",
+      "webpack:start": "webpack serve --open",
+      "webpack:dev": "webpack-dev-server",
+      "webpack:run-pwa": "http-server ./dist",
+    };
 
     fs.writeFileSync(filePath, JSON.stringify(scripts));
   } catch (e) {

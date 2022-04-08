@@ -1,10 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.extensions = void 0;
-var extensions = {
-    Javascript: "js",
-    Css: "css",
-    Html: "html",
-};
-exports.extensions = extensions;
+exports.generateExtensions = void 0;
+var generateExtensions = function () { return ""; };
+exports.generateExtensions = generateExtensions;
 //# sourceMappingURL=extensions.js.map

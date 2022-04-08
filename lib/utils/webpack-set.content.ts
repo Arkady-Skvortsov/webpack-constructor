@@ -1,4 +1,5 @@
 import { whitespace } from "./helpers/constants";
+import { preset } from "./helpers/enum";
 
 type webpackOption = string | string[];
 
@@ -37,4 +38,12 @@ const setEntryPoint = (entrypoint: string | any) =>
 const setSourceMaps = (mode: "production" | "development") =>
   mode === "production" ? "source-maps" : "eval-source-map";
 
-export { setAlias, setSourceMaps, setScriptFiles, setEntryPoint };
+const generateWebpackConfig = async (optionsPreset: preset) => {};
+
+export {
+  setAlias,
+  setSourceMaps,
+  setScriptFiles,
+  setEntryPoint,
+  generateWebpackConfig,
+};

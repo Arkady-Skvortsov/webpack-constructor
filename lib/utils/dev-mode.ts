@@ -1,38 +1,43 @@
 import { whitespace } from "./helpers/constants";
 import { preset } from "./helpers/enum";
 import { webpackMode } from "./helpers/types";
+import { parseString } from "./text";
 
 const setCSSRuleUse = (mode: webpackMode) =>
-  mode === "production" ? "MiniCssExtractPlugin.loader" : "style-loader";
+  mode === "production"
+    ? parseString("MiniCssExtractPlugin.loader")
+    : parseString("style-loader");
 
 const setCssPlugin = (mode: webpackMode, preset: preset) =>
   mode == "production" && preset !== "Vue"
-    ? `
+    ? parseString(`
 new MiniCssExtractPlugin({
   filename: "[name].[contenthash].css",
   chunkFilename: "[id].[contenthash].css"
 }),
-    `
+    `)
     : mode === "production" && preset === "Vue"
-    ? "vue-style-loader".split(" ").join(" ")
-    : null;
+    ? parseString("vue-style-loader")
+    : false;
 
 const setCssLoadMethod = (method: "async" | "sync") =>
   method === "async"
-    ? `
+    ? parseString(`
 new MiniCssExtractPlugin({
   filename: "[name].css",
   chunkFilename: "[id].css"
 }),
-  `
-    : "style-loader";
+  `)
+    : parseString("style-loader");
 
 const outputFileName = (mode: webpackMode, type: "js" | "css") =>
-  mode === "production" ? `[name].[contenthash].${type}` : `[name].${type}`;
+  mode === "production"
+    ? parseString(`[name].[contenthash].${type}`)
+    : parseString(`[name].${type}`);
 
 const optimizeProductionCSS = (mode: webpackMode) =>
   mode === "production"
-    ? `
+    ? parseString(`
 new OptimizeCssAssetsPlugin({
   cssProcessorOptions: {
     map: {
@@ -40,8 +45,8 @@ new OptimizeCssAssetsPlugin({
       annotation: true,
     },
   }
-}),`
-    : null;
+}),`)
+    : false;
 
 const isSourceMaps = (mode: webpackMode) =>
   mode === "production" ? true : false;

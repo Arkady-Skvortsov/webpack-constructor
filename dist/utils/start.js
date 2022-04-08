@@ -35,43 +35,25 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateWebpackConfig = exports.setEntryPoint = exports.setScriptFiles = exports.setSourceMaps = exports.setAlias = void 0;
-var constants_1 = require("./helpers/constants");
-var setAlias = function (alias) {
-    return typeof alias === "string"
-        ? "\"@/".concat(alias.substring(alias.lastIndexOf("/") + 1, alias.length), "\": path.resolve(__dirname, \"").concat(alias, "\")")
-        : alias
-            .map(function (al) {
-            return "\"@/".concat(al.substring(al.lastIndexOf("/") + 1, al.length), "\": path.resolve(__dirname, \"").concat(al, "\")");
-        })
-            .join(", ");
-};
-exports.setAlias = setAlias;
-var setScriptFiles = function (file) {
-    return constants_1.whitespace.test(file)
-        ? "[\"".concat(file
-            .split(" ")
-            .map(function (f) { return "\"".concat(f, "\""); })
-            .join(", "), "\"]")
-        : "\"".concat(file, "\"");
-};
-exports.setScriptFiles = setScriptFiles;
-var setEntryPoint = function (entrypoint) {
-    return constants_1.whitespace.test(entrypoint)
-        ? "[".concat(entrypoint
-            .split(" ")
-            .map(function (entry) { return "\"".concat(entry, "\""); })
-            .join(", "), "]")
-        : "{main: \"".concat(entrypoint, "\"}");
-};
-exports.setEntryPoint = setEntryPoint;
-var setSourceMaps = function (mode) {
-    return mode === "production" ? "source-maps" : "eval-source-map";
-};
-exports.setSourceMaps = setSourceMaps;
-var generateWebpackConfig = function (optionsPreset) { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
-    return [2 /*return*/];
-}); }); };
-exports.generateWebpackConfig = generateWebpackConfig;
-//# sourceMappingURL=webpack-set.content.js.map
+exports.start = void 0;
+var promise_1 = require("./helpers/promise");
+var chalk_animation_1 = __importDefault(require("chalk-animation"));
+var start = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var webpackTitle;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                webpackTitle = chalk_animation_1.default.rainbow("Webpack-constructor\n");
+                return [4 /*yield*/, (0, promise_1.promise)(5000)];
+            case 1:
+                _a.sent();
+                return [2 /*return*/, webpackTitle.stop()];
+        }
+    });
+}); };
+exports.start = start;
+//# sourceMappingURL=start.js.map
