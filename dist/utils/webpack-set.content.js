@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -37,8 +60,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateWebpackConfig = exports.setEntryPoint = exports.setScriptFiles = exports.setSourceMaps = exports.setAlias = void 0;
+var fs = __importStar(require("fs"));
+var add_scripts_1 = require("./add-scripts");
+var delete_line_1 = require("./delete-line");
+var handle_answers_1 = require("./handle-answers");
 var constants_1 = require("./helpers/constants");
-var setAlias = function (alias) {
+var enum_1 = require("./helpers/enum");
+var packages_1 = require("./helpers/packages");
+var text_1 = require("./text");
+function setAlias(alias) {
     return typeof alias === "string"
         ? "\"@/".concat(alias.substring(alias.lastIndexOf("/") + 1, alias.length), "\": path.resolve(__dirname, \"").concat(alias, "\")")
         : alias
@@ -46,32 +76,59 @@ var setAlias = function (alias) {
             return "\"@/".concat(al.substring(al.lastIndexOf("/") + 1, al.length), "\": path.resolve(__dirname, \"").concat(al, "\")");
         })
             .join(", ");
-};
+}
 exports.setAlias = setAlias;
-var setScriptFiles = function (file) {
+function setScriptFiles(file) {
     return constants_1.whitespace.test(file)
         ? "[\"".concat(file
             .split(" ")
             .map(function (f) { return "\"".concat(f, "\""); })
             .join(", "), "\"]")
         : "\"".concat(file, "\"");
-};
+}
 exports.setScriptFiles = setScriptFiles;
-var setEntryPoint = function (entrypoint) {
+function setEntryPoint(entrypoint) {
     return constants_1.whitespace.test(entrypoint)
         ? "[".concat(entrypoint
             .split(" ")
             .map(function (entry) { return "\"".concat(entry, "\""); })
             .join(", "), "]")
         : "{main: \"".concat(entrypoint, "\"}");
-};
+}
 exports.setEntryPoint = setEntryPoint;
-var setSourceMaps = function (mode) {
+function setSourceMaps(mode) {
     return mode === "production" ? "source-maps" : "eval-source-map";
-};
+}
 exports.setSourceMaps = setSourceMaps;
-var generateWebpackConfig = function (optionsPreset) { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
-    return [2 /*return*/];
-}); }); };
+function generateWebpackConfig(type) {
+    return __awaiter(this, void 0, void 0, function () {
+        var _a, _b, _c, e_1;
+        return __generator(this, function (_d) {
+            switch (_d.label) {
+                case 0:
+                    _d.trys.push([0, 4, , 5]);
+                    return [4 /*yield*/, (0, packages_1.installPackagesForPresets)(type)];
+                case 1:
+                    _d.sent();
+                    _b = (_a = fs).writeFileSync;
+                    _c = ["webpack.config.js"];
+                    return [4 /*yield*/, (0, handle_answers_1.WebpackConfigOptions)()];
+                case 2:
+                    _b.apply(_a, _c.concat([_d.sent()]));
+                    (0, delete_line_1.deleteLine)("webpack.config.js");
+                    (0, add_scripts_1.addScriptsForPackageJson)("./package.json", "development");
+                    return [4 /*yield*/, (0, text_1.figletText)(enum_1.preset.TYPESCRIPT)];
+                case 3:
+                    _d.sent();
+                    return [3 /*break*/, 5];
+                case 4:
+                    e_1 = _d.sent();
+                    console.log(e_1);
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
 exports.generateWebpackConfig = generateWebpackConfig;
 //# sourceMappingURL=webpack-set.content.js.map

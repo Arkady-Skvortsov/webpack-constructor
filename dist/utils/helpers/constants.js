@@ -4,7 +4,7 @@ exports.whitespace = exports.generateConstants = void 0;
 var parser_1 = require("./parser");
 var whitespace = new RegExp(/^.+\s.+$/, "g");
 exports.whitespace = whitespace;
-var generateConstants = function (presetType) {
+function generateConstants(presetType) {
     var constants = presetType === "Typescript"
         ? ((0, parser_1.stringParser)('const TsLintPlugin = require("tslint-webpack-plugin")'),
             (0, parser_1.stringParser)('const WebpackNotifierPlugin = require("workbox-webpack-plugin")'))
@@ -19,6 +19,6 @@ var generateConstants = function (presetType) {
                         ? null
                         : null;
     return "\nconst path = require(\"path\");\nconst HtmlWebpackPlugin = require('html-webpack-plugin');\nconst HtmlMinimizerWebpackPlugin = require('html-minimizer-webpack-plugin');\nconst MiniCssExtractPlugin = require('mini-css-extract-plugin');\nconst CssMinimizerPlugin = require('css-minimizer-webpack-plugin');\nconst TerserPlugin = require('terser-webpack-plugin');\nconst CopyPlugin = require('copy-webpack-plugin');\nconst { CleanWebpackPlugin } = require('clean-webpack-plugin');\nconst WebpackNotifierPlugin = require('webpack-nofitier');\n".concat(constants, "\n");
-};
+}
 exports.generateConstants = generateConstants;
 //# sourceMappingURL=constants.js.map

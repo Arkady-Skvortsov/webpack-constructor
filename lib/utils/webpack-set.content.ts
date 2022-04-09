@@ -1,10 +1,16 @@
+import * as fs from "fs";
+import { addScriptsForPackageJson } from "./add-scripts";
+import { deleteLine } from "./delete-line";
+import { WebpackConfigOptions } from "./handle-answers";
 import { whitespace } from "./helpers/constants";
 import { preset } from "./helpers/enum";
+import { installPackagesForPresets } from "./helpers/packages";
+import { figletText } from "./text";
 
 type webpackOption = string | string[];
 
-const setAlias = (alias: webpackOption) =>
-  typeof alias === "string"
+function setAlias(alias: webpackOption) {
+  return typeof alias === "string"
     ? `"@/${alias.substring(
         alias.lastIndexOf("/") + 1,
         alias.length
@@ -18,27 +24,45 @@ const setAlias = (alias: webpackOption) =>
             )}": path.resolve(__dirname, "${al}")`
         )
         .join(", ");
+}
 
-const setScriptFiles = (file: string | any) =>
-  whitespace.test(file)
+function setScriptFiles(file: string | any) {
+  return whitespace.test(file)
     ? `["${file
         .split(" ")
         .map((f: string) => `"${f}"`)
         .join(", ")}"]`
     : `"${file}"`;
+}
 
-const setEntryPoint = (entrypoint: string | any) =>
-  whitespace.test(entrypoint)
+function setEntryPoint(entrypoint: string | any) {
+  return whitespace.test(entrypoint)
     ? `[${entrypoint
         .split(" ")
         .map((entry: string) => `"${entry}"`)
         .join(", ")}]`
     : `{main: "${entrypoint}"}`;
+}
 
-const setSourceMaps = (mode: "production" | "development") =>
-  mode === "production" ? "source-maps" : "eval-source-map";
+function setSourceMaps(mode: "production" | "development") {
+  return mode === "production" ? "source-maps" : "eval-source-map";
+}
 
-const generateWebpackConfig = async (optionsPreset: preset) => {};
+async function generateWebpackConfig(type: preset) {
+  try {
+    await installPackagesForPresets(type);
+
+    fs.writeFileSync("webpack.config.js", await WebpackConfigOptions());
+
+    deleteLine("webpack.config.js");
+
+    addScriptsForPackageJson("./package.json", "development");
+
+    await figletText(preset.TYPESCRIPT);
+  } catch (e) {
+    console.log(e);
+  }
+}
 
 export {
   setAlias,

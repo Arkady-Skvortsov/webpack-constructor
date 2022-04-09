@@ -2,7 +2,7 @@ import * as fs from "fs";
 import { webpackMode } from "./helpers/types";
 import { parseString } from "./text";
 
-const addScriptsForPackageJson = (filePath: string, mode: webpackMode) => {
+function addScriptsForPackageJson(filePath: string, mode: webpackMode) {
   const content = fs.readFileSync(filePath, "utf-8");
   const jsonContent = JSON.parse(content);
   let scripts = jsonContent["scripts"];
@@ -18,11 +18,9 @@ const addScriptsForPackageJson = (filePath: string, mode: webpackMode) => {
     "webpack:dev": `"webpack-dev-server --open --config webpack.config.js ${confMode}"`,
   };
 
-  const wtf = fs.writeFileSync(jsonContent, JSON.stringify(scripts));
+  const newContent = content.replace(/"scripts"/g, "Press F to pay");
 
-  console.log(wtf);
-};
-
-addScriptsForPackageJson("../../../package.json", "production");
+  fs.writeFileSync(content, newContent);
+}
 
 export { addScriptsForPackageJson };

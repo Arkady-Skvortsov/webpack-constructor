@@ -25,10 +25,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteLine = void 0;
 var fs = __importStar(require("fs"));
-var deleteLine = function (file) {
-    var readFile = fs.readFileSync(file, 'utf-8');
-    var changed = readFile.split('\n').slice(1).join('\n');
+function deleteLine(file) {
+    var readFile = fs.readFileSync(file, "utf-8");
+    var changed = readFile.split("\n").slice(1).join("\n");
     fs.writeFileSync(readFile, changed);
-};
+}
 exports.deleteLine = deleteLine;
 //# sourceMappingURL=delete-line.js.map

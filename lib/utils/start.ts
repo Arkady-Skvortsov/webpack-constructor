@@ -1,12 +1,12 @@
-import { promise } from "./helpers/promise";
 import chalkAnimation from "chalk-animation";
+import { promise } from "./helpers/promise";
 
-const start = async () => {
+async function start() {
   const webpackTitle = chalkAnimation.rainbow("Webpack-constructor\n");
 
   await promise(5000);
 
   return webpackTitle.stop();
-};
+}
 
 export { start };

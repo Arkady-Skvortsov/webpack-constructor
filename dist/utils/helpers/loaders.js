@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.langLoader = void 0;
-var langLoader = function (presetType) {
+exports.setHtmlLoader = exports.setCssPreprocessorLoader = exports.langLoader = void 0;
+function langLoader(presetType) {
     return presetType === "Typescript"
         ? "{\n        test: /.ts$/,\n        exclude: /node_modules/,\n        use: \"ts-loader\",\n      },\n    "
         : presetType === "Javascript"
@@ -13,18 +13,28 @@ var langLoader = function (presetType) {
                     : presetType === "Svelte"
                         ? "\n      {\n        test: /.(html|svelte)$/,\n        use: 'svelte-loader'\n      },\n    "
                         : null;
-};
+}
 exports.langLoader = langLoader;
-var setCssPreprocessorLoader = function (loaderType) {
+function setCssPreprocessorLoader(loaderType) {
     return loaderType === "(Sass/Scss)"
         ? "sass-loader"
         : loaderType === "Less"
             ? "less-loader"
             : loaderType === "PostCss"
-                ? ""
+                ? "postcss-loader"
                 : loaderType === "Stylus"
-                    ? ""
+                    ? "stylus-loader"
                     : null;
-};
-var setHtmlLoader = function () { };
+}
+exports.setCssPreprocessorLoader = setCssPreprocessorLoader;
+function setHtmlLoader(loaderType) {
+    return loaderType === "ejs"
+        ? "\n    {\n      test: /.ejs$/,\n      use: [\"ejs-loader\"]\n    }\n    "
+        : loaderType === "hbs"
+            ? "\n    { \n      test: /.hbs|handlebars$/, \n      use: [\"handlebars-loader\"] \n    }\n    "
+            : loaderType === "pug"
+                ? "\n    { \n      test: /.pug$/, \n      use: [\"pug-loader\"]\n    }\n    "
+                : "\n    {\n      test: /.html$/,\n      use: [\"html-loader\"]\n    }\n    ";
+}
+exports.setHtmlLoader = setHtmlLoader;
 //# sourceMappingURL=loaders.js.map

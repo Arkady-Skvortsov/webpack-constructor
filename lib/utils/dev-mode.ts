@@ -3,37 +3,43 @@ import { preset } from "./helpers/enum";
 import { webpackMode } from "./helpers/types";
 import { parseString } from "./text";
 
-const setCSSRuleUse = (mode: webpackMode) =>
-  mode === "production"
+function setCSSRuleUse(mode: webpackMode, presetType?: preset) {
+  return mode === "production"
     ? parseString("MiniCssExtractPlugin.loader")
+    : presetType === "Vue"
+    ? "vue-style-loader"
     : parseString("style-loader");
+}
 
-const setCssPlugin = (mode: webpackMode, preset: preset) =>
-  mode == "production" && preset !== "Vue"
-    ? parseString(`
-new MiniCssExtractPlugin({
+function setCssPlugin(mode: webpackMode, preset: preset) {
+  return mode == "production" && preset !== "Vue"
+    ? parseString(
+        `new MiniCssExtractPlugin({
   filename: "[name].[contenthash].css",
   chunkFilename: "[id].[contenthash].css"
-}),
-    `)
+}),`
+      )
     : mode === "production" && preset === "Vue"
     ? parseString("vue-style-loader")
     : false;
+}
 
-const setCssLoadMethod = (method: "async" | "sync") =>
-  method === "async"
-    ? parseString(`
-new MiniCssExtractPlugin({
+function setCssLoadMethod(method: "async" | "sync") {
+  return method === "async"
+    ? parseString(
+        `new MiniCssExtractPlugin({
   filename: "[name].css",
   chunkFilename: "[id].css"
-}),
-  `)
+}),`
+      )
     : parseString("style-loader");
+}
 
-const outputFileName = (mode: webpackMode, type: "js" | "css") =>
-  mode === "production"
+function outputFileName(mode: webpackMode, type: "js" | "css") {
+  return mode === "production"
     ? parseString(`[name].[contenthash].${type}`)
     : parseString(`[name].${type}`);
+}
 
 const optimizeProductionCSS = (mode: webpackMode) =>
   mode === "production"
@@ -48,16 +54,18 @@ new OptimizeCssAssetsPlugin({
 }),`)
     : false;
 
-const isSourceMaps = (mode: webpackMode) =>
-  mode === "production" ? true : false;
+function isSourceMaps(mode: webpackMode) {
+  return mode === "production" ? true : false;
+}
 
-const setWatchFiles = (files: string) =>
-  whitespace.test(files)
+function setWatchFiles(files: string) {
+  return whitespace.test(files)
     ? files
         .split(" ")
         .map((file) => `"${file}"`)
         .join(",")
     : `"${files}"`;
+}
 
 export {
   setCSSRuleUse,

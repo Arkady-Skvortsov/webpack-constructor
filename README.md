@@ -37,7 +37,7 @@ I'm already tired of watching $100,000 frontend developers post in telegram/slac
   What is the port would be in DevServer ? (default: 3500): 4500
   What is the folder do you want that be an output ?: ./dist
   What is the path of your .ts file(s) (default: ./src)? ./src
-  What is the path to your tslint.json file (default: ./tslint.json)?: ./tslint..json
+  What is the path to your tslint.json file (default: ./tslint.json)?: ./tslint.json
   What is the files do you want to watch for changes with starting devServer (default: ./src) ? ./src
   What is the mode do you want for development for webpack ?
   production

@@ -1,8 +1,8 @@
 import { preset } from "./enum";
-import { cssLoader } from "./types";
+import { cssLoader, htmlLoader } from "./types";
 
-const langLoader = (presetType: preset) =>
-  presetType === "Typescript"
+function langLoader(presetType: preset) {
+  return presetType === "Typescript"
     ? `{
         test: /\.ts$/,
         exclude: /node_modules/,
@@ -46,19 +46,49 @@ const langLoader = (presetType: preset) =>
         use: 'svelte-loader'
       },
     `
-    : null;
+    : false;
+}
 
-const setCssPreprocessorLoader = (loaderType: cssLoader) =>
-  loaderType === "(Sass/Scss)"
+function setCssPreprocessorLoader(loaderType: cssLoader) {
+  return loaderType === "(Sass/Scss)"
     ? `sass-loader`
     : loaderType === "Less"
     ? `less-loader`
     : loaderType === "PostCss"
-    ? ``
+    ? `postcss-loader`
     : loaderType === "Stylus"
-    ? ``
-    : null;
+    ? `stylus-loader`
+    : false;
+}
 
-const setHtmlLoader = () => {};
+function setHtmlLoader(loaderType: htmlLoader) {
+  return loaderType === "ejs"
+    ? `
+    {
+      test: /\.ejs$/,
+      use: ["ejs-loader"]
+    }
+    `
+    : loaderType === "hbs"
+    ? `
+    { 
+      test: /\.hbs|handlebars$/, 
+      use: ["handlebars-loader"] 
+    }
+    `
+    : loaderType === "pug"
+    ? `
+    { 
+      test: /\.pug$/, 
+      use: ["pug-loader"]
+    }
+    `
+    : `
+    {
+      test: /\.html$/,
+      use: ["html-loader"]
+    }
+    `;
+}
 
-export { langLoader };
+export { langLoader, setCssPreprocessorLoader, setHtmlLoader };

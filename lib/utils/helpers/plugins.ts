@@ -3,9 +3,9 @@ import { setScriptFiles } from "../webpack-set.content";
 import { webpackConfig } from "./interfaces";
 import { preset } from "./enum";
 
-const setWebpackNotifierPlugin = (mode: webpackMode) =>
-  mode === "production"
-    ? null
+function setWebpackNotifierPlugin(mode: webpackMode) {
+  return mode === "production"
+    ? false
     : mode === "development"
     ? `
 new WebpackNotifierPlugin({
@@ -13,10 +13,11 @@ new WebpackNotifierPlugin({
   emoji: true, 
   alwaysNotify: true
 })`
-    : null;
+    : false;
+}
 
-const LinterChoose = (lang: preset, options: webpackConfig) =>
-  lang === "Typescript"
+function LinterChoose(lang: preset, options: webpackConfig) {
+  return lang === "Typescript"
     ? `
 new TSLintPlugin({
   files: [${setScriptFiles(options.LintTypescriptFilesPath)}],
@@ -30,5 +31,6 @@ new ESLintPlugin({
   emitError: true,
   emitWarning: true,
 }),`;
+}
 
 export { setWebpackNotifierPlugin, LinterChoose };

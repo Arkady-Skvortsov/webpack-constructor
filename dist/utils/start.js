@@ -40,20 +40,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.start = void 0;
-var promise_1 = require("./helpers/promise");
 var chalk_animation_1 = __importDefault(require("chalk-animation"));
-var start = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var webpackTitle;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                webpackTitle = chalk_animation_1.default.rainbow("Webpack-constructor\n");
-                return [4 /*yield*/, (0, promise_1.promise)(5000)];
-            case 1:
-                _a.sent();
-                return [2 /*return*/, webpackTitle.stop()];
-        }
+var promise_1 = require("./helpers/promise");
+function start() {
+    return __awaiter(this, void 0, void 0, function () {
+        var webpackTitle;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    webpackTitle = chalk_animation_1.default.rainbow("Webpack-constructor\n");
+                    return [4 /*yield*/, (0, promise_1.promise)(5000)];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/, webpackTitle.stop()];
+            }
+        });
     });
-}); };
+}
 exports.start = start;
 //# sourceMappingURL=start.js.map

@@ -11,6 +11,7 @@ interface webpackConfig {
   tslintFilePath: string;
   outputFolder: string;
   devPort: number;
+  watchFiles: string;
 }
 
 export { webpackConfig };

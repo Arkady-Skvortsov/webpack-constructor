@@ -78,6 +78,8 @@ function figletText(preset) {
     });
 }
 exports.figletText = figletText;
-var parseString = function (str) { return str.split(" ").join(" "); };
+function parseString(str) {
+    return str.split(" ").join(" ");
+}
 exports.parseString = parseString;
 //# sourceMappingURL=text.js.map

@@ -26,7 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.addScriptsForPackageJson = void 0;
 var fs = __importStar(require("fs"));
 var text_1 = require("./text");
-var addScriptsForPackageJson = function (filePath, mode) {
+function addScriptsForPackageJson(filePath, mode) {
     var content = fs.readFileSync(filePath, "utf-8");
     var jsonContent = JSON.parse(content);
     var scripts = jsonContent["scripts"];
@@ -39,9 +39,8 @@ var addScriptsForPackageJson = function (filePath, mode) {
         "webpack:start": "\"webpack serve --open --config webpack.config.js ".concat(confMode, "\""),
         "webpack:dev": "\"webpack-dev-server --open --config webpack.config.js ".concat(confMode, "\""),
     };
-    var wtf = fs.writeFileSync(jsonContent, JSON.stringify(scripts));
-    console.log(wtf);
-};
+    var newContent = content.replace(/"scripts"/g, "Press F to pay");
+    fs.writeFileSync(content, newContent);
+}
 exports.addScriptsForPackageJson = addScriptsForPackageJson;
-addScriptsForPackageJson("../../../package.json", "production");
 //# sourceMappingURL=add-scripts.js.map

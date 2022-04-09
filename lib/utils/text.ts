@@ -12,6 +12,8 @@ async function figletText(preset: preset) {
   return animation.stop();
 }
 
-const parseString = (str: string) => str.split(" ").join(" ");
+function parseString(str: string) {
+  return str.split(" ").join(" ");
+}
 
 export { figletText, parseString };
