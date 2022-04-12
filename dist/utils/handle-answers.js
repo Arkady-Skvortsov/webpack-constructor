@@ -85,7 +85,7 @@ function customChoose() {
 exports.customChoose = customChoose;
 function choosePreset() {
     return __awaiter(this, void 0, void 0, function () {
-        var presetChoose;
+        var presetChoose, webpackVersion;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, inquirer_1.default.prompt({
@@ -96,19 +96,27 @@ function choosePreset() {
                     })];
                 case 1:
                     presetChoose = _a.sent();
-                    return [4 /*yield*/, handleAnswer(presetChoose.question_2)];
+                    return [4 /*yield*/, inquirer_1.default.prompt({
+                            name: "question_3",
+                            type: "list",
+                            message: "What is the version of webpack do you want to use?",
+                            choices: ["4", "5"],
+                        })];
                 case 2:
+                    webpackVersion = _a.sent();
+                    return [4 /*yield*/, handleAnswer(presetChoose.question_2, webpackVersion.question_3)];
+                case 3:
                     _a.sent();
                     return [2 /*return*/];
             }
         });
     });
 }
-function handleAnswer(presetOptions) {
+function handleAnswer(presetOptions, webpackVersion) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, webpack_set_content_1.generateWebpackConfig)(presetOptions)];
+                case 0: return [4 /*yield*/, (0, webpack_set_content_1.generateWebpackConfig)(presetOptions, "development", webpackVersion)];
                 case 1:
                     _a.sent();
                     process.exit(1);
@@ -119,20 +127,20 @@ function handleAnswer(presetOptions) {
 }
 function WebpackConfigOptions() {
     return __awaiter(this, void 0, void 0, function () {
-        var contextPointWrite, entryPointWrite, aliasPathWrite, htmlTitle, htmlTemplatePath, portWrite, outputFolder, lintTypeScriptFilesPath, tslintFilePath, devMode, watchFilesPath;
+        var contextPointWrite, entryPointWrite, aliasPathWrite, htmlTitle, htmlTemplatePath, portWrite, outputFolder, lintTypeScriptFilesPath, tslintFilePath, watchFilesPath, devMode;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, inquirer_1.default.prompt({
                         name: "question_3",
                         type: "input",
-                        message: "What is the context would be in Webpack config (example: /src) ?",
+                        message: "What is the context would be in Webpack config (example: ./src) ?",
                     })];
                 case 1:
                     contextPointWrite = _a.sent();
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_4",
                             type: "input",
-                            message: "What is the entry point(s) would be in webpack config (example: /src/main.ts) ?",
+                            message: "What is the entry point(s) would be in webpack config (example: ./src/main.ts) ?",
                         })];
                 case 2:
                     entryPointWrite = _a.sent();
@@ -192,20 +200,20 @@ function WebpackConfigOptions() {
                     tslintFilePath = _a.sent();
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_13",
-                            type: "list",
-                            message: "What is the development mode do you want for webpack ?",
-                            choices: ["production", "development", "both"],
-                        })];
-                case 10:
-                    devMode = _a.sent();
-                    return [4 /*yield*/, inquirer_1.default.prompt({
-                            name: "question_14",
                             type: "input",
                             message: "What is the folder with files do you want to watch for changes with starting devServer (example: ./src/html) ?",
                             default: contextPointWrite.question_3,
                         })];
-                case 11:
+                case 10:
                     watchFilesPath = _a.sent();
+                    return [4 /*yield*/, inquirer_1.default.prompt({
+                            name: "question_15",
+                            type: "list",
+                            message: "What is the development mode do you want for webpack ?",
+                            choices: ["production", "development"],
+                        })];
+                case 11:
+                    devMode = _a.sent();
                     return [2 /*return*/, (0, add_content_preset_1.addContentToPreset)(enum_1.preset.TYPESCRIPT, {
                             context: contextPointWrite.question_3,
                             entryPoint: entryPointWrite.question_4,
@@ -216,8 +224,8 @@ function WebpackConfigOptions() {
                             outputFolder: outputFolder.question_9,
                             LintTypescriptFilesPath: lintTypeScriptFilesPath.question_11,
                             tslintFilePath: tslintFilePath.question_12,
-                            devMode: devMode.question_13,
-                            watchFiles: watchFilesPath.question_14,
+                            watchFiles: watchFilesPath.question_13,
+                            devMode: devMode.question_15,
                         })];
             }
         });

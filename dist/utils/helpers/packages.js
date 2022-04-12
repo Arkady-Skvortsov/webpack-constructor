@@ -41,7 +41,8 @@ var child_process_1 = require("child_process");
 var nanospinner_1 = require("nanospinner");
 var promise_1 = require("./promise");
 var parser_1 = require("./parser");
-function installPackagesForPresets(presetType) {
+var text_1 = require("../text");
+function installPackagesForPresets(presetType, mode, version) {
     return __awaiter(this, void 0, void 0, function () {
         var installationSpinner;
         return __generator(this, function (_a) {
@@ -51,17 +52,21 @@ function installPackagesForPresets(presetType) {
                     return [4 /*yield*/, (0, promise_1.promise)()];
                 case 1:
                     _a.sent();
-                    (0, child_process_1.execSync)("npm i -D webpack webpack-cli webpack-dev-server css-loader file-loader @types/webpack clean-webpack-plugin node-sass sass-loader image-webpack-loader imagemin-mozjpeg imagemin-svgo imagemin-pngquant terser-webpack-plugin uglify-js webpack-notifier copy-webpack-plugin ".concat(presetType === "Typescript"
-                        ? "typescript ts-loader tslint tslint-webpack-plugin @babel/plugin-transform-runtime"
+                    (0, child_process_1.execSync)("npm i -D webpack-cli webpack-dev-server css-loader file-loader @types/webpack clean-webpack-plugin node-sass sass-loader image-webpack-loader imagemin-mozjpeg imagemin-svgo imagemin-pngquant copy-webpack-plugin ".concat(presetType === "Typescript"
+                        ? (0, text_1.parseString)("typescript ts-loader tslint tslint-webpack-plugin")
                         : presetType === "Javascript"
-                            ? "@babel/core babel-loader @babel/preset-env @babel/plugin-transform-runtime"
+                            ? (0, text_1.parseString)("@babel/core babel-loader @babel/preset-env @babel/plugin-transform-runtime")
                             : presetType === "React"
-                                ? "@babel/core babel-loader @babel/preset-react @babel/plugin-transform-runtime"
+                                ? (0, text_1.parseString)("@babel/core babel-loader @babel/preset-react @babel/plugin-transform-runtime")
                                 : presetType === "Vue"
-                                    ? "vue-style-loader vue-loader vue-server-renderer"
+                                    ? (0, text_1.parseString)("vue-style-loader vue-loader vue-server-renderer")
                                     : presetType === "Svelte"
-                                        ? "svelte-loader"
-                                        : (0, parser_1.stringParser)("")));
+                                        ? (0, text_1.parseString)("svelte-loader")
+                                        : (0, parser_1.stringParser)(""), " ").concat(mode === "production"
+                        ? (0, text_1.parseString)("mini-css-extract-plugin css-minimizer-webpack-plugin html-minimizer-webpack-plugin terser-webpack-plugin")
+                        : (0, text_1.parseString)("webpack-notifier style-loader"), " ").concat(version === 4
+                        ? (0, text_1.parseString)("webpack@4.41.5")
+                        : (0, text_1.parseString)("webpack@5.72.0")));
                     installationSpinner.success({
                         text: "Packages for ".concat(presetType, " had been installed"),
                     });

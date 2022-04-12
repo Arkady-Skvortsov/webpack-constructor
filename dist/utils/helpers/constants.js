@@ -5,7 +5,7 @@ var text_1 = require("../text");
 var parser_1 = require("./parser");
 var whitespace = new RegExp(/^.+\s.+$/, "g");
 exports.whitespace = whitespace;
-function generateConstants(presetType) {
+function generateConstants(presetType, mode) {
     var constants = presetType === "Typescript"
         ? (0, parser_1.stringParser)('const TsLintPlugin = require("tslint-webpack-plugin")')
         : presetType === "Javascript"
@@ -17,7 +17,13 @@ function generateConstants(presetType) {
                     : presetType === "Svelte"
                         ? (0, text_1.parseString)("")
                         : (0, text_1.parseString)("");
-    return "\nconst path = require(\"path\");\nconst HtmlWebpackPlugin = require('html-webpack-plugin');\nconst HtmlMinimizerWebpackPlugin = require('html-minimizer-webpack-plugin');\nconst MiniCssExtractPlugin = require('mini-css-extract-plugin');\nconst CssMinimizerPlugin = require('css-minimizer-webpack-plugin');\nconst TerserPlugin = require('terser-webpack-plugin');\nconst { CleanWebpackPlugin } = require('clean-webpack-plugin');\nconst WebpackNotifierPlugin = require('webpack-nofitier');\n".concat(constants, "\n");
+    var modeConstants = mode === "production"
+        ? ((0, parser_1.stringParser)("const HtmlMinimizerWebpackPlugin = require('html-minimizer-webpack-plugin');"),
+            (0, parser_1.stringParser)("const MiniCssExtractPlugin = require('mini-css-extract-plugin');"),
+            (0, parser_1.stringParser)("const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');"),
+            (0, parser_1.stringParser)("const TerserPlugin = require('terser-webpack-plugin');"))
+        : (0, parser_1.stringParser)("const WebpackNotifierPlugin = require('webpack-notifier');");
+    return "\nconst path = require(\"path\");\nconst HtmlWebpackPlugin = require('html-webpack-plugin');\nconst { CleanWebpackPlugin } = require('clean-webpack-plugin');\n".concat(modeConstants, "\n").concat(constants, "\n");
 }
 exports.generateConstants = generateConstants;
 //# sourceMappingURL=constants.js.map

@@ -3,8 +3,14 @@ import { createSpinner } from "nanospinner";
 import { preset } from "./enum";
 import { promise } from "./promise";
 import { stringParser } from "./parser";
+import { version, webpackMode } from "./types";
+import { parseString } from "../text";
 
-async function installPackagesForPresets(presetType: preset) {
+async function installPackagesForPresets(
+  presetType: preset,
+  mode: webpackMode,
+  version: version
+) {
   let installationSpinner = createSpinner(
     `Install packages for ${presetType}`
   ).start();
@@ -12,18 +18,32 @@ async function installPackagesForPresets(presetType: preset) {
   await promise();
 
   execSync(
-    `npm i -D webpack webpack-cli webpack-dev-server css-loader file-loader @types/webpack clean-webpack-plugin node-sass sass-loader image-webpack-loader imagemin-mozjpeg imagemin-svgo imagemin-pngquant terser-webpack-plugin uglify-js webpack-notifier copy-webpack-plugin ${
+    `npm i -D webpack-cli webpack-dev-server css-loader file-loader @types/webpack clean-webpack-plugin node-sass sass-loader image-webpack-loader imagemin-mozjpeg imagemin-svgo imagemin-pngquant copy-webpack-plugin ${
       presetType === "Typescript"
-        ? "typescript ts-loader tslint tslint-webpack-plugin @babel/plugin-transform-runtime"
+        ? parseString("typescript ts-loader tslint tslint-webpack-plugin")
         : presetType === "Javascript"
-        ? "@babel/core babel-loader @babel/preset-env @babel/plugin-transform-runtime"
+        ? parseString(
+            "@babel/core babel-loader @babel/preset-env @babel/plugin-transform-runtime"
+          )
         : presetType === "React"
-        ? "@babel/core babel-loader @babel/preset-react @babel/plugin-transform-runtime"
+        ? parseString(
+            "@babel/core babel-loader @babel/preset-react @babel/plugin-transform-runtime"
+          )
         : presetType === "Vue"
-        ? "vue-style-loader vue-loader vue-server-renderer"
+        ? parseString("vue-style-loader vue-loader vue-server-renderer")
         : presetType === "Svelte"
-        ? "svelte-loader"
+        ? parseString("svelte-loader")
         : stringParser("")
+    } ${
+      mode === "production"
+        ? parseString(
+            "mini-css-extract-plugin css-minimizer-webpack-plugin html-minimizer-webpack-plugin terser-webpack-plugin"
+          )
+        : parseString("webpack-notifier style-loader")
+    } ${
+      version === 4
+        ? parseString("webpack@4.41.5")
+        : parseString("webpack@5.72.0")
     }`
   );
 

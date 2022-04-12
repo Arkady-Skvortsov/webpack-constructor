@@ -1,5 +1,5 @@
 import inquirer from "inquirer";
-import { webpackConfigType } from "./helpers/types";
+import { version, webpackConfigType } from "./helpers/types";
 import { start } from "./start";
 import { preset } from "./helpers/enum";
 import { generateWebpackConfig } from "./webpack-set.content";
@@ -32,11 +32,18 @@ async function choosePreset() {
     choices: ["Vue", "React", "Svelte", "Typescript", "Javascript"],
   });
 
-  await handleAnswer(presetChoose.question_2);
+  const webpackVersion = await inquirer.prompt({
+    name: "question_3",
+    type: "list",
+    message: "What is the version of webpack do you want to use?",
+    choices: ["4", "5"],
+  });
+
+  await handleAnswer(presetChoose.question_2, webpackVersion.question_3);
 }
 
-async function handleAnswer(presetOptions: preset) {
-  await generateWebpackConfig(presetOptions);
+async function handleAnswer(presetOptions: preset, webpackVersion: version) {
+  await generateWebpackConfig(presetOptions, "development", webpackVersion);
   process.exit(1);
 }
 
@@ -44,14 +51,15 @@ async function WebpackConfigOptions() {
   const contextPointWrite = await inquirer.prompt({
     name: "question_3",
     type: "input",
-    message: "What is the context would be in Webpack config (example: /src) ?",
+    message:
+      "What is the context would be in Webpack config (example: ./src) ?",
   });
 
   const entryPointWrite = await inquirer.prompt({
     name: "question_4",
     type: "input",
     message:
-      "What is the entry point(s) would be in webpack config (example: /src/main.ts) ?",
+      "What is the entry point(s) would be in webpack config (example: ./src/main.ts) ?",
   });
 
   const aliasPathWrite = await inquirer.prompt({
@@ -107,19 +115,19 @@ async function WebpackConfigOptions() {
     default: "./tslint.json",
   });
 
-  const devMode = await inquirer.prompt({
-    name: "question_13",
-    type: "list",
-    message: "What is the development mode do you want for webpack ?",
-    choices: ["production", "development", "both"],
-  });
-
   const watchFilesPath = await inquirer.prompt({
-    name: "question_14",
+    name: "question_13",
     type: "input",
     message:
       "What is the folder with files do you want to watch for changes with starting devServer (example: ./src/html) ?",
     default: contextPointWrite.question_3,
+  });
+
+  const devMode = await inquirer.prompt({
+    name: "question_15",
+    type: "list",
+    message: "What is the development mode do you want for webpack ?",
+    choices: ["production", "development"],
   });
 
   return addContentToPreset(preset.TYPESCRIPT, {
@@ -132,8 +140,8 @@ async function WebpackConfigOptions() {
     outputFolder: outputFolder.question_9,
     LintTypescriptFilesPath: lintTypeScriptFilesPath.question_11,
     tslintFilePath: tslintFilePath.question_12,
-    devMode: devMode.question_13,
-    watchFiles: watchFilesPath.question_14,
+    watchFiles: watchFilesPath.question_13,
+    devMode: devMode.question_15,
   });
 }
 

@@ -7,7 +7,7 @@ function generateExtensions(presetType: preset) {
     : presetType === "Javascript"
     ? ".js"
     : presetType === "Vue"
-    ? ".vue"
+    ? [".vue", ".ts"].join(", ")
     : presetType === "React"
     ? [".ts", ".tsx"].join(", ")
     : presetType === "Svelte"

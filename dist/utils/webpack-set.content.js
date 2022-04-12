@@ -78,9 +78,10 @@ function setAlias(alias) {
             .map(function (al) {
             return "\"@/".concat(al.substring(al.lastIndexOf("/") + 1, al.length), "\": path.resolve(__dirname, \"").concat(al, "\")\n");
         })
-            .join("");
+            .join(", ");
 }
 exports.setAlias = setAlias;
+console.log(setAlias("./src/utils"));
 function setScriptFiles(file) {
     return constants_1.whitespace.test(file)
         ? "[\"".concat(file
@@ -103,23 +104,23 @@ function setSourceMaps(mode) {
     return mode === "production" ? "source-maps" : "eval-source-map";
 }
 exports.setSourceMaps = setSourceMaps;
-function generateWebpackConfig(type) {
+function generateWebpackConfig(type, mode, version) {
     return __awaiter(this, void 0, void 0, function () {
         var _a, _b, _c, e_1;
         return __generator(this, function (_d) {
             switch (_d.label) {
                 case 0:
                     _d.trys.push([0, 4, , 5]);
-                    return [4 /*yield*/, (0, packages_1.installPackagesForPresets)(type)];
-                case 1:
-                    _d.sent();
                     _b = (_a = fs).writeFileSync;
                     _c = ["webpack.config.js"];
                     return [4 /*yield*/, (0, handle_answers_1.WebpackConfigOptions)()];
-                case 2:
+                case 1:
                     _b.apply(_a, _c.concat([_d.sent()]));
                     setTimeout(function () { return (0, delete_line_1.deleteLine)("webpack.config.js"); }, 1000);
-                    (0, add_scripts_1.addScriptsForPackageJson)("package.json", "development");
+                    (0, add_scripts_1.addScriptsForPackageJson)("package.json", mode);
+                    return [4 /*yield*/, (0, packages_1.installPackagesForPresets)(type, mode, version)];
+                case 2:
+                    _d.sent();
                     return [4 /*yield*/, (0, text_1.figletText)(enum_1.preset.TYPESCRIPT)];
                 case 3:
                     _d.sent();

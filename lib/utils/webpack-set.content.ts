@@ -6,6 +6,7 @@ import { preset } from "./helpers/enum";
 import { installPackagesForPresets } from "./helpers/packages";
 import { addScriptsForPackageJson } from "./add-scripts";
 import { figletText } from "./text";
+import { version, webpackMode } from "./helpers/types";
 
 function setAlias(alias: string) {
   return !whitespace.test(alias)
@@ -24,8 +25,10 @@ function setAlias(alias: string) {
               al.length
             )}": path.resolve(__dirname, "${al}")\n`
         )
-        .join("");
+        .join(", ");
 }
+
+console.log(setAlias("./src/utils"));
 
 function setScriptFiles(file: string | any) {
   return whitespace.test(file)
@@ -49,15 +52,19 @@ function setSourceMaps(mode: "production" | "development") {
   return mode === "production" ? "source-maps" : "eval-source-map";
 }
 
-async function generateWebpackConfig(type: preset) {
+async function generateWebpackConfig(
+  type: preset,
+  mode: webpackMode,
+  version: version
+) {
   try {
-    await installPackagesForPresets(type);
-
     fs.writeFileSync("webpack.config.js", await WebpackConfigOptions());
 
     setTimeout(() => deleteLine("webpack.config.js"), 1000);
 
-    addScriptsForPackageJson("package.json", "development");
+    addScriptsForPackageJson("package.json", mode);
+
+    await installPackagesForPresets(type, mode, version);
 
     await figletText(preset.TYPESCRIPT);
   } catch (e) {

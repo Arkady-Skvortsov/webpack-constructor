@@ -17,7 +17,7 @@ import { LinterChoose, setWebpackNotifierPlugin } from "./helpers/plugins";
 
 function addContentToPreset(type: preset, options: webpackConfig) {
   return `
-${generateConstants(type)}
+${generateConstants(type, options.devMode)}
 module.exports = {
   context: path.resolve(__dirname, "${options.context}"),
   mode: "${options.devMode}",
@@ -96,7 +96,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      filename: "[name].html",
+      filename: "${outputFileName(options.devMode, "html")}",
       title: "${options.htmlTitle}",
       template: "${options.htmlTemplate}",
       minify: {
@@ -105,7 +105,7 @@ module.exports = {
         removeComments: true,
       },
     }),
-    ${setCssPlugin(options.devMode, type)}
+    ${setCssPlugin(options.devMode)}
     ${LinterChoose(type, options)}
     new CleanWebpackPlugin(),
     ${setWebpackNotifierPlugin(options.devMode)}
@@ -157,8 +157,7 @@ module.exports = {
       },
     },
   },
-};
-`;
+};`;
 }
 
 export { addContentToPreset };

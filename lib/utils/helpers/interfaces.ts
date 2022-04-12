@@ -1,4 +1,4 @@
-import { webpackOption } from "./types";
+import { version } from "./types";
 
 interface webpackConfig {
   devMode: "production" | "development";

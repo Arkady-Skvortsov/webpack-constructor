@@ -4,15 +4,15 @@ exports.setHtmlLoader = exports.setCssPreprocessorLoader = exports.langLoader = 
 var text_1 = require("../text");
 function langLoader(presetType) {
     return presetType === "Typescript"
-        ? "{\n        test: /.ts$/,\n        exclude: /node_modules/,\n        use: \"ts-loader\",\n      },\n    "
+        ? "{\n        test: /.ts$/,\n        exclude: /node_modules/,\n        use: \"ts-loader\",\n      },"
         : presetType === "Javascript"
-            ? "\n      {\n        test: /.m?js$/,\n        exclude: /node_modules/,\n        use: {\n          loader: \"babel-loader\",\n          options: [\"@babel/preset-env\"]\n        },\n      },\n    "
+            ? "{\n        test: /.m?js$/,\n        exclude: /node_modules/,\n        use: {\n          loader: \"babel-loader\",\n          options: [\"@babel/preset-env\"]\n        },\n      },"
             : presetType === "Vue"
-                ? "\n      {\n        test: /.vue$/,\n        exclude: /node_modules/,\n        use: \"vue-loader\",\n      },\n    "
+                ? "{\n        test: /.vue$/,\n        exclude: /node_modules/,\n        use: \"vue-loader\",\n      },"
                 : presetType === "React"
-                    ? "\n      {\n        test: /.tsx$/,\n        exclude: /node_modules/,\n        use: {\n          loader: \"babel-loader\",\n          options: [\"@babel/preset-env\", \"@babel/preset-react\"]\n        },\n      },\n    "
+                    ? "{\n        test: /.tsx$/,\n        exclude: /node_modules/,\n        use: {\n          loader: \"babel-loader\",\n          options: [\"@babel/preset-env\", \"@babel/preset-react\"]\n        },\n      },"
                     : presetType === "Svelte"
-                        ? "\n      {\n        test: /.(html|svelte)$/,\n        use: 'svelte-loader'\n      },\n    "
+                        ? "{\n        test: /.(html|svelte)$/,\n        use: 'svelte-loader'\n      },"
                         : (0, text_1.parseString)("");
 }
 exports.langLoader = langLoader;
@@ -30,12 +30,12 @@ function setCssPreprocessorLoader(loaderType) {
 exports.setCssPreprocessorLoader = setCssPreprocessorLoader;
 function setHtmlLoader(loaderType) {
     return loaderType === "ejs"
-        ? "\n    {\n      test: /.ejs$/,\n      use: [\"ejs-loader\"]\n    }\n    "
+        ? "{\n      test: /.ejs$/,\n      use: [\"ejs-loader\"]\n    }"
         : loaderType === "hbs"
-            ? "\n    { \n      test: /.hbs|handlebars$/, \n      use: [\"handlebars-loader\"] \n    }\n    "
+            ? "{ \n      test: /.hbs|handlebars$/, \n      use: [\"handlebars-loader\"] \n    }"
             : loaderType === "pug"
-                ? "\n    { \n      test: /.pug$/, \n      use: [\"pug-loader\"]\n    }\n    "
-                : "\n    {\n      test: /.html$/,\n      use: [\"html-loader\"]\n    }\n    ";
+                ? "{ \n      test: /.pug$/, \n      use: [\"pug-loader\"]\n    }"
+                : "{\n      test: /.html$/,\n      use: [\"html-loader\"]\n    }";
 }
 exports.setHtmlLoader = setHtmlLoader;
 //# sourceMappingURL=loaders.js.map

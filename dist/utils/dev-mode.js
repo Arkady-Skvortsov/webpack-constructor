@@ -8,22 +8,15 @@ function setCSSRuleUse(mode, presetType) {
         ? (0, text_1.parseString)("MiniCssExtractPlugin.loader")
         : presetType === "Vue"
             ? "vue-style-loader"
-            : (0, text_1.parseString)("style-loader");
+            : "style-loader";
 }
 exports.setCSSRuleUse = setCSSRuleUse;
-function setCssPlugin(mode, preset) {
-    return mode === "production" && preset !== "Vue"
+function setCssPlugin(mode) {
+    return mode === "production"
         ? (0, text_1.parseString)("new MiniCssExtractPlugin({\n          filename: \"[name].[contenthash].css\",\n          chunkFilename: \"[id].[contenthash].css\"\n        }),")
-        : mode === "production" && preset === "Vue"
-            ? (0, text_1.parseString)("vue-style-loader")
-            : (0, text_1.parseString)("");
+        : (0, text_1.parseString)("");
 }
 exports.setCssPlugin = setCssPlugin;
-function setCssLoadMethod(method) {
-    return method === "async"
-        ? (0, text_1.parseString)("new MiniCssExtractPlugin({\n          filename: \"[name].css\",\n          chunkFilename: \"[id].css\"\n        }),")
-        : (0, text_1.parseString)("style-loader");
-}
 function outputFileName(mode, type) {
     return mode === "production"
         ? (0, text_1.parseString)("[name].[contenthash].".concat(type))
@@ -32,7 +25,7 @@ function outputFileName(mode, type) {
 exports.outputFileName = outputFileName;
 function optimizeProductionCSS(mode) {
     return mode === "production"
-        ? (0, text_1.parseString)("new OptimizeCssAssetsPlugin({\n          cssProcessorOptions: {\n            map: {\n              inline: false,\n              annotation: true,\n            },\n          }\n        }),")
+        ? (0, text_1.parseString)("new CssMinimizerPlugin({\n          parallel: true\n        }),")
         : (0, text_1.parseString)("");
 }
 exports.optimizeProductionCSS = optimizeProductionCSS;
