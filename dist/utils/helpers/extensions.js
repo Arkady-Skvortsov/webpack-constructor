@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateExtensions = void 0;
+var text_1 = require("../text");
 function generateExtensions(presetType) {
     return presetType === "Typescript"
         ? ".ts"
@@ -12,7 +13,7 @@ function generateExtensions(presetType) {
                     ? [".ts", ".tsx"].join(", ")
                     : presetType === "Svelte"
                         ? ".svelte"
-                        : false;
+                        : (0, text_1.parseString)("");
 }
 exports.generateExtensions = generateExtensions;
 //# sourceMappingURL=extensions.js.map

@@ -125,42 +125,43 @@ function WebpackConfigOptions() {
                 case 0: return [4 /*yield*/, inquirer_1.default.prompt({
                         name: "question_3",
                         type: "input",
-                        message: "What is the context would be in Webpack config?",
+                        message: "What is the context would be in Webpack config (example: /src) ?",
                     })];
                 case 1:
                     contextPointWrite = _a.sent();
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_4",
                             type: "input",
-                            message: "What is the entry point(s) would be in webpack config?",
+                            message: "What is the entry point(s) would be in webpack config (example: /src/main.ts) ?",
                         })];
                 case 2:
                     entryPointWrite = _a.sent();
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_5",
                             type: "input",
-                            message: "What is the alias(es) would be in webpack config?",
+                            message: "What is the path for alias(es) would be in webpack config (example: ./src/utils) ?",
                         })];
                 case 3:
                     aliasPathWrite = _a.sent();
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_6",
                             type: "input",
-                            message: "What is the title do you want in html page?",
+                            message: "What is the title do you want in html page (example: Hello world) ?",
+                            default: "Hello world",
                         })];
                 case 4:
                     htmlTitle = _a.sent();
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_7",
                             type: "input",
-                            message: "What is the html template would be in webpack config?",
+                            message: "What is the html template would be in webpack config (example: ./src/main.html) ?",
                         })];
                 case 5:
                     htmlTemplatePath = _a.sent();
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_8",
                             type: "input",
-                            message: "What is the port would be in Dev Server?",
+                            message: "What is the port would be in Dev Server (default: 3500) ?",
                             default: 3500,
                         })];
                 case 6:
@@ -168,14 +169,15 @@ function WebpackConfigOptions() {
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_9",
                             type: "input",
-                            message: "What is the folder do you want that be an output?",
+                            message: "What is the folder do you want that be an output (example: ./dist) ?",
+                            default: "./dist",
                         })];
                 case 7:
                     outputFolder = _a.sent();
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_11",
                             type: "input",
-                            message: "What is the path of you'r .ts file(s)?",
+                            message: "What is the path of you'r .ts file(s) (example: ./src/main/**/*.ts)",
                             default: contextPointWrite.question_3,
                         })];
                 case 8:
@@ -191,7 +193,7 @@ function WebpackConfigOptions() {
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_13",
                             type: "list",
-                            message: "What is the development mode do you want for webpack?",
+                            message: "What is the development mode do you want for webpack ?",
                             choices: ["production", "development", "both"],
                         })];
                 case 10:
@@ -199,7 +201,7 @@ function WebpackConfigOptions() {
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_14",
                             type: "input",
-                            message: "What is the files do you want to watch for changes with starting devServer?",
+                            message: "What is the folder with files do you want to watch for changes with starting devServer (example: ./src/html) ?",
                             default: contextPointWrite.question_3,
                         })];
                 case 11:

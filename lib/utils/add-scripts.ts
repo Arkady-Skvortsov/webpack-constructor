@@ -5,22 +5,28 @@ import { parseString } from "./text";
 function addScriptsForPackageJson(filePath: string, mode: webpackMode) {
   const content = fs.readFileSync(filePath, "utf-8");
   const jsonContent = JSON.parse(content);
-  let scripts = jsonContent["scripts"];
+  let scripts = jsonContent.scripts;
   const confMode =
     mode === "production"
       ? parseString("--mode=development")
       : parseString("--mode=production");
 
-  scripts = {
-    "webpack:build": `"webpack build --config webpack.config.js ${confMode}"`,
-    "webpack:watch": `"webpack --watch --config webpack.config.js ${confMode}"`,
-    "webpack:start": `"webpack serve --open --config webpack.config.js ${confMode}"`,
-    "webpack:dev": `"webpack-dev-server --open --config webpack.config.js ${confMode}"`,
-  };
+  scripts[
+    "webpack:build"
+  ] = `webpack build --config webpack.config.js ${confMode}`;
+  scripts[
+    "webpack:watch"
+  ] = `webpack --watch --config webpack.config.js ${confMode}`;
+  scripts[
+    "webpack:start"
+  ] = `webpack serve --open --config webpack.config.js ${confMode}`;
+  scripts[
+    "webpack:dev"
+  ] = `webpack-dev-server --open --config webpack.config.js ${confMode}`;
 
-  const newContent = content.replace(/"scripts"/g, "Press F to pay");
-
-  fs.writeFileSync(content, newContent);
+  fs.writeFileSync(filePath, JSON.stringify(jsonContent));
 }
+
+addScriptsForPackageJson("package.json", "development");
 
 export { addScriptsForPackageJson };

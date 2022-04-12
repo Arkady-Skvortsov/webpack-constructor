@@ -1,3 +1,4 @@
+import { parseString } from "../text";
 import { preset } from "./enum";
 import { stringParser } from "./parser";
 
@@ -14,10 +15,10 @@ function generateConstants(presetType: preset) {
           'const { VueLoaderPlugin } = require("vue-loader/lib/plugin")'
         )
       : presetType === "React"
-      ? false
+      ? parseString("")
       : presetType === "Svelte"
-      ? false
-      : false;
+      ? parseString("")
+      : parseString("");
 
   return `
 const path = require("path");

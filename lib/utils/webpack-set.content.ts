@@ -1,29 +1,30 @@
 import * as fs from "fs";
-import { addScriptsForPackageJson } from "./add-scripts";
 import { deleteLine } from "./delete-line";
 import { WebpackConfigOptions } from "./handle-answers";
 import { whitespace } from "./helpers/constants";
 import { preset } from "./helpers/enum";
 import { installPackagesForPresets } from "./helpers/packages";
+import { addScriptsForPackageJson } from "./add-scripts";
 import { figletText } from "./text";
 
-type webpackOption = string | string[];
-
-function setAlias(alias: webpackOption) {
-  return typeof alias === "string"
+function setAlias(alias: string) {
+  return !whitespace.test(alias)
     ? `"@/${alias.substring(
         alias.lastIndexOf("/") + 1,
         alias.length
       )}": path.resolve(__dirname, "${alias}")`
+        .split(" ")
+        .join(" ")
     : alias
+        .split(" ")
         .map(
-          (al) =>
+          (al: string) =>
             `"@/${al.substring(
               al.lastIndexOf("/") + 1,
               al.length
-            )}": path.resolve(__dirname, "${al}")`
+            )}": path.resolve(__dirname, "${al}")\n`
         )
-        .join(", ");
+        .join("");
 }
 
 function setScriptFiles(file: string | any) {
@@ -54,9 +55,9 @@ async function generateWebpackConfig(type: preset) {
 
     fs.writeFileSync("webpack.config.js", await WebpackConfigOptions());
 
-    deleteLine("webpack.config.js");
+    setTimeout(() => deleteLine("webpack.config.js"), 1000);
 
-    addScriptsForPackageJson("./package.json", "development");
+    addScriptsForPackageJson("package.json", "development");
 
     await figletText(preset.TYPESCRIPT);
   } catch (e) {

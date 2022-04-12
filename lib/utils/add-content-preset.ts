@@ -6,6 +6,7 @@ import { langLoader } from "./helpers/loaders";
 import {
   isSourceMaps,
   optimizeProductionCSS,
+  optimizeProductionHTML,
   outputFileName,
   setCssPlugin,
   setCSSRuleUse,
@@ -128,7 +129,7 @@ module.exports = {
     minimize: true,
     minimizer: [
       ${optimizeProductionCSS(options.devMode)}
-      new HtmlMinimizerPlugin(),
+      ${optimizeProductionHTML(options.devMode)}
       new TerserPlugin({
         parallel: 3,
         cache: true,

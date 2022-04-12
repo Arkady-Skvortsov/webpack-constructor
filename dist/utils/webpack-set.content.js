@@ -61,21 +61,24 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateWebpackConfig = exports.setEntryPoint = exports.setScriptFiles = exports.setSourceMaps = exports.setAlias = void 0;
 var fs = __importStar(require("fs"));
-var add_scripts_1 = require("./add-scripts");
 var delete_line_1 = require("./delete-line");
 var handle_answers_1 = require("./handle-answers");
 var constants_1 = require("./helpers/constants");
 var enum_1 = require("./helpers/enum");
 var packages_1 = require("./helpers/packages");
+var add_scripts_1 = require("./add-scripts");
 var text_1 = require("./text");
 function setAlias(alias) {
-    return typeof alias === "string"
+    return !constants_1.whitespace.test(alias)
         ? "\"@/".concat(alias.substring(alias.lastIndexOf("/") + 1, alias.length), "\": path.resolve(__dirname, \"").concat(alias, "\")")
+            .split(" ")
+            .join(" ")
         : alias
+            .split(" ")
             .map(function (al) {
-            return "\"@/".concat(al.substring(al.lastIndexOf("/") + 1, al.length), "\": path.resolve(__dirname, \"").concat(al, "\")");
+            return "\"@/".concat(al.substring(al.lastIndexOf("/") + 1, al.length), "\": path.resolve(__dirname, \"").concat(al, "\")\n");
         })
-            .join(", ");
+            .join("");
 }
 exports.setAlias = setAlias;
 function setScriptFiles(file) {
@@ -115,8 +118,8 @@ function generateWebpackConfig(type) {
                     return [4 /*yield*/, (0, handle_answers_1.WebpackConfigOptions)()];
                 case 2:
                     _b.apply(_a, _c.concat([_d.sent()]));
-                    (0, delete_line_1.deleteLine)("webpack.config.js");
-                    (0, add_scripts_1.addScriptsForPackageJson)("./package.json", "development");
+                    setTimeout(function () { return (0, delete_line_1.deleteLine)("webpack.config.js"); }, 1000);
+                    (0, add_scripts_1.addScriptsForPackageJson)("package.json", "development");
                     return [4 /*yield*/, (0, text_1.figletText)(enum_1.preset.TYPESCRIPT)];
                 case 3:
                     _d.sent();

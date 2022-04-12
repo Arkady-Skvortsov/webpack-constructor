@@ -12,25 +12,25 @@ function setCSSRuleUse(mode: webpackMode, presetType?: preset) {
 }
 
 function setCssPlugin(mode: webpackMode, preset: preset) {
-  return mode == "production" && preset !== "Vue"
+  return mode === "production" && preset !== "Vue"
     ? parseString(
         `new MiniCssExtractPlugin({
-  filename: "[name].[contenthash].css",
-  chunkFilename: "[id].[contenthash].css"
-}),`
+          filename: "[name].[contenthash].css",
+          chunkFilename: "[id].[contenthash].css"
+        }),`
       )
     : mode === "production" && preset === "Vue"
     ? parseString("vue-style-loader")
-    : false;
+    : parseString("");
 }
 
 function setCssLoadMethod(method: "async" | "sync") {
   return method === "async"
     ? parseString(
         `new MiniCssExtractPlugin({
-  filename: "[name].css",
-  chunkFilename: "[id].css"
-}),`
+          filename: "[name].css",
+          chunkFilename: "[id].css"
+        }),`
       )
     : parseString("style-loader");
 }
@@ -41,18 +41,26 @@ function outputFileName(mode: webpackMode, type: "js" | "css") {
     : parseString(`[name].${type}`);
 }
 
-const optimizeProductionCSS = (mode: webpackMode) =>
-  mode === "production"
-    ? parseString(`
-new OptimizeCssAssetsPlugin({
-  cssProcessorOptions: {
-    map: {
-      inline: false,
-      annotation: true,
-    },
-  }
-}),`)
-    : false;
+function optimizeProductionCSS(mode: webpackMode) {
+  return mode === "production"
+    ? parseString(
+        `new OptimizeCssAssetsPlugin({
+          cssProcessorOptions: {
+            map: {
+              inline: false,
+              annotation: true,
+            },
+          }
+        }),`
+      )
+    : parseString("");
+}
+
+function optimizeProductionHTML(mode: webpackMode) {
+  return mode === "production"
+    ? parseString(`new HtmlMinimizerPlugin(),`)
+    : parseString("");
+}
 
 function isSourceMaps(mode: webpackMode) {
   return mode === "production" ? true : false;
@@ -72,6 +80,7 @@ export {
   setCssPlugin,
   outputFileName,
   optimizeProductionCSS,
+  optimizeProductionHTML,
   isSourceMaps,
   setWatchFiles,
 };

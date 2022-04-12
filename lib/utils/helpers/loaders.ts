@@ -1,3 +1,4 @@
+import { parseString } from "../text";
 import { preset } from "./enum";
 import { cssLoader, htmlLoader } from "./types";
 
@@ -46,7 +47,7 @@ function langLoader(presetType: preset) {
         use: 'svelte-loader'
       },
     `
-    : false;
+    : parseString("");
 }
 
 function setCssPreprocessorLoader(loaderType: cssLoader) {
@@ -58,7 +59,7 @@ function setCssPreprocessorLoader(loaderType: cssLoader) {
     ? `postcss-loader`
     : loaderType === "Stylus"
     ? `stylus-loader`
-    : false;
+    : parseString("");
 }
 
 function setHtmlLoader(loaderType: htmlLoader) {

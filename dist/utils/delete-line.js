@@ -28,7 +28,7 @@ var fs = __importStar(require("fs"));
 function deleteLine(file) {
     var readFile = fs.readFileSync(file, "utf-8");
     var changed = readFile.split("\n").slice(1).join("\n");
-    fs.writeFileSync(readFile, changed);
+    fs.writeFileSync(readFile, JSON.stringify(changed));
 }
 exports.deleteLine = deleteLine;
 //# sourceMappingURL=delete-line.js.map

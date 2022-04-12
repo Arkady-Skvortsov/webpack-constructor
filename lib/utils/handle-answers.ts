@@ -66,6 +66,7 @@ async function WebpackConfigOptions() {
     type: "input",
     message:
       "What is the title do you want in html page (example: Hello world) ?",
+    default: "Hello world",
   });
 
   const htmlTemplatePath = await inquirer.prompt({
@@ -86,13 +87,15 @@ async function WebpackConfigOptions() {
     name: "question_9",
     type: "input",
     message:
-      "What is the folder do you want that be an output (example: /dist) ?",
+      "What is the folder do you want that be an output (example: ./dist) ?",
+    default: "./dist",
   });
 
   const lintTypeScriptFilesPath = await inquirer.prompt({
     name: "question_11",
     type: "input",
-    message: "What is the path of you'r .ts file(s) (example: ) ?",
+    message:
+      "What is the path of you'r .ts file(s) (example: ./src/main/**/*.ts)",
     default: contextPointWrite.question_3,
   });
 

@@ -1,3 +1,4 @@
+import { parseString } from "../text";
 import { preset } from "./enum";
 
 function generateExtensions(presetType: preset) {
@@ -11,7 +12,7 @@ function generateExtensions(presetType: preset) {
     ? [".ts", ".tsx"].join(", ")
     : presetType === "Svelte"
     ? ".svelte"
-    : false;
+    : parseString("");
 }
 
 export { generateExtensions };

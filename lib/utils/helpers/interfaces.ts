@@ -4,10 +4,10 @@ interface webpackConfig {
   devMode: "production" | "development";
   context: string;
   entryPoint: string;
-  aliasPath: webpackOption;
+  aliasPath: string;
   htmlTemplate: string;
   htmlTitle: string;
-  LintTypescriptFilesPath: webpackOption;
+  LintTypescriptFilesPath: string;
   tslintFilePath: string;
   outputFolder: string;
   devPort: number;

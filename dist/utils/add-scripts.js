@@ -29,18 +29,16 @@ var text_1 = require("./text");
 function addScriptsForPackageJson(filePath, mode) {
     var content = fs.readFileSync(filePath, "utf-8");
     var jsonContent = JSON.parse(content);
-    var scripts = jsonContent["scripts"];
+    var scripts = jsonContent.scripts;
     var confMode = mode === "production"
         ? (0, text_1.parseString)("--mode=development")
         : (0, text_1.parseString)("--mode=production");
-    scripts = {
-        "webpack:build": "\"webpack build --config webpack.config.js ".concat(confMode, "\""),
-        "webpack:watch": "\"webpack --watch --config webpack.config.js ".concat(confMode, "\""),
-        "webpack:start": "\"webpack serve --open --config webpack.config.js ".concat(confMode, "\""),
-        "webpack:dev": "\"webpack-dev-server --open --config webpack.config.js ".concat(confMode, "\""),
-    };
-    var newContent = content.replace(/"scripts"/g, "Press F to pay");
-    fs.writeFileSync(content, newContent);
+    scripts["webpack:build"] = "webpack build --config webpack.config.js ".concat(confMode);
+    scripts["webpack:watch"] = "webpack --watch --config webpack.config.js ".concat(confMode);
+    scripts["webpack:start"] = "webpack serve --open --config webpack.config.js ".concat(confMode);
+    scripts["webpack:dev"] = "webpack-dev-server --open --config webpack.config.js ".concat(confMode);
+    fs.writeFileSync(filePath, JSON.stringify(jsonContent));
 }
 exports.addScriptsForPackageJson = addScriptsForPackageJson;
+addScriptsForPackageJson("package.json", "development");
 //# sourceMappingURL=add-scripts.js.map

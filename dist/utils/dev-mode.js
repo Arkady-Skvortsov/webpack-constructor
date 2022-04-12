@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setWatchFiles = exports.isSourceMaps = exports.optimizeProductionCSS = exports.outputFileName = exports.setCssPlugin = exports.setCSSRuleUse = void 0;
+exports.setWatchFiles = exports.isSourceMaps = exports.optimizeProductionHTML = exports.optimizeProductionCSS = exports.outputFileName = exports.setCssPlugin = exports.setCSSRuleUse = void 0;
 var constants_1 = require("./helpers/constants");
 var text_1 = require("./text");
 function setCSSRuleUse(mode, presetType) {
@@ -12,16 +12,16 @@ function setCSSRuleUse(mode, presetType) {
 }
 exports.setCSSRuleUse = setCSSRuleUse;
 function setCssPlugin(mode, preset) {
-    return mode == "production" && preset !== "Vue"
-        ? (0, text_1.parseString)("\nnew MiniCssExtractPlugin({\n  filename: \"[name].[contenthash].css\",\n  chunkFilename: \"[id].[contenthash].css\"\n}),\n    ")
+    return mode === "production" && preset !== "Vue"
+        ? (0, text_1.parseString)("new MiniCssExtractPlugin({\n          filename: \"[name].[contenthash].css\",\n          chunkFilename: \"[id].[contenthash].css\"\n        }),")
         : mode === "production" && preset === "Vue"
             ? (0, text_1.parseString)("vue-style-loader")
-            : false;
+            : (0, text_1.parseString)("");
 }
 exports.setCssPlugin = setCssPlugin;
 function setCssLoadMethod(method) {
     return method === "async"
-        ? (0, text_1.parseString)("\nnew MiniCssExtractPlugin({\n  filename: \"[name].css\",\n  chunkFilename: \"[id].css\"\n}),\n  ")
+        ? (0, text_1.parseString)("new MiniCssExtractPlugin({\n          filename: \"[name].css\",\n          chunkFilename: \"[id].css\"\n        }),")
         : (0, text_1.parseString)("style-loader");
 }
 function outputFileName(mode, type) {
@@ -30,12 +30,18 @@ function outputFileName(mode, type) {
         : (0, text_1.parseString)("[name].".concat(type));
 }
 exports.outputFileName = outputFileName;
-var optimizeProductionCSS = function (mode) {
+function optimizeProductionCSS(mode) {
     return mode === "production"
-        ? (0, text_1.parseString)("\nnew OptimizeCssAssetsPlugin({\n  cssProcessorOptions: {\n    map: {\n      inline: false,\n      annotation: true,\n    },\n  }\n}),")
-        : false;
-};
+        ? (0, text_1.parseString)("new OptimizeCssAssetsPlugin({\n          cssProcessorOptions: {\n            map: {\n              inline: false,\n              annotation: true,\n            },\n          }\n        }),")
+        : (0, text_1.parseString)("");
+}
 exports.optimizeProductionCSS = optimizeProductionCSS;
+function optimizeProductionHTML(mode) {
+    return mode === "production"
+        ? (0, text_1.parseString)("new HtmlMinimizerPlugin(),")
+        : (0, text_1.parseString)("");
+}
+exports.optimizeProductionHTML = optimizeProductionHTML;
 function isSourceMaps(mode) {
     return mode === "production" ? true : false;
 }
