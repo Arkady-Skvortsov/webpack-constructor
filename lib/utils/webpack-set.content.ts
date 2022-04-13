@@ -23,12 +23,10 @@ function setAlias(alias: string) {
             `"@/${al.substring(
               al.lastIndexOf("/") + 1,
               al.length
-            )}": path.resolve(__dirname, "${al}")\n`
+            )}": path.resolve(__dirname, "${al}") \n`
         )
         .join(", ");
 }
-
-console.log(setAlias("./src/utils"));
 
 function setScriptFiles(file: string | any) {
   return whitespace.test(file)
@@ -58,13 +56,18 @@ async function generateWebpackConfig(
   version: version
 ) {
   try {
+    await installPackagesForPresets(type, mode);
+
     fs.writeFileSync("webpack.config.js", await WebpackConfigOptions());
 
     setTimeout(() => deleteLine("webpack.config.js"), 1000);
 
-    addScriptsForPackageJson("package.json", mode);
-
-    await installPackagesForPresets(type, mode, version);
+    new Promise((reject, resolve) =>
+      setTimeout(() => {
+        addScriptsForPackageJson("package.json", mode);
+        resolve();
+      }, 2000)
+    );
 
     await figletText(preset.TYPESCRIPT);
   } catch (e) {

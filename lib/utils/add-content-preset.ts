@@ -10,6 +10,7 @@ import {
   outputFileName,
   setCssPlugin,
   setCSSRuleUse,
+  setTerserPlugin,
   setWatchFiles,
 } from "./dev-mode";
 import { generateExtensions } from "./helpers/extensions";
@@ -130,17 +131,7 @@ module.exports = {
     minimizer: [
       ${optimizeProductionCSS(options.devMode)}
       ${optimizeProductionHTML(options.devMode)}
-      new TerserPlugin({
-        parallel: 3,
-        cache: true,
-        sourceMap: ${isSourceMaps(options.devMode)},
-        terserOptions: {
-          format: {
-            comments: false,
-          },
-        },
-        extractComments: false,
-      }),
+      ${setTerserPlugin(options.devMode)}
     ],
   },
   output: {

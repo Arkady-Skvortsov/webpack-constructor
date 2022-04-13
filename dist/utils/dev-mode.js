@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setWatchFiles = exports.isSourceMaps = exports.optimizeProductionHTML = exports.optimizeProductionCSS = exports.outputFileName = exports.setCssPlugin = exports.setCSSRuleUse = void 0;
+exports.setWatchFiles = exports.isSourceMaps = exports.optimizeProductionHTML = exports.optimizeProductionCSS = exports.outputFileName = exports.setTerserPlugin = exports.setCssPlugin = exports.setCSSRuleUse = void 0;
 var constants_1 = require("./helpers/constants");
 var text_1 = require("./text");
 function setCSSRuleUse(mode, presetType) {
@@ -25,7 +25,7 @@ function outputFileName(mode, type) {
 exports.outputFileName = outputFileName;
 function optimizeProductionCSS(mode) {
     return mode === "production"
-        ? (0, text_1.parseString)("new CssMinimizerPlugin({\n          parallel: true\n        }),")
+        ? (0, text_1.parseString)("new CssMinimizerPlugin({\n          parallel: true,\n          minify: CssMinimizerPlugin.cleanCssMinify\n        }),")
         : (0, text_1.parseString)("");
 }
 exports.optimizeProductionCSS = optimizeProductionCSS;
@@ -39,6 +39,12 @@ function isSourceMaps(mode) {
     return mode === "production" ? true : false;
 }
 exports.isSourceMaps = isSourceMaps;
+function setTerserPlugin(mode) {
+    return mode === "production"
+        ? (0, text_1.parseString)("new TerserPlugin({\n        parallel: 3,\n        cache: true,\n        sourceMap: ".concat(isSourceMaps(mode), ",\n        terserOptions: {\n          format: {\n            comments: false,\n          },\n        },\n        extractComments: false,\n      }),"))
+        : (0, text_1.parseString)("");
+}
+exports.setTerserPlugin = setTerserPlugin;
 function setWatchFiles(files) {
     return constants_1.whitespace.test(files)
         ? files

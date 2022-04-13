@@ -4,7 +4,7 @@ type webpackConfigType = "Preset" | "Custom";
 type webpackMode = "production" | "development";
 type linterChoose = "Typescript" | "Javascript";
 type cssLoader = "(Sass/Scss)" | "Less" | "Stylus" | "PostCss";
-type htmlLoader = "hbs" | "ejs" | "pug" | "jade";
+type htmlLoader = "hbs" | "ejs" | "pug";
 type version = 4 | 5;
 
 export {

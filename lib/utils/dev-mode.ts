@@ -32,7 +32,8 @@ function optimizeProductionCSS(mode: webpackMode) {
   return mode === "production"
     ? parseString(
         `new CssMinimizerPlugin({
-          parallel: true
+          parallel: true,
+          minify: CssMinimizerPlugin.cleanCssMinify
         }),`
       )
     : parseString("");
@@ -48,6 +49,22 @@ function isSourceMaps(mode: webpackMode) {
   return mode === "production" ? true : false;
 }
 
+function setTerserPlugin(mode: webpackMode) {
+  return mode === "production"
+    ? parseString(`new TerserPlugin({
+        parallel: 3,
+        cache: true,
+        sourceMap: ${isSourceMaps(mode)},
+        terserOptions: {
+          format: {
+            comments: false,
+          },
+        },
+        extractComments: false,
+      }),`)
+    : parseString("");
+}
+
 function setWatchFiles(files: string) {
   return whitespace.test(files)
     ? files
@@ -60,6 +77,7 @@ function setWatchFiles(files: string) {
 export {
   setCSSRuleUse,
   setCssPlugin,
+  setTerserPlugin,
   outputFileName,
   optimizeProductionCSS,
   optimizeProductionHTML,

@@ -76,12 +76,11 @@ function setAlias(alias) {
         : alias
             .split(" ")
             .map(function (al) {
-            return "\"@/".concat(al.substring(al.lastIndexOf("/") + 1, al.length), "\": path.resolve(__dirname, \"").concat(al, "\")\n");
+            return "\"@/".concat(al.substring(al.lastIndexOf("/") + 1, al.length), "\": path.resolve(__dirname, \"").concat(al, "\") \n");
         })
             .join(", ");
 }
 exports.setAlias = setAlias;
-console.log(setAlias("./src/utils"));
 function setScriptFiles(file) {
     return constants_1.whitespace.test(file)
         ? "[\"".concat(file
@@ -111,16 +110,21 @@ function generateWebpackConfig(type, mode, version) {
             switch (_d.label) {
                 case 0:
                     _d.trys.push([0, 4, , 5]);
+                    return [4 /*yield*/, (0, packages_1.installPackagesForPresets)(type, mode)];
+                case 1:
+                    _d.sent();
                     _b = (_a = fs).writeFileSync;
                     _c = ["webpack.config.js"];
                     return [4 /*yield*/, (0, handle_answers_1.WebpackConfigOptions)()];
-                case 1:
+                case 2:
                     _b.apply(_a, _c.concat([_d.sent()]));
                     setTimeout(function () { return (0, delete_line_1.deleteLine)("webpack.config.js"); }, 1000);
-                    (0, add_scripts_1.addScriptsForPackageJson)("package.json", mode);
-                    return [4 /*yield*/, (0, packages_1.installPackagesForPresets)(type, mode, version)];
-                case 2:
-                    _d.sent();
+                    new Promise(function (reject, resolve) {
+                        return setTimeout(function () {
+                            (0, add_scripts_1.addScriptsForPackageJson)("package.json", mode);
+                            resolve();
+                        }, 2000);
+                    });
                     return [4 /*yield*/, (0, text_1.figletText)(enum_1.preset.TYPESCRIPT)];
                 case 3:
                     _d.sent();
