@@ -2,7 +2,7 @@ import * as fs from "fs";
 import { webpackMode } from "./helpers/types";
 import { parseString } from "./text";
 
-function addScriptsForPackageJson(filePath: string, mode: webpackMode) {
+async function addScriptsForPackageJson(filePath: string, mode: webpackMode) {
   const content = fs.readFileSync(filePath, "utf-8");
   const jsonContent = JSON.parse(content);
   let scripts = jsonContent.scripts;
@@ -26,7 +26,5 @@ function addScriptsForPackageJson(filePath: string, mode: webpackMode) {
 
   fs.writeFileSync(filePath, JSON.stringify(jsonContent));
 }
-
-addScriptsForPackageJson("package.json", "development");
 
 export { addScriptsForPackageJson };

@@ -23,16 +23,9 @@ function generateConstants(presetType: preset, mode: webpackMode) {
 
   const modeConstants =
     mode === "production"
-      ? (stringParser(
-          "const HtmlMinimizerWebpackPlugin = require('html-minimizer-webpack-plugin');"
-        ),
-        stringParser(
-          "const MiniCssExtractPlugin = require('mini-css-extract-plugin');"
-        ),
-        stringParser(
-          "const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');"
-        ),
-        stringParser("const TerserPlugin = require('terser-webpack-plugin');"))
+      ? stringParser(
+          "const HtmlMinimizerPlugin = require('html-minimizer-webpack-plugin');\n const MiniCssExtractPlugin = require('mini-css-extract-plugin');\n const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');\n const TerserPlugin = require('terser-webpack-plugin');\n"
+        )
       : stringParser(
           "const WebpackNotifierPlugin = require('webpack-notifier');"
         );
@@ -43,7 +36,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 ${modeConstants}
 ${constants}
-`;
+  `;
 }
 
 export { generateConstants, whitespace };

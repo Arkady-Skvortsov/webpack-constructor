@@ -4,6 +4,8 @@ import { start } from "./start";
 import { preset } from "./helpers/enum";
 import { generateWebpackConfig } from "./webpack-set.content";
 import { addContentToPreset } from "./add-content-preset";
+import { setMainExtension } from "./helpers/main-extension";
+import { generateExtensions } from "./helpers/extensions";
 
 async function basicSelect(text: webpackConfigType) {
   return text !== "Custom" ? choosePreset() : customChoose();
@@ -47,7 +49,7 @@ async function handleAnswer(presetOptions: preset, webpackVersion: version) {
   process.exit(1);
 }
 
-async function WebpackConfigOptions() {
+async function WebpackConfigOptions(presetType: preset) {
   const contextPointWrite = await inquirer.prompt({
     name: "question_3",
     type: "input",
@@ -58,15 +60,15 @@ async function WebpackConfigOptions() {
   const entryPointWrite = await inquirer.prompt({
     name: "question_4",
     type: "input",
-    message:
-      "What is the entry point(s) would be in webpack config (example: ./src/main.ts) ?",
+    message: `What is the entry point(s) would be in webpack config (example: ${
+      contextPointWrite.question_3
+    }/main${generateExtensions(presetType)}) ?`,
   });
 
   const aliasPathWrite = await inquirer.prompt({
     name: "question_5",
     type: "input",
-    message:
-      "What is the path for alias(es) would be in webpack config (example: ./src/utils) ?",
+    message: `What is the path for alias(es) would be in webpack config (example: ${contextPointWrite.question_3}/utils) ?`,
   });
 
   const htmlTitle = await inquirer.prompt({
@@ -80,8 +82,7 @@ async function WebpackConfigOptions() {
   const htmlTemplatePath = await inquirer.prompt({
     name: "question_7",
     type: "input",
-    message:
-      "What is the html template would be in webpack config (example: ./src/main.html) ?",
+    message: `What is the html template would be in webpack config (example: ${contextPointWrite.question_3}/main.html) ?`,
   });
 
   const portWrite = await inquirer.prompt({
@@ -102,8 +103,9 @@ async function WebpackConfigOptions() {
   const lintTypeScriptFilesPath = await inquirer.prompt({
     name: "question_11",
     type: "input",
-    message:
-      "What is the path of you'r .ts file(s) (example: ./src/main/**/*.ts)",
+    message: `What is the path of you'r .ts file(s) (example: ${
+      contextPointWrite.question_3
+    }/main/**/*${generateExtensions(presetType)})`,
     default: contextPointWrite.question_3,
   });
 
@@ -118,9 +120,8 @@ async function WebpackConfigOptions() {
   const watchFilesPath = await inquirer.prompt({
     name: "question_13",
     type: "input",
-    message:
-      "What is the folder with files do you want to watch for changes with starting devServer (example: ./src/html) ?",
-    default: contextPointWrite.question_3,
+    message: `What is the folder with files do you want to watch for changes with starting devServer (example: ${contextPointWrite.question_3}/html) ?`,
+    default: `${contextPointWrite.question_3}/html`,
   });
 
   const devMode = await inquirer.prompt({
@@ -130,7 +131,7 @@ async function WebpackConfigOptions() {
     choices: ["production", "development"],
   });
 
-  return addContentToPreset(preset.TYPESCRIPT, {
+  return addContentToPreset(presetType, {
     context: contextPointWrite.question_3,
     entryPoint: entryPointWrite.question_4,
     aliasPath: aliasPathWrite.question_5,

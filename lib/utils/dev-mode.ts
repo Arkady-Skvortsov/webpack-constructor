@@ -70,7 +70,7 @@ function setWatchFiles(files: string) {
     ? files
         .split(" ")
         .map((file) => `"${file}"`)
-        .join(",")
+        .join(", ")
     : `"${files}"`;
 }
 

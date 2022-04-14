@@ -50,7 +50,7 @@ function setWatchFiles(files) {
         ? files
             .split(" ")
             .map(function (file) { return "\"".concat(file, "\""); })
-            .join(",")
+            .join(", ")
         : "\"".concat(files, "\"");
 }
 exports.setWatchFiles = setWatchFiles;

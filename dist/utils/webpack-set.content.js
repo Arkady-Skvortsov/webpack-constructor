@@ -64,7 +64,6 @@ var fs = __importStar(require("fs"));
 var delete_line_1 = require("./delete-line");
 var handle_answers_1 = require("./handle-answers");
 var constants_1 = require("./helpers/constants");
-var enum_1 = require("./helpers/enum");
 var packages_1 = require("./helpers/packages");
 var add_scripts_1 = require("./add-scripts");
 var text_1 = require("./text");
@@ -81,6 +80,7 @@ function setAlias(alias) {
             .join(", ");
 }
 exports.setAlias = setAlias;
+console.log(setAlias("./src/utils ./src/assets"));
 function setScriptFiles(file) {
     return constants_1.whitespace.test(file)
         ? "[\"".concat(file
@@ -92,11 +92,16 @@ function setScriptFiles(file) {
 exports.setScriptFiles = setScriptFiles;
 function setEntryPoint(entrypoint) {
     return constants_1.whitespace.test(entrypoint)
-        ? "[".concat(entrypoint
+        ? "{".concat(entrypoint
             .split(" ")
-            .map(function (entry) { return "\"".concat(entry, "\""); })
-            .join(", "), "]")
-        : "{main: \"".concat(entrypoint, "\"}");
+            .map(function (point) {
+            return "\"".concat(point
+                .substring(point.lastIndexOf("/") + 1, point.length)
+                .replace(/\.(js|ts|tsx|jsx|svelte|vue)$/g, ""), "\": \"").concat(point, "\"\n");
+        }), "}")
+        : "{".concat(entrypoint
+            .substring(entrypoint.lastIndexOf("/") + 1, entrypoint.length)
+            .replace(/\.(js|ts|tsx|jsx|svelte|vue)$/g, ""), ": \"").concat(entrypoint, "\"}");
 }
 exports.setEntryPoint = setEntryPoint;
 function setSourceMaps(mode) {
@@ -109,31 +114,28 @@ function generateWebpackConfig(type, mode, version) {
         return __generator(this, function (_d) {
             switch (_d.label) {
                 case 0:
-                    _d.trys.push([0, 4, , 5]);
-                    return [4 /*yield*/, (0, packages_1.installPackagesForPresets)(type, mode)];
+                    _d.trys.push([0, 5, , 6]);
+                    return [4 /*yield*/, (0, packages_1.installPackagesForPresets)(type, mode, version)];
                 case 1:
                     _d.sent();
                     _b = (_a = fs).writeFileSync;
                     _c = ["webpack.config.js"];
-                    return [4 /*yield*/, (0, handle_answers_1.WebpackConfigOptions)()];
+                    return [4 /*yield*/, (0, handle_answers_1.WebpackConfigOptions)(type)];
                 case 2:
                     _b.apply(_a, _c.concat([_d.sent()]));
-                    setTimeout(function () { return (0, delete_line_1.deleteLine)("webpack.config.js"); }, 1000);
-                    new Promise(function (reject, resolve) {
-                        return setTimeout(function () {
-                            (0, add_scripts_1.addScriptsForPackageJson)("package.json", mode);
-                            resolve();
-                        }, 2000);
-                    });
-                    return [4 /*yield*/, (0, text_1.figletText)(enum_1.preset.TYPESCRIPT)];
+                    return [4 /*yield*/, (0, add_scripts_1.addScriptsForPackageJson)("package.json", mode)];
                 case 3:
                     _d.sent();
-                    return [3 /*break*/, 5];
+                    (0, delete_line_1.deleteLine)("webpack.config.js");
+                    return [4 /*yield*/, (0, text_1.figletText)(type)];
                 case 4:
+                    _d.sent();
+                    return [3 /*break*/, 6];
+                case 5:
                     e_1 = _d.sent();
                     console.log(e_1);
-                    return [3 /*break*/, 5];
-                case 5: return [2 /*return*/];
+                    return [3 /*break*/, 6];
+                case 6: return [2 /*return*/];
             }
         });
     });

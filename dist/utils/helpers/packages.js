@@ -42,7 +42,7 @@ var nanospinner_1 = require("nanospinner");
 var promise_1 = require("./promise");
 var parser_1 = require("./parser");
 var text_1 = require("../text");
-function installPackagesForPresets(presetType, mode) {
+function installPackagesForPresets(presetType, mode, version) {
     return __awaiter(this, void 0, void 0, function () {
         var installationSpinner;
         return __generator(this, function (_a) {
@@ -52,14 +52,16 @@ function installPackagesForPresets(presetType, mode) {
                     return [4 /*yield*/, (0, promise_1.promise)()];
                 case 1:
                     _a.sent();
-                    (0, child_process_1.execSync)("npm i -D webpack webpack-cli webpack-dev-server css-loader file-loader @types/webpack clean-webpack-plugin node-sass sass-loader image-webpack-loader imagemin-mozjpeg imagemin-svgo imagemin-pngquant copy-webpack-plugin ".concat(presetType === "Typescript"
+                    (0, child_process_1.execSync)("npm i -D ".concat(version === 4
+                        ? (0, text_1.parseString)("webpack@4.41.5")
+                        : (0, text_1.parseString)("webpack@5.72.0"), " webpack-cli webpack-dev-server css-loader file-loader @types/webpack clean-webpack-plugin node-sass sass-loader image-webpack-loader imagemin-mozjpeg imagemin-svgo imagemin-pngquant copy-webpack-plugin ").concat(presetType === "Typescript"
                         ? (0, text_1.parseString)("typescript ts-loader tslint tslint-webpack-plugin")
                         : presetType === "Javascript"
                             ? (0, text_1.parseString)("@babel/core babel-loader @babel/preset-env @babel/plugin-transform-runtime")
                             : presetType === "React"
                                 ? (0, text_1.parseString)("@babel/core babel-loader @babel/preset-react @babel/plugin-transform-runtime")
                                 : presetType === "Vue"
-                                    ? (0, text_1.parseString)("vue-style-loader vue-loader vue-server-renderer")
+                                    ? (0, text_1.parseString)("vue-style-loader vue-loader")
                                     : presetType === "Svelte"
                                         ? (0, text_1.parseString)("svelte-loader")
                                         : (0, parser_1.stringParser)(""), " ").concat(mode === "production"

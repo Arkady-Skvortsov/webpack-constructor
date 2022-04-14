@@ -18,12 +18,9 @@ function generateConstants(presetType, mode) {
                         ? (0, text_1.parseString)("")
                         : (0, text_1.parseString)("");
     var modeConstants = mode === "production"
-        ? ((0, parser_1.stringParser)("const HtmlMinimizerWebpackPlugin = require('html-minimizer-webpack-plugin');"),
-            (0, parser_1.stringParser)("const MiniCssExtractPlugin = require('mini-css-extract-plugin');"),
-            (0, parser_1.stringParser)("const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');"),
-            (0, parser_1.stringParser)("const TerserPlugin = require('terser-webpack-plugin');"))
+        ? (0, parser_1.stringParser)("const HtmlMinimizerWebpackPlugin = require('html-minimizer-webpack-plugin');\n const MiniCssExtractPlugin = require('mini-css-extract-plugin');\n const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');\n const TerserPlugin = require('terser-webpack-plugin');\n")
         : (0, parser_1.stringParser)("const WebpackNotifierPlugin = require('webpack-notifier');");
-    return "\nconst path = require(\"path\");\nconst HtmlWebpackPlugin = require('html-webpack-plugin');\nconst { CleanWebpackPlugin } = require('clean-webpack-plugin');\n".concat(modeConstants, "\n").concat(constants, "\n");
+    return "\nconst path = require(\"path\");\nconst HtmlWebpackPlugin = require('html-webpack-plugin');\nconst { CleanWebpackPlugin } = require('clean-webpack-plugin');\n".concat(modeConstants, "\n").concat(constants, "\n  ");
 }
 exports.generateConstants = generateConstants;
 //# sourceMappingURL=constants.js.map

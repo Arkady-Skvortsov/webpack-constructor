@@ -37,13 +37,19 @@ function setScriptFiles(file: string | any) {
     : `"${file}"`;
 }
 
-function setEntryPoint(entrypoint: string | any) {
+function setEntryPoint(entrypoint: string) {
   return whitespace.test(entrypoint)
-    ? `[${entrypoint
+    ? `{${entrypoint
         .split(" ")
-        .map((entry: string) => `"${entry}"`)
-        .join(", ")}]`
-    : `{main: "${entrypoint}"}`;
+        .map(
+          (point: string) =>
+            `"${point
+              .substring(point.lastIndexOf("/") + 1, point.length)
+              .replace(/\.(js|ts|tsx|jsx|svelte|vue)$/g, "")}": "${point}"\n`
+        )}}`
+    : `{${entrypoint
+        .substring(entrypoint.lastIndexOf("/") + 1, entrypoint.length)
+        .replace(/\.(js|ts|tsx|jsx|svelte|vue)$/g, "")}: "${entrypoint}"}`;
 }
 
 function setSourceMaps(mode: "production" | "development") {
@@ -56,20 +62,15 @@ async function generateWebpackConfig(
   version: version
 ) {
   try {
-    await installPackagesForPresets(type, mode);
+    await installPackagesForPresets(type, mode, version);
 
-    fs.writeFileSync("webpack.config.js", await WebpackConfigOptions());
+    fs.writeFileSync("webpack.config.js", await WebpackConfigOptions(type));
 
-    setTimeout(() => deleteLine("webpack.config.js"), 1000);
+    await addScriptsForPackageJson("package.json", mode);
 
-    new Promise((reject, resolve) =>
-      setTimeout(() => {
-        addScriptsForPackageJson("package.json", mode);
-        resolve();
-      }, 2000)
-    );
+    deleteLine("webpack.config.js");
 
-    await figletText(preset.TYPESCRIPT);
+    await figletText(type);
   } catch (e) {
     console.log(e);
   }

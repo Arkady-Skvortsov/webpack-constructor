@@ -1,0 +1,22 @@
+{
+  "name": "webpack-prod",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node ./dist/index.js",
+    "webpack:build": "webpack build --config webpack.config.js --mode=production",
+    "webpack:watch": "webpack --watch --config webpack.config.js --mode=production",
+    "webpack:start": "webpack serve --open --config webpack.config.js --mode=production",
+    "webpack:dev": "webpack-dev-server --open --config webpack.config.js --mode=production"
+  },
+  "keywords": [],
+  "author": "You",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.3"
+  }
+}

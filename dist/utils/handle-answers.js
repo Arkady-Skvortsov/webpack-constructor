@@ -42,9 +42,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.WebpackConfigOptions = exports.customChoose = exports.firstChoose = void 0;
 var inquirer_1 = __importDefault(require("inquirer"));
 var start_1 = require("./start");
-var enum_1 = require("./helpers/enum");
 var webpack_set_content_1 = require("./webpack-set.content");
 var add_content_preset_1 = require("./add-content-preset");
+var extensions_1 = require("./helpers/extensions");
 function basicSelect(text) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -125,7 +125,7 @@ function handleAnswer(presetOptions, webpackVersion) {
         });
     });
 }
-function WebpackConfigOptions() {
+function WebpackConfigOptions(presetType) {
     return __awaiter(this, void 0, void 0, function () {
         var contextPointWrite, entryPointWrite, aliasPathWrite, htmlTitle, htmlTemplatePath, portWrite, outputFolder, lintTypeScriptFilesPath, tslintFilePath, watchFilesPath, devMode;
         return __generator(this, function (_a) {
@@ -140,14 +140,14 @@ function WebpackConfigOptions() {
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_4",
                             type: "input",
-                            message: "What is the entry point(s) would be in webpack config (example: ./src/main.ts) ?",
+                            message: "What is the entry point(s) would be in webpack config (example: ".concat(contextPointWrite.question_3, "/main").concat((0, extensions_1.generateExtensions)(presetType), ") ?"),
                         })];
                 case 2:
                     entryPointWrite = _a.sent();
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_5",
                             type: "input",
-                            message: "What is the path for alias(es) would be in webpack config (example: ./src/utils) ?",
+                            message: "What is the path for alias(es) would be in webpack config (example: ".concat(contextPointWrite.question_3, "/utils) ?"),
                         })];
                 case 3:
                     aliasPathWrite = _a.sent();
@@ -162,7 +162,7 @@ function WebpackConfigOptions() {
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_7",
                             type: "input",
-                            message: "What is the html template would be in webpack config (example: ./src/main.html) ?",
+                            message: "What is the html template would be in webpack config (example: ".concat(contextPointWrite.question_3, "/main.html) ?"),
                         })];
                 case 5:
                     htmlTemplatePath = _a.sent();
@@ -185,7 +185,7 @@ function WebpackConfigOptions() {
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_11",
                             type: "input",
-                            message: "What is the path of you'r .ts file(s) (example: ./src/main/**/*.ts)",
+                            message: "What is the path of you'r .ts file(s) (example: ".concat(contextPointWrite.question_3, "/main/**/*").concat((0, extensions_1.generateExtensions)(presetType), ")"),
                             default: contextPointWrite.question_3,
                         })];
                 case 8:
@@ -201,8 +201,8 @@ function WebpackConfigOptions() {
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_13",
                             type: "input",
-                            message: "What is the folder with files do you want to watch for changes with starting devServer (example: ./src/html) ?",
-                            default: contextPointWrite.question_3,
+                            message: "What is the folder with files do you want to watch for changes with starting devServer (example: ".concat(contextPointWrite.question_3, "/html) ?"),
+                            default: "".concat(contextPointWrite.question_3, "/html"),
                         })];
                 case 10:
                     watchFilesPath = _a.sent();
@@ -214,7 +214,7 @@ function WebpackConfigOptions() {
                         })];
                 case 11:
                     devMode = _a.sent();
-                    return [2 /*return*/, (0, add_content_preset_1.addContentToPreset)(enum_1.preset.TYPESCRIPT, {
+                    return [2 /*return*/, (0, add_content_preset_1.addContentToPreset)(presetType, {
                             context: contextPointWrite.question_3,
                             entryPoint: entryPointWrite.question_4,
                             aliasPath: aliasPathWrite.question_5,
