@@ -11,6 +11,7 @@ import {
   setCssPlugin,
   setCSSRuleUse,
   setTerserPlugin,
+  setVueLoader,
   setWatchFiles,
 } from "./dev-mode";
 import { generateExtensions } from "./helpers/extensions";
@@ -109,6 +110,7 @@ module.exports = {
     ${setCssPlugin(options.devMode)}
     ${LinterChoose(type, options)}
     new CleanWebpackPlugin(),
+    ${setVueLoader(type)}
     ${setWebpackNotifierPlugin(options.devMode)}
   ],
   optimization: {

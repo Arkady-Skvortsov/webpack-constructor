@@ -4,16 +4,17 @@ import { stringParser } from "./parser";
 import { webpackMode } from "./types";
 
 const whitespace = new RegExp(/^.+\s.+$/, "g");
+const extensions = new RegExp(/\.(js|ts|tsx|jsx|svelte|vue|sass|scss|)$/, "g");
 
 function generateConstants(presetType: preset, mode: webpackMode) {
   const constants =
     presetType === "Typescript"
-      ? stringParser('const TsLintPlugin = require("tslint-webpack-plugin")')
+      ? stringParser(`const TsLintPlugin = require("tslint-webpack-plugin")`)
       : presetType === "Javascript"
-      ? stringParser('const ESLintPlugin = require("eslint-webpack-plugin")')
+      ? stringParser(`const ESLintPlugin = require("eslint-webpack-plugin")`)
       : presetType === "Vue"
       ? stringParser(
-          'const { VueLoaderPlugin } = require("vue-loader/lib/plugin")'
+          `const { VueLoaderPlugin } = require("vue-loader/lib/plugin")`
         )
       : presetType === "React"
       ? parseString("")
@@ -27,7 +28,7 @@ function generateConstants(presetType: preset, mode: webpackMode) {
           "const HtmlMinimizerPlugin = require('html-minimizer-webpack-plugin');\n const MiniCssExtractPlugin = require('mini-css-extract-plugin');\n const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');\n const TerserPlugin = require('terser-webpack-plugin');\n"
         )
       : stringParser(
-          "const WebpackNotifierPlugin = require('webpack-notifier');"
+          `const WebpackNotifierPlugin = require('webpack-notifier');`
         );
 
   return `

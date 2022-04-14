@@ -7,8 +7,8 @@ function setCSSRuleUse(mode: webpackMode, presetType?: preset) {
   return mode === "production"
     ? parseString("MiniCssExtractPlugin.loader")
     : presetType === "Vue"
-    ? "vue-style-loader"
-    : "style-loader";
+    ? "vue-style-loader".toString()
+    : "style-loader".toString();
 }
 
 function setCssPlugin(mode: webpackMode) {
@@ -65,6 +65,12 @@ function setTerserPlugin(mode: webpackMode) {
     : parseString("");
 }
 
+function setVueLoader(presetType: preset) {
+  return presetType === "Vue"
+    ? parseString("new VueLoaderPlugin(),")
+    : parseString("");
+}
+
 function setWatchFiles(files: string) {
   return whitespace.test(files)
     ? files
@@ -82,5 +88,6 @@ export {
   optimizeProductionCSS,
   optimizeProductionHTML,
   isSourceMaps,
+  setVueLoader,
   setWatchFiles,
 };

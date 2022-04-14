@@ -16,13 +16,13 @@ async function installPackagesForPresets(
   ).start();
 
   await promise();
-
+  //  ${
+  //     version == 4
+  //       ? parseString("webpack@4.41.5")
+  //       : parseString("webpack@5.72.0")
+  //   }
   execSync(
-    `npm i -D ${
-      version === 4
-        ? parseString("webpack@4.41.5")
-        : parseString("webpack@5.72.0")
-    } webpack-cli webpack-dev-server css-loader file-loader @types/webpack clean-webpack-plugin node-sass sass-loader image-webpack-loader imagemin-mozjpeg imagemin-svgo imagemin-pngquant copy-webpack-plugin ${
+    `npm i -D webpack webpack-cli webpack-dev-server css-loader file-loader @types/webpack clean-webpack-plugin node-sass sass-loader image-webpack-loader imagemin-mozjpeg imagemin-svgo imagemin-pngquant copy-webpack-plugin ${
       presetType === "Typescript"
         ? parseString("typescript ts-loader tslint tslint-webpack-plugin")
         : presetType === "Javascript"

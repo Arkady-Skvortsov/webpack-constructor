@@ -7,8 +7,8 @@ interface webpackConfig {
   aliasPath: string;
   htmlTemplate: string;
   htmlTitle: string;
-  LintTypescriptFilesPath: string;
-  tslintFilePath: string;
+  LintTypescriptFilesPath?: string;
+  tslintFilePath?: string;
   outputFolder: string;
   devPort: number;
   watchFiles: string;

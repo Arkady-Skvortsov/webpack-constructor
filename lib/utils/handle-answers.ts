@@ -1,5 +1,5 @@
 import inquirer from "inquirer";
-import { version, webpackConfigType } from "./helpers/types";
+import { version, webpackConfigType, webpackMode } from "./helpers/types";
 import { start } from "./start";
 import { preset } from "./helpers/enum";
 import { generateWebpackConfig } from "./webpack-set.content";
@@ -41,15 +41,55 @@ async function choosePreset() {
     choices: ["4", "5"],
   });
 
-  await handleAnswer(presetChoose.question_2, webpackVersion.question_3);
+  const webpackMode = await inquirer.prompt({
+    name: "question_4",
+    type: "list",
+    message: "What is the development mode do you want for webpack ?",
+    choices: ["development", "production"],
+  });
+
+  await handleAnswer(
+    presetChoose.question_2,
+    webpackMode.question_4,
+    webpackVersion.question_3
+  );
 }
 
-async function handleAnswer(presetOptions: preset, webpackVersion: version) {
-  await generateWebpackConfig(presetOptions, "development", webpackVersion);
+async function handleAnswer(
+  presetOptions: preset,
+  mode: webpackMode,
+  webpackVersion: version
+) {
+  await generateWebpackConfig(presetOptions, mode, webpackVersion);
   process.exit(1);
 }
 
-async function WebpackConfigOptions(presetType: preset) {
+async function checkPresetTsConfig(preset: preset) {
+  return preset === "Typescript"
+    ? await inquirer.prompt({
+        name: "question_12",
+        type: "input",
+        message:
+          "What is the path to you'r tslint.json file (default: ./tslint.json)?",
+        default: "./tslint.json",
+      })
+    : void 0;
+}
+
+async function checkPresetFrameworkConfig(preset: preset) {
+  return preset !== "Javascript" ?? preset !== "Typescript"
+    ? await inquirer.prompt({
+        name: "question_12",
+        type: "list",
+        message: "What is the language you want to select for that framework ?",
+        choices: ["Javascript", "Typescript"],
+      })
+    : preset === "Typescript"
+    ? await checkPresetTsConfig(preset)
+    : void 0;
+}
+
+async function WebpackConfigOptions(presetType: preset, mode: webpackMode) {
   const contextPointWrite = await inquirer.prompt({
     name: "question_3",
     type: "input",
@@ -100,35 +140,15 @@ async function WebpackConfigOptions(presetType: preset) {
     default: "./dist",
   });
 
-  const lintTypeScriptFilesPath = await inquirer.prompt({
-    name: "question_11",
-    type: "input",
-    message: `What is the path of you'r .ts file(s) (example: ${
-      contextPointWrite.question_3
-    }/main/**/*${generateExtensions(presetType)})`,
-    default: contextPointWrite.question_3,
-  });
+  await checkPresetFrameworkConfig(presetType);
 
-  const tslintFilePath = await inquirer.prompt({
-    name: "question_12",
-    type: "input",
-    message:
-      "What is the path to you'r tslint.json file (default: ./tslint.json)?",
-    default: "./tslint.json",
-  });
+  await checkPresetTsConfig(presetType);
 
   const watchFilesPath = await inquirer.prompt({
     name: "question_13",
     type: "input",
     message: `What is the folder with files do you want to watch for changes with starting devServer (example: ${contextPointWrite.question_3}/html) ?`,
     default: `${contextPointWrite.question_3}/html`,
-  });
-
-  const devMode = await inquirer.prompt({
-    name: "question_15",
-    type: "list",
-    message: "What is the development mode do you want for webpack ?",
-    choices: ["production", "development"],
   });
 
   return addContentToPreset(presetType, {
@@ -139,10 +159,8 @@ async function WebpackConfigOptions(presetType: preset) {
     htmlTemplate: htmlTemplatePath.question_7,
     devPort: portWrite.question_8,
     outputFolder: outputFolder.question_9,
-    LintTypescriptFilesPath: lintTypeScriptFilesPath.question_11,
-    tslintFilePath: tslintFilePath.question_12,
     watchFiles: watchFilesPath.question_13,
-    devMode: devMode.question_15,
+    devMode: mode,
   });
 }
 

@@ -8,8 +8,8 @@ async function addScriptsForPackageJson(filePath: string, mode: webpackMode) {
   let scripts = jsonContent.scripts;
   const confMode =
     mode === "production"
-      ? parseString("--mode=development")
-      : parseString("--mode=production");
+      ? parseString("--mode=production")
+      : parseString("--mode=development");
 
   scripts[
     "webpack:build"

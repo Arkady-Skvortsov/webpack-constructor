@@ -70,8 +70,8 @@ function addScriptsForPackageJson(filePath, mode) {
             jsonContent = JSON.parse(content);
             scripts = jsonContent.scripts;
             confMode = mode === "production"
-                ? (0, text_1.parseString)("--mode=development")
-                : (0, text_1.parseString)("--mode=production");
+                ? (0, text_1.parseString)("--mode=production")
+                : (0, text_1.parseString)("--mode=development");
             scripts["webpack:build"] = "webpack build --config webpack.config.js ".concat(confMode);
             scripts["webpack:watch"] = "webpack --watch --config webpack.config.js ".concat(confMode);
             scripts["webpack:start"] = "webpack serve --open --config webpack.config.js ".concat(confMode);

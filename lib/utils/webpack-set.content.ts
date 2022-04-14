@@ -45,7 +45,10 @@ function setEntryPoint(entrypoint: string) {
           (point: string) =>
             `"${point
               .substring(point.lastIndexOf("/") + 1, point.length)
-              .replace(/\.(js|ts|tsx|jsx|svelte|vue)$/g, "")}": "${point}"\n`
+              .replace(
+                /\.(js|ts|tsx|jsx|svelte|vue|sass|scss)$/g,
+                ""
+              )}": "${point}"\n`
         )}}`
     : `{${entrypoint
         .substring(entrypoint.lastIndexOf("/") + 1, entrypoint.length)
@@ -64,13 +67,16 @@ async function generateWebpackConfig(
   try {
     await installPackagesForPresets(type, mode, version);
 
-    fs.writeFileSync("webpack.config.js", await WebpackConfigOptions(type));
+    fs.writeFileSync(
+      "webpack.config.js",
+      await WebpackConfigOptions(type, mode)
+    );
 
     await addScriptsForPackageJson("package.json", mode);
 
-    deleteLine("webpack.config.js");
-
     await figletText(type);
+
+    deleteLine("webpack.config.js");
   } catch (e) {
     console.log(e);
   }

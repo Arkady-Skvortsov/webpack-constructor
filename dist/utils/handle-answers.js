@@ -85,7 +85,7 @@ function customChoose() {
 exports.customChoose = customChoose;
 function choosePreset() {
     return __awaiter(this, void 0, void 0, function () {
-        var presetChoose, webpackVersion;
+        var presetChoose, webpackVersion, webpackMode;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, inquirer_1.default.prompt({
@@ -104,19 +104,27 @@ function choosePreset() {
                         })];
                 case 2:
                     webpackVersion = _a.sent();
-                    return [4 /*yield*/, handleAnswer(presetChoose.question_2, webpackVersion.question_3)];
+                    return [4 /*yield*/, inquirer_1.default.prompt({
+                            name: "question_4",
+                            type: "list",
+                            message: "What is the development mode do you want for webpack ?",
+                            choices: ["development", "production"],
+                        })];
                 case 3:
+                    webpackMode = _a.sent();
+                    return [4 /*yield*/, handleAnswer(presetChoose.question_2, webpackMode.question_4, webpackVersion.question_3)];
+                case 4:
                     _a.sent();
                     return [2 /*return*/];
             }
         });
     });
 }
-function handleAnswer(presetOptions, webpackVersion) {
+function handleAnswer(presetOptions, mode, webpackVersion) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, webpack_set_content_1.generateWebpackConfig)(presetOptions, "development", webpackVersion)];
+                case 0: return [4 /*yield*/, (0, webpack_set_content_1.generateWebpackConfig)(presetOptions, mode, webpackVersion)];
                 case 1:
                     _a.sent();
                     process.exit(1);
@@ -125,9 +133,67 @@ function handleAnswer(presetOptions, webpackVersion) {
         });
     });
 }
-function WebpackConfigOptions(presetType) {
+function checkPresetTsConfig(preset) {
     return __awaiter(this, void 0, void 0, function () {
-        var contextPointWrite, entryPointWrite, aliasPathWrite, htmlTitle, htmlTemplatePath, portWrite, outputFolder, lintTypeScriptFilesPath, tslintFilePath, watchFilesPath, devMode;
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    if (!(preset === "Typescript")) return [3 /*break*/, 2];
+                    return [4 /*yield*/, inquirer_1.default.prompt({
+                            name: "question_12",
+                            type: "input",
+                            message: "What is the path to you'r tslint.json file (default: ./tslint.json)?",
+                            default: "./tslint.json",
+                        })];
+                case 1:
+                    _a = _b.sent();
+                    return [3 /*break*/, 3];
+                case 2:
+                    _a = void 0;
+                    _b.label = 3;
+                case 3: return [2 /*return*/, _a];
+            }
+        });
+    });
+}
+function checkPresetFrameworkConfig(preset) {
+    var _a;
+    return __awaiter(this, void 0, void 0, function () {
+        var _b, _c;
+        return __generator(this, function (_d) {
+            switch (_d.label) {
+                case 0:
+                    if (!((_a = preset !== "Javascript") !== null && _a !== void 0 ? _a : preset !== "Typescript")) return [3 /*break*/, 2];
+                    return [4 /*yield*/, inquirer_1.default.prompt({
+                            name: "question_12",
+                            type: "list",
+                            message: "What is the language you want to select for that framework ?",
+                            choices: ["Javascript", "Typescript"],
+                        })];
+                case 1:
+                    _b = _d.sent();
+                    return [3 /*break*/, 6];
+                case 2:
+                    if (!(preset === "Typescript")) return [3 /*break*/, 4];
+                    return [4 /*yield*/, checkPresetTsConfig(preset)];
+                case 3:
+                    _c = _d.sent();
+                    return [3 /*break*/, 5];
+                case 4:
+                    _c = void 0;
+                    _d.label = 5;
+                case 5:
+                    _b = _c;
+                    _d.label = 6;
+                case 6: return [2 /*return*/, _b];
+            }
+        });
+    });
+}
+function WebpackConfigOptions(presetType, mode) {
+    return __awaiter(this, void 0, void 0, function () {
+        var contextPointWrite, entryPointWrite, aliasPathWrite, htmlTitle, htmlTemplatePath, portWrite, outputFolder, watchFilesPath;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, inquirer_1.default.prompt({
@@ -182,22 +248,12 @@ function WebpackConfigOptions(presetType) {
                         })];
                 case 7:
                     outputFolder = _a.sent();
-                    return [4 /*yield*/, inquirer_1.default.prompt({
-                            name: "question_11",
-                            type: "input",
-                            message: "What is the path of you'r .ts file(s) (example: ".concat(contextPointWrite.question_3, "/main/**/*").concat((0, extensions_1.generateExtensions)(presetType), ")"),
-                            default: contextPointWrite.question_3,
-                        })];
+                    return [4 /*yield*/, checkPresetFrameworkConfig(presetType)];
                 case 8:
-                    lintTypeScriptFilesPath = _a.sent();
-                    return [4 /*yield*/, inquirer_1.default.prompt({
-                            name: "question_12",
-                            type: "input",
-                            message: "What is the path to you'r tslint.json file (default: ./tslint.json)?",
-                            default: "./tslint.json",
-                        })];
+                    _a.sent();
+                    return [4 /*yield*/, checkPresetTsConfig(presetType)];
                 case 9:
-                    tslintFilePath = _a.sent();
+                    _a.sent();
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_13",
                             type: "input",
@@ -206,14 +262,6 @@ function WebpackConfigOptions(presetType) {
                         })];
                 case 10:
                     watchFilesPath = _a.sent();
-                    return [4 /*yield*/, inquirer_1.default.prompt({
-                            name: "question_15",
-                            type: "list",
-                            message: "What is the development mode do you want for webpack ?",
-                            choices: ["production", "development"],
-                        })];
-                case 11:
-                    devMode = _a.sent();
                     return [2 /*return*/, (0, add_content_preset_1.addContentToPreset)(presetType, {
                             context: contextPointWrite.question_3,
                             entryPoint: entryPointWrite.question_4,
@@ -222,10 +270,8 @@ function WebpackConfigOptions(presetType) {
                             htmlTemplate: htmlTemplatePath.question_7,
                             devPort: portWrite.question_8,
                             outputFolder: outputFolder.question_9,
-                            LintTypescriptFilesPath: lintTypeScriptFilesPath.question_11,
-                            tslintFilePath: tslintFilePath.question_12,
                             watchFiles: watchFilesPath.question_13,
-                            devMode: devMode.question_15,
+                            devMode: mode,
                         })];
             }
         });

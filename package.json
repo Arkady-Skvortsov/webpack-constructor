@@ -26,6 +26,7 @@
     "terminal-kit": "^2.4.0"
   },
   "devDependencies": {
+    "@babel/preset-react": "^7.16.7",
     "@types/chalk": "^2.2.0",
     "@types/chalk-animation": "^1.6.1",
     "@types/figlet": "^1.5.4",

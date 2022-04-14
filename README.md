@@ -33,6 +33,10 @@ I'm already tired of watching $100,000 frontend developers post in telegram/slac
   What is the version of webpack do you want to use for project ?
   4
   5
+
+  What is the mode do you want for development for webpack ?
+  production
+  development
 ```
 
 # Preset List
@@ -48,9 +52,6 @@ I'm already tired of watching $100,000 frontend developers post in telegram/slac
   What is the path of your .ts file(s) (default: ./src)? ./src
   What is the path to your tslint.json file (default: ./tslint.json)?: ./tslint.json
   What is the files do you want to watch for changes with starting devServer (default: ./src/images) ? ./src
-  What is the mode do you want for development for webpack ?
-  production
-  development
 ```
 
 # Custom List (would be so soon)
@@ -185,8 +186,4 @@ I'm already tired of watching $100,000 frontend developers post in telegram/slac
   What is the html template would be in webpack config (example: ./src/html/main.html) ?
   What is the folder do you want, that be an output (default: ./dist) ?
   What is the path to your tslint.json file (default: ./tslint.json) ?
-  What is the mode do you want for development in webpack ?
-  development
-  production
-  both
 ```

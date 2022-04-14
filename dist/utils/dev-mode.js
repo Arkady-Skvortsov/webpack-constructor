@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setWatchFiles = exports.isSourceMaps = exports.optimizeProductionHTML = exports.optimizeProductionCSS = exports.outputFileName = exports.setTerserPlugin = exports.setCssPlugin = exports.setCSSRuleUse = void 0;
+exports.setWatchFiles = exports.setVueLoader = exports.isSourceMaps = exports.optimizeProductionHTML = exports.optimizeProductionCSS = exports.outputFileName = exports.setTerserPlugin = exports.setCssPlugin = exports.setCSSRuleUse = void 0;
 var constants_1 = require("./helpers/constants");
 var text_1 = require("./text");
 function setCSSRuleUse(mode, presetType) {
     return mode === "production"
         ? (0, text_1.parseString)("MiniCssExtractPlugin.loader")
         : presetType === "Vue"
-            ? "vue-style-loader"
-            : "style-loader";
+            ? "vue-style-loader".toString()
+            : "style-loader".toString();
 }
 exports.setCSSRuleUse = setCSSRuleUse;
 function setCssPlugin(mode) {
@@ -45,6 +45,12 @@ function setTerserPlugin(mode) {
         : (0, text_1.parseString)("");
 }
 exports.setTerserPlugin = setTerserPlugin;
+function setVueLoader(presetType) {
+    return presetType === "Vue"
+        ? (0, text_1.parseString)("new VueLoaderPlugin(),")
+        : (0, text_1.parseString)("");
+}
+exports.setVueLoader = setVueLoader;
 function setWatchFiles(files) {
     return constants_1.whitespace.test(files)
         ? files

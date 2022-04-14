@@ -80,7 +80,6 @@ function setAlias(alias) {
             .join(", ");
 }
 exports.setAlias = setAlias;
-console.log(setAlias("./src/utils ./src/assets"));
 function setScriptFiles(file) {
     return constants_1.whitespace.test(file)
         ? "[\"".concat(file
@@ -97,7 +96,7 @@ function setEntryPoint(entrypoint) {
             .map(function (point) {
             return "\"".concat(point
                 .substring(point.lastIndexOf("/") + 1, point.length)
-                .replace(/\.(js|ts|tsx|jsx|svelte|vue)$/g, ""), "\": \"").concat(point, "\"\n");
+                .replace(/\.(js|ts|tsx|jsx|svelte|vue|sass|scss)$/g, ""), "\": \"").concat(point, "\"\n");
         }), "}")
         : "{".concat(entrypoint
             .substring(entrypoint.lastIndexOf("/") + 1, entrypoint.length)
@@ -120,16 +119,16 @@ function generateWebpackConfig(type, mode, version) {
                     _d.sent();
                     _b = (_a = fs).writeFileSync;
                     _c = ["webpack.config.js"];
-                    return [4 /*yield*/, (0, handle_answers_1.WebpackConfigOptions)(type)];
+                    return [4 /*yield*/, (0, handle_answers_1.WebpackConfigOptions)(type, mode)];
                 case 2:
                     _b.apply(_a, _c.concat([_d.sent()]));
                     return [4 /*yield*/, (0, add_scripts_1.addScriptsForPackageJson)("package.json", mode)];
                 case 3:
                     _d.sent();
-                    (0, delete_line_1.deleteLine)("webpack.config.js");
                     return [4 /*yield*/, (0, text_1.figletText)(type)];
                 case 4:
                     _d.sent();
+                    (0, delete_line_1.deleteLine)("webpack.config.js");
                     return [3 /*break*/, 6];
                 case 5:
                     e_1 = _d.sent();

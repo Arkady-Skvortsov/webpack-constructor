@@ -68,8 +68,9 @@ function figletText(preset) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    console.clear();
                     animation = chalkAnimation.rainbow("Webpack ".concat(preset, " config had been generated!\n"));
-                    return [4 /*yield*/, (0, promise_1.promise)(10000)];
+                    return [4 /*yield*/, (0, promise_1.promise)(5000)];
                 case 1:
                     _a.sent();
                     return [2 /*return*/, animation.stop()];
