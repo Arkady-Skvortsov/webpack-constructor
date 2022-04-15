@@ -81,7 +81,7 @@ function setWatchFiles(files: string) {
 }
 
 function setHTMLPreset(presetType: preset) {
-  return presetType === "Vue" ?? "React" ?? "Svelte"
+  return ["Vue", "React", "Svelte"].some((type) => type !== presetType)
     ? parseString("")
     : parseString(`      
       {

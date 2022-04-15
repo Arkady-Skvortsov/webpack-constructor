@@ -22,13 +22,15 @@ function generateConstants(presetType: preset, mode: webpackMode) {
       ? parseString("")
       : parseString("");
 
-  const htmlWebpackPluginConstant =
-    presetType === "Typescript" ?? presetType === "Javascript"
-      ? parseString(`const HtmlWebpackPlugin = require("html-webpack-plugin");`)
-      : parseString("");
+  const htmlWebpackPluginConstant = ["Typescript", "Javascript"].some(
+    (value) => value === presetType
+  )
+    ? parseString(`const HtmlWebpackPlugin = require("html-webpack-plugin");`)
+    : parseString("");
 
   const modeConstants =
-    mode === "production"
+    mode === "production" &&
+    ["Svelte", "Vue", "React"].some((value) => value !== presetType)
       ? stringParser(
           "const HtmlMinimizerPlugin = require('html-minimizer-webpack-plugin');\n const MiniCssExtractPlugin = require('mini-css-extract-plugin');\n const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');\n const TerserPlugin = require('terser-webpack-plugin');\n"
         )

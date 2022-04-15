@@ -17,8 +17,7 @@ function LinterChoose(lang, options) {
 }
 exports.LinterChoose = LinterChoose;
 function isHtmlWebpackPlugin(presetType, options) {
-    var _a;
-    return ((_a = presetType !== "Typescript") !== null && _a !== void 0 ? _a : presetType !== "Javascript")
+    return ["Typescript", "Javascript"].some(function (value) { return value !== presetType; })
         ? (0, text_1.parseString)("\n    new HtmlWebpackPlugin({\n      filename: \"".concat((0, dev_mode_1.outputFileName)(options.devMode, "html"), "\",\n      title: \"").concat(options.htmlTitle, "\",\n      template: \"").concat(options.htmlTemplate, "\",\n      minify: {\n        collapseWhiteSpaces: true,\n        removeAttributeQuotes: true,\n        removeComments: true,\n      },\n    }),"))
         : (0, text_1.parseString)("");
 }

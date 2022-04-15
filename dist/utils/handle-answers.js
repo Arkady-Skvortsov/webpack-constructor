@@ -158,13 +158,12 @@ function checkPresetTsConfig(preset) {
     });
 }
 function checkPresetFrameworkConfig(preset) {
-    var _a;
     return __awaiter(this, void 0, void 0, function () {
-        var _b, _c;
-        return __generator(this, function (_d) {
-            switch (_d.label) {
+        var _a, _b;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
                 case 0:
-                    if (!((_a = preset !== "Javascript") !== null && _a !== void 0 ? _a : preset !== "Typescript")) return [3 /*break*/, 2];
+                    if (!["Javascript", "Typescript"].some(function (value) { return value !== preset; })) return [3 /*break*/, 2];
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_12",
                             type: "list",
@@ -172,33 +171,32 @@ function checkPresetFrameworkConfig(preset) {
                             choices: ["Javascript", "Typescript"],
                         })];
                 case 1:
-                    _b = _d.sent();
+                    _a = _c.sent();
                     return [3 /*break*/, 6];
                 case 2:
                     if (!(preset === "Typescript")) return [3 /*break*/, 4];
                     return [4 /*yield*/, checkPresetTsConfig(preset)];
                 case 3:
-                    _c = _d.sent();
+                    _b = _c.sent();
                     return [3 /*break*/, 5];
                 case 4:
-                    _c = void 0;
-                    _d.label = 5;
+                    _b = void 0;
+                    _c.label = 5;
                 case 5:
-                    _b = _c;
-                    _d.label = 6;
-                case 6: return [2 /*return*/, _b];
+                    _a = _b;
+                    _c.label = 6;
+                case 6: return [2 /*return*/, _a];
             }
         });
     });
 }
 function checkPresetHTML(preset, text) {
-    var _a;
     return __awaiter(this, void 0, void 0, function () {
-        var _b;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
-                    if (!((_a = preset !== "Vue") !== null && _a !== void 0 ? _a : preset !== "React")) return [3 /*break*/, 3];
+                    if (!["React", "Vue", "Svelte"].some(function (value) { return value !== preset; })) return [3 /*break*/, 3];
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_6",
                             type: "input",
@@ -206,19 +204,19 @@ function checkPresetHTML(preset, text) {
                             default: "Hello world",
                         })];
                 case 1:
-                    _c.sent();
+                    _b.sent();
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_7",
                             type: "input",
                             message: "What is the html template would be in webpack config (example: ".concat(text, "/main.html) ?"),
                         })];
                 case 2:
-                    _b = (_c.sent());
+                    _a = (_b.sent());
                     return [3 /*break*/, 4];
                 case 3:
-                    _b = void 0;
-                    _c.label = 4;
-                case 4: return [2 /*return*/, _b];
+                    _a = void 0;
+                    _b.label = 4;
+                case 4: return [2 /*return*/, _a];
             }
         });
     });

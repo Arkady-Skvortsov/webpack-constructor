@@ -8,7 +8,6 @@ exports.whitespace = whitespace;
 var extensions = new RegExp(/\.(js|ts|tsx|jsx|svelte|vue|sass|scss|)$/, "g");
 exports.extensions = extensions;
 function generateConstants(presetType, mode) {
-    var _a;
     var constants = presetType === "Typescript"
         ? (0, parser_1.stringParser)("const TsLintPlugin = require(\"tslint-webpack-plugin\")")
         : presetType === "Javascript"
@@ -20,10 +19,11 @@ function generateConstants(presetType, mode) {
                     : presetType === "Svelte"
                         ? (0, text_1.parseString)("")
                         : (0, text_1.parseString)("");
-    var htmlWebpackPluginConstant = ((_a = presetType === "Typescript") !== null && _a !== void 0 ? _a : presetType === "Javascript")
+    var htmlWebpackPluginConstant = ["Typescript", "Javascript"].some(function (value) { return value === presetType; })
         ? (0, text_1.parseString)("const HtmlWebpackPlugin = require(\"html-webpack-plugin\");")
         : (0, text_1.parseString)("");
-    var modeConstants = mode === "production"
+    var modeConstants = mode === "production" &&
+        ["Svelte", "Vue", "React"].some(function (value) { return value !== presetType; })
         ? (0, parser_1.stringParser)("const HtmlMinimizerPlugin = require('html-minimizer-webpack-plugin');\n const MiniCssExtractPlugin = require('mini-css-extract-plugin');\n const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');\n const TerserPlugin = require('terser-webpack-plugin');\n")
         : (0, parser_1.stringParser)("const WebpackNotifierPlugin = require('webpack-notifier');");
     return "\nconst path = require('path');\nconst { CleanWebpackPlugin } = require('clean-webpack-plugin');\n".concat(htmlWebpackPluginConstant, "\n").concat(modeConstants, "\n").concat(constants, "\n  ");

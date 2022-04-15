@@ -61,8 +61,7 @@ function setWatchFiles(files) {
 }
 exports.setWatchFiles = setWatchFiles;
 function setHTMLPreset(presetType) {
-    var _a, _b;
-    return ((_b = (_a = presetType === "Vue") !== null && _a !== void 0 ? _a : "React") !== null && _b !== void 0 ? _b : "Svelte")
+    return ["Vue", "React", "Svelte"].some(function (type) { return type !== presetType; })
         ? (0, text_1.parseString)("")
         : (0, text_1.parseString)("      \n      {\n        test: /.html$/,\n        loader: \"html-loader\",\n      },");
 }

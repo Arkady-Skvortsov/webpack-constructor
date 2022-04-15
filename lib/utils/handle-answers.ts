@@ -1,15 +1,27 @@
 import inquirer from "inquirer";
-import { version, webpackConfigType, webpackMode } from "./helpers/types";
+import {
+  basicTypes,
+  version,
+  webpackConfigType,
+  webpackMode,
+} from "./helpers/types";
 import { start } from "./start";
 import { preset } from "./helpers/enum";
 import { generateWebpackConfig } from "./webpack-set.content";
 import { addContentToPreset } from "./add-content-preset";
 import { setMainExtension } from "./helpers/main-extension";
 import { generateExtensions } from "./helpers/extensions";
-
-async function basicSelect(text: webpackConfigType) {
-  return text !== "Custom" ? choosePreset() : customChoose();
-}
+import {
+  contextAnswer,
+  cssPreprocessors,
+  entryPointsAnswer,
+  htmlPreprocessorsAnswer,
+  imageExtensions,
+  isCssPreprocessorsAnswer,
+  isHtmlPreprocessorAnswer,
+  isImageExtensionAnswer,
+  supportFromCoffeScriptAnswer,
+} from "./answers";
 
 async function firstChoose() {
   await start();
@@ -21,12 +33,10 @@ async function firstChoose() {
     choices: ["Preset", "Custom"],
   });
 
-  await basicSelect(basicChoose.question_1);
+  await choosePreset(basicChoose.question_1);
 }
 
-async function customChoose() {}
-
-async function choosePreset() {
+async function choosePreset(type: basicTypes) {
   const presetChoose = await inquirer.prompt({
     name: "question_2",
     type: "list",
@@ -66,44 +76,72 @@ async function handleAnswer(
 
 async function checkPresetTsConfig(preset: preset) {
   return preset === "Typescript"
-    ? await inquirer.prompt({
-        name: "question_12",
-        type: "input",
-        message:
-          "What is the path to you'r tslint.json file (default: ./tslint.json)?",
-        default: "./tslint.json",
-      })
+    ? {
+        tslintFilePath: await inquirer.prompt({
+          name: "question_12",
+          type: "input",
+          message:
+            "What is the path to you'r tslint.json file (default: ./tslint.json)?",
+          default: "./tslint.json",
+        }),
+      }
     : void 0;
 }
 
 async function checkPresetFrameworkConfig(preset: preset) {
-  return preset !== "Javascript" ?? preset !== "Typescript"
-    ? await inquirer.prompt({
-        name: "question_12",
-        type: "list",
-        message: "What is the language you want to select for that framework ?",
-        choices: ["Javascript", "Typescript"],
-      })
+  return ["Javascript", "Typescript"].some((value) => value !== preset)
+    ? {
+        LintTypescriptFilesPath: await inquirer.prompt({
+          name: "question_12",
+          type: "list",
+          message:
+            "What is the language you want to select for that framework ?",
+          choices: ["Javascript", "Typescript"],
+        }),
+      }
     : preset === "Typescript"
     ? await checkPresetTsConfig(preset)
     : void 0;
 }
 
 async function checkPresetHTML(preset: preset, text: any) {
-  return preset !== "Vue" ?? preset !== "React"
-    ? (await inquirer.prompt({
-        name: "question_6",
-        type: "input",
-        message:
-          "What is the title do you want in html page (example: Hello world) ?",
-        default: "Hello world",
-      }),
-      await inquirer.prompt({
-        name: "question_7",
-        type: "input",
-        message: `What is the html template would be in webpack config (example: ${text}/main.html) ?`,
-      }))
+  return ["React", "Vue", "Svelte"].some((value) => value !== preset)
+    ? {
+        htmlTitle: await inquirer.prompt({
+          name: "question_6",
+          type: "input",
+          message:
+            "What is the title do you want in html page (example: Hello world) ?",
+          default: "Hello world",
+        }),
+        htmlTemplate: await inquirer.prompt({
+          name: "question_7",
+          type: "input",
+          message: `What is the html template would be in webpack config (example: ${text}/main.html) ?`,
+        }),
+      }
     : void 0;
+}
+
+async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
+  const contextPintWrite = await contextAnswer();
+  const entryPointWrite = await entryPointsAnswer(
+    presetType,
+    contextPintWrite.question_context
+  );
+  const supportCoffescript = await supportFromCoffeScriptAnswer();
+  const isHtmlPreprocessor = await isHtmlPreprocessorAnswer();
+  const htmlPreprocessors = await htmlPreprocessorsAnswer(
+    isHtmlPreprocessor.question_is_html_preprocessor
+  );
+  const isCssPreprocessor = await isCssPreprocessorsAnswer();
+  const cssPreprocessorsAnswer = await cssPreprocessors(
+    isCssPreprocessor.question_is_css_preprocessor
+  );
+  const isImageExtension = await isImageExtensionAnswer();
+  const imageExtensionsAnswer = await imageExtensions(
+    isImageExtension.question_is_image_extensions
+  );
 }
 
 async function WebpackConfigOptions(presetType: preset, mode: webpackMode) {
@@ -143,11 +181,14 @@ async function WebpackConfigOptions(presetType: preset, mode: webpackMode) {
     default: "./dist",
   });
 
-  await checkPresetHTML(presetType, contextPointWrite.question_3);
+  const htmlPreset = await checkPresetHTML(
+    presetType,
+    contextPointWrite.question_3
+  );
 
-  await checkPresetFrameworkConfig(presetType);
+  const checkLangPreset = await checkPresetFrameworkConfig(presetType);
 
-  await checkPresetTsConfig(presetType);
+  const checkTsConfigPreset = await checkPresetTsConfig(presetType);
 
   const watchFilesPath = await inquirer.prompt({
     name: "question_13",
@@ -161,15 +202,13 @@ async function WebpackConfigOptions(presetType: preset, mode: webpackMode) {
     entryPoint: entryPointWrite.question_4,
     aliasPath: aliasPathWrite.question_5,
     devPort: portWrite.question_8,
+    htmlTitle: htmlPreset?.htmlTitle.question_6,
+    htmlTemplate: htmlPreset?.htmlTemplate.question_7,
+    tslintFilePath: checkTsConfigPreset?.tslintFilePath.question_12,
     outputFolder: outputFolder.question_9,
     watchFiles: watchFilesPath.question_13,
     devMode: mode,
   });
-
-  // htmlTitle: htmlTitle.question_6,
-  // htmlTemplate: htmlTemplatePath.question_7,
-  // LintTypescriptFilePath: ,
-  // tslintFilePath: ,
 }
 
-export { firstChoose, customChoose, WebpackConfigOptions };
+export { firstChoose, WebpackConfigOptions };

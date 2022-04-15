@@ -32,7 +32,7 @@ function LinterChoose(lang: preset, options: webpackConfig) {
 }
 
 function isHtmlWebpackPlugin(presetType: preset, options: webpackConfig) {
-  return presetType !== "Typescript" ?? presetType !== "Javascript"
+  return ["Typescript", "Javascript"].some((value) => value !== presetType)
     ? parseString(`
     new HtmlWebpackPlugin({
       filename: "${outputFileName(options.devMode, "html")}",
