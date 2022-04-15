@@ -22,6 +22,11 @@ function generateConstants(presetType: preset, mode: webpackMode) {
       ? parseString("")
       : parseString("");
 
+  const htmlWebpackPluginConstant =
+    presetType === "Typescript" ?? presetType === "Javascript"
+      ? parseString(`const HtmlWebpackPlugin = require("html-webpack-plugin");`)
+      : parseString("");
+
   const modeConstants =
     mode === "production"
       ? stringParser(
@@ -32,12 +37,12 @@ function generateConstants(presetType: preset, mode: webpackMode) {
         );
 
   return `
-const path = require("path");
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+${htmlWebpackPluginConstant}
 ${modeConstants}
 ${constants}
   `;
 }
 
-export { generateConstants, whitespace };
+export { generateConstants, whitespace, extensions };

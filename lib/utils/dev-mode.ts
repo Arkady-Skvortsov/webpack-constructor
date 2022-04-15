@@ -80,6 +80,16 @@ function setWatchFiles(files: string) {
     : `"${files}"`;
 }
 
+function setHTMLPreset(presetType: preset) {
+  return presetType === "Vue" ?? "React" ?? "Svelte"
+    ? parseString("")
+    : parseString(`      
+      {
+        test: /\.html$/,
+        loader: "html-loader",
+      },`);
+}
+
 export {
   setCSSRuleUse,
   setCssPlugin,
@@ -90,4 +100,5 @@ export {
   isSourceMaps,
   setVueLoader,
   setWatchFiles,
+  setHTMLPreset,
 };

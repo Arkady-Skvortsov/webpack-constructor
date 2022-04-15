@@ -5,8 +5,8 @@ interface webpackConfig {
   context: string;
   entryPoint: string;
   aliasPath: string;
-  htmlTemplate: string;
-  htmlTitle: string;
+  htmlTemplate?: string;
+  htmlTitle?: string;
   LintTypescriptFilesPath?: string;
   tslintFilePath?: string;
   outputFolder: string;

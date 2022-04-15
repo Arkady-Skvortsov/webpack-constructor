@@ -89,6 +89,23 @@ async function checkPresetFrameworkConfig(preset: preset) {
     : void 0;
 }
 
+async function checkPresetHTML(preset: preset, text: any) {
+  return preset !== "Vue" ?? preset !== "React"
+    ? (await inquirer.prompt({
+        name: "question_6",
+        type: "input",
+        message:
+          "What is the title do you want in html page (example: Hello world) ?",
+        default: "Hello world",
+      }),
+      await inquirer.prompt({
+        name: "question_7",
+        type: "input",
+        message: `What is the html template would be in webpack config (example: ${text}/main.html) ?`,
+      }))
+    : void 0;
+}
+
 async function WebpackConfigOptions(presetType: preset, mode: webpackMode) {
   const contextPointWrite = await inquirer.prompt({
     name: "question_3",
@@ -111,20 +128,6 @@ async function WebpackConfigOptions(presetType: preset, mode: webpackMode) {
     message: `What is the path for alias(es) would be in webpack config (example: ${contextPointWrite.question_3}/utils) ?`,
   });
 
-  const htmlTitle = await inquirer.prompt({
-    name: "question_6",
-    type: "input",
-    message:
-      "What is the title do you want in html page (example: Hello world) ?",
-    default: "Hello world",
-  });
-
-  const htmlTemplatePath = await inquirer.prompt({
-    name: "question_7",
-    type: "input",
-    message: `What is the html template would be in webpack config (example: ${contextPointWrite.question_3}/main.html) ?`,
-  });
-
   const portWrite = await inquirer.prompt({
     name: "question_8",
     type: "input",
@@ -139,6 +142,8 @@ async function WebpackConfigOptions(presetType: preset, mode: webpackMode) {
       "What is the folder do you want that be an output (example: ./dist) ?",
     default: "./dist",
   });
+
+  await checkPresetHTML(presetType, contextPointWrite.question_3);
 
   await checkPresetFrameworkConfig(presetType);
 
@@ -155,13 +160,16 @@ async function WebpackConfigOptions(presetType: preset, mode: webpackMode) {
     context: contextPointWrite.question_3,
     entryPoint: entryPointWrite.question_4,
     aliasPath: aliasPathWrite.question_5,
-    htmlTitle: htmlTitle.question_6,
-    htmlTemplate: htmlTemplatePath.question_7,
     devPort: portWrite.question_8,
     outputFolder: outputFolder.question_9,
     watchFiles: watchFilesPath.question_13,
     devMode: mode,
   });
+
+  // htmlTitle: htmlTitle.question_6,
+  // htmlTemplate: htmlTemplatePath.question_7,
+  // LintTypescriptFilePath: ,
+  // tslintFilePath: ,
 }
 
 export { firstChoose, customChoose, WebpackConfigOptions };

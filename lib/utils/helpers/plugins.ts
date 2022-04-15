@@ -1,8 +1,9 @@
-import { webpackMode } from "./types";
+import { webpackMode, webpackOption } from "./types";
 import { setScriptFiles } from "../webpack-set.content";
 import { webpackConfig } from "./interfaces";
 import { preset } from "./enum";
 import { parseString } from "../text";
+import { outputFileName } from "../dev-mode";
 
 function setWebpackNotifierPlugin(mode: webpackMode) {
   return mode === "production"
@@ -22,13 +23,28 @@ function LinterChoose(lang: preset, options: webpackConfig) {
         project: "${options.tslintFilePath}",
         warningsAsError: true
        }),`
-    : `
-new ESLintPlugin({
-  failOnError: true,
-  failOnWarning: false,
-  emitError: true,
-  emitWarning: true,
-}),`;
+    : `new ESLintPlugin({
+        failOnError: true,
+        failOnWarning: false,
+        emitError: true,
+        emitWarning: true,
+      }),`;
 }
 
-export { setWebpackNotifierPlugin, LinterChoose };
+function isHtmlWebpackPlugin(presetType: preset, options: webpackConfig) {
+  return presetType !== "Typescript" ?? presetType !== "Javascript"
+    ? parseString(`
+    new HtmlWebpackPlugin({
+      filename: "${outputFileName(options.devMode, "html")}",
+      title: "${options.htmlTitle}",
+      template: "${options.htmlTemplate}",
+      minify: {
+        collapseWhiteSpaces: true,
+        removeAttributeQuotes: true,
+        removeComments: true,
+      },
+    }),`)
+    : parseString("");
+}
+
+export { setWebpackNotifierPlugin, LinterChoose, isHtmlWebpackPlugin };

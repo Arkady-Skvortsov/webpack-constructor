@@ -4,18 +4,22 @@ import { generateConstants } from "./helpers/constants";
 import { setAlias, setEntryPoint, setSourceMaps } from "./webpack-set.content";
 import { langLoader } from "./helpers/loaders";
 import {
-  isSourceMaps,
   optimizeProductionCSS,
   optimizeProductionHTML,
   outputFileName,
   setCssPlugin,
   setCSSRuleUse,
+  setHTMLPreset,
   setTerserPlugin,
   setVueLoader,
   setWatchFiles,
 } from "./dev-mode";
 import { generateExtensions } from "./helpers/extensions";
-import { LinterChoose, setWebpackNotifierPlugin } from "./helpers/plugins";
+import {
+  isHtmlWebpackPlugin,
+  LinterChoose,
+  setWebpackNotifierPlugin,
+} from "./helpers/plugins";
 
 function addContentToPreset(type: preset, options: webpackConfig) {
   return `
@@ -28,16 +32,13 @@ module.exports = {
   module: {
     rules: [
       ${langLoader(type)}
+      ${setHTMLPreset(type)}
       {
         test: /\.s(a|c)ss$/,
         use: [${setCSSRuleUse(
           options.devMode,
           type
         )}, "css-loader", "sass-loader"],
-      },
-      {
-        test: /\.html$/,
-        loader: "html-loader",
       },
       {
         test: /\.(png|jpe?g|gif|webp)$/,
@@ -97,16 +98,7 @@ module.exports = {
     cacheWithContext: false,
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      filename: "${outputFileName(options.devMode, "html")}",
-      title: "${options.htmlTitle}",
-      template: "${options.htmlTemplate}",
-      minify: {
-        collapseWhiteSpaces: true,
-        removeAttributeQuotes: true,
-        removeComments: true,
-      },
-    }),
+    ${isHtmlWebpackPlugin(type, options)}
     ${setCssPlugin(options.devMode)}
     ${LinterChoose(type, options)}
     new CleanWebpackPlugin(),

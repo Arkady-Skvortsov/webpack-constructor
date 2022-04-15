@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setWatchFiles = exports.setVueLoader = exports.isSourceMaps = exports.optimizeProductionHTML = exports.optimizeProductionCSS = exports.outputFileName = exports.setTerserPlugin = exports.setCssPlugin = exports.setCSSRuleUse = void 0;
+exports.setHTMLPreset = exports.setWatchFiles = exports.setVueLoader = exports.isSourceMaps = exports.optimizeProductionHTML = exports.optimizeProductionCSS = exports.outputFileName = exports.setTerserPlugin = exports.setCssPlugin = exports.setCSSRuleUse = void 0;
 var constants_1 = require("./helpers/constants");
 var text_1 = require("./text");
 function setCSSRuleUse(mode, presetType) {
@@ -60,4 +60,11 @@ function setWatchFiles(files) {
         : "\"".concat(files, "\"");
 }
 exports.setWatchFiles = setWatchFiles;
+function setHTMLPreset(presetType) {
+    var _a, _b;
+    return ((_b = (_a = presetType === "Vue") !== null && _a !== void 0 ? _a : "React") !== null && _b !== void 0 ? _b : "Svelte")
+        ? (0, text_1.parseString)("")
+        : (0, text_1.parseString)("      \n      {\n        test: /.html$/,\n        loader: \"html-loader\",\n      },");
+}
+exports.setHTMLPreset = setHTMLPreset;
 //# sourceMappingURL=dev-mode.js.map

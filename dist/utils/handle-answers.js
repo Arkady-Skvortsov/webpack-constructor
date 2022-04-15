@@ -191,9 +191,41 @@ function checkPresetFrameworkConfig(preset) {
         });
     });
 }
+function checkPresetHTML(preset, text) {
+    var _a;
+    return __awaiter(this, void 0, void 0, function () {
+        var _b;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    if (!((_a = preset !== "Vue") !== null && _a !== void 0 ? _a : preset !== "React")) return [3 /*break*/, 3];
+                    return [4 /*yield*/, inquirer_1.default.prompt({
+                            name: "question_6",
+                            type: "input",
+                            message: "What is the title do you want in html page (example: Hello world) ?",
+                            default: "Hello world",
+                        })];
+                case 1:
+                    _c.sent();
+                    return [4 /*yield*/, inquirer_1.default.prompt({
+                            name: "question_7",
+                            type: "input",
+                            message: "What is the html template would be in webpack config (example: ".concat(text, "/main.html) ?"),
+                        })];
+                case 2:
+                    _b = (_c.sent());
+                    return [3 /*break*/, 4];
+                case 3:
+                    _b = void 0;
+                    _c.label = 4;
+                case 4: return [2 /*return*/, _b];
+            }
+        });
+    });
+}
 function WebpackConfigOptions(presetType, mode) {
     return __awaiter(this, void 0, void 0, function () {
-        var contextPointWrite, entryPointWrite, aliasPathWrite, htmlTitle, htmlTemplatePath, portWrite, outputFolder, watchFilesPath;
+        var contextPointWrite, entryPointWrite, aliasPathWrite, portWrite, outputFolder, watchFilesPath;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, inquirer_1.default.prompt({
@@ -218,27 +250,12 @@ function WebpackConfigOptions(presetType, mode) {
                 case 3:
                     aliasPathWrite = _a.sent();
                     return [4 /*yield*/, inquirer_1.default.prompt({
-                            name: "question_6",
-                            type: "input",
-                            message: "What is the title do you want in html page (example: Hello world) ?",
-                            default: "Hello world",
-                        })];
-                case 4:
-                    htmlTitle = _a.sent();
-                    return [4 /*yield*/, inquirer_1.default.prompt({
-                            name: "question_7",
-                            type: "input",
-                            message: "What is the html template would be in webpack config (example: ".concat(contextPointWrite.question_3, "/main.html) ?"),
-                        })];
-                case 5:
-                    htmlTemplatePath = _a.sent();
-                    return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_8",
                             type: "input",
                             message: "What is the port would be in Dev Server (default: 3500) ?",
                             default: 3500,
                         })];
-                case 6:
+                case 4:
                     portWrite = _a.sent();
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_9",
@@ -246,13 +263,16 @@ function WebpackConfigOptions(presetType, mode) {
                             message: "What is the folder do you want that be an output (example: ./dist) ?",
                             default: "./dist",
                         })];
-                case 7:
+                case 5:
                     outputFolder = _a.sent();
+                    return [4 /*yield*/, checkPresetHTML(presetType, contextPointWrite.question_3)];
+                case 6:
+                    _a.sent();
                     return [4 /*yield*/, checkPresetFrameworkConfig(presetType)];
-                case 8:
+                case 7:
                     _a.sent();
                     return [4 /*yield*/, checkPresetTsConfig(presetType)];
-                case 9:
+                case 8:
                     _a.sent();
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_13",
@@ -260,14 +280,12 @@ function WebpackConfigOptions(presetType, mode) {
                             message: "What is the folder with files do you want to watch for changes with starting devServer (example: ".concat(contextPointWrite.question_3, "/html) ?"),
                             default: "".concat(contextPointWrite.question_3, "/html"),
                         })];
-                case 10:
+                case 9:
                     watchFilesPath = _a.sent();
                     return [2 /*return*/, (0, add_content_preset_1.addContentToPreset)(presetType, {
                             context: contextPointWrite.question_3,
                             entryPoint: entryPointWrite.question_4,
                             aliasPath: aliasPathWrite.question_5,
-                            htmlTitle: htmlTitle.question_6,
-                            htmlTemplate: htmlTemplatePath.question_7,
                             devPort: portWrite.question_8,
                             outputFolder: outputFolder.question_9,
                             watchFiles: watchFilesPath.question_13,
