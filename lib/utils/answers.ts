@@ -2,11 +2,6 @@ import inquirer from "inquirer";
 import { preset } from "./helpers/enum";
 import { generateExtensions } from "./helpers/extensions";
 import { questionResponse } from "./helpers/types";
-import { parseString } from "./text";
-
-class AnswerFactory {
-  private constructor() {}
-}
 
 async function contextAnswer() {
   return await inquirer.prompt({
@@ -25,6 +20,14 @@ async function entryPointsAnswer(preset: preset, entrypoint: string) {
     message: `What is the entrypoint would be in webpack config (example: ${entrypoint}/main/${generateExtensions(
       preset
     )}) ?`,
+  });
+}
+
+async function setAliasAnswer(context: string) {
+  return await inquirer.prompt({
+    name: "set_alias",
+    type: "input",
+    message: `What is the path for alias(es) would be in webpack config (example: ${context}/utils) ?`,
   });
 }
 
@@ -73,7 +76,7 @@ async function isAvoidErrorStyles() {
   });
 }
 
-async function cacheWebpack() {
+async function isCacheWebpack() {
   return await inquirer.prompt({
     name: "cache_webpack",
     type: "list",
@@ -99,6 +102,52 @@ async function supportFromCoffeScriptAnswer() {
   });
 }
 
+async function isCopyStaticFiles() {
+  return await inquirer.prompt({
+    name: "is_copy_static_files",
+    type: "list",
+    message: "Do you want copy ready catalogs/files in build folders ",
+    choices: ["Yes", "No"],
+  });
+}
+
+async function setFilesCatalogesCopy(response: questionResponse) {
+  return response === "Yes"
+    ? await inquirer.prompt({
+        name: "set_files_cataloges_copy",
+        type: "input",
+        message: "What is files do you want that be copied in build catalog ?",
+      })
+    : void 0;
+}
+
+async function setFilesForIgnore(response: questionResponse) {
+  return response === "Yes"
+    ? await inquirer.prompt({
+        name: "set_files_for_ignore",
+        type: "input",
+        message: "What is the files do you want to ignore ?",
+      })
+    : void 0;
+}
+
+async function isIgnoreSomeFilesWatchMode() {
+  return await inquirer.prompt({
+    name: "is_ignore_some_files_watch_mode",
+    type: "list",
+    message: "Do you want to set files, which would be ignored in watch mode ?",
+    choices: ["Yes", "No"],
+  });
+}
+
+async function setFilesForIgnoreInWatchMode() {
+  return await inquirer.prompt({
+    name: "set_files_for_ignore_in_watch_mode",
+    type: "input",
+    message: "What is the files do you want to ignore in watch mode ?",
+  });
+}
+
 async function isHtmlPreprocessorAnswer() {
   return await inquirer.prompt({
     name: "question_is_html_preprocessor",
@@ -116,7 +165,7 @@ async function htmlPreprocessorsAnswer(response: questionResponse) {
         message: "What is html preprocessor(s) do you want to use ?",
         choices: ["Pug", "Jade", "EJS", "HandleBars"],
       })
-    : parseString("");
+    : void 0;
 }
 
 async function isSplitBundlesThroughDLL() {
@@ -177,7 +226,7 @@ async function cssPreprocessors(response: questionResponse) {
         message: "What is css preprocessor(s) do you want to use ?",
         choices: ["(Sass/Scss)", "Less", "PostCSS", "Stylus"],
       })
-    : parseString("");
+    : void 0;
 }
 
 async function isImageExtensionAnswer() {
@@ -197,7 +246,7 @@ async function imageExtensions(response: "yes" | "no") {
         message: "What is the image extension(s) do you want to use ?",
         choices: [".png", ".jpeg", ".jpg", ".svg", ".gif", ".webp"],
       })
-    : parseString("");
+    : void 0;
 }
 
 async function isFontsExtensionAnswer() {
@@ -209,16 +258,29 @@ async function isFontsExtensionAnswer() {
   });
 }
 
-async function fontsExtensions() {
-  return await inquirer.prompt({
-    name: "question_fonts_extensions",
-    type: "checkbox",
-    message: "What is fonts extension(s) do you want to use ?",
-    choices: [".woff", ".ttf", ".eot", ".svg", ".otf"],
-  });
+async function fontsExtensions(response: questionResponse) {
+  return response === "Yes"
+    ? await inquirer.prompt({
+        name: "question_fonts_extensions",
+        type: "checkbox",
+        message: "What is fonts extension(s) do you want to use ?",
+        choices: [".woff", ".ttf", ".eot", ".svg", ".otf"],
+      })
+    : void 0;
 }
 
-async function xmlExtension() {
+async function chooseStaticFilesLoader(response: questionResponse) {
+  return response === "Yes"
+    ? await inquirer.prompt({
+        name: "choose_static_files_loader",
+        type: "list",
+        message: "Whaat is loader you want to choose for static files ?",
+        choices: ["file-loader", "url-loader", "raw-loader"],
+      })
+    : void 0;
+}
+
+async function isXmlExtension() {
   return await inquirer.prompt({
     name: "question_xml_exension",
     type: "list",
@@ -227,7 +289,7 @@ async function xmlExtension() {
   });
 }
 
-async function yamlExtension() {
+async function isYamlExtension() {
   return await inquirer.prompt({
     name: "question_yaml_extension",
     type: "list",
@@ -236,7 +298,7 @@ async function yamlExtension() {
   });
 }
 
-async function csvExtension() {
+async function isCsvExtension() {
   return await inquirer.prompt({
     name: "question_csv_extension",
     type: "list",
@@ -245,7 +307,7 @@ async function csvExtension() {
   });
 }
 
-async function buildPwaAnswer() {
+async function isPwaSupport() {
   return await inquirer.prompt({
     name: "question_build_pwa",
     type: "list",
@@ -294,17 +356,20 @@ async function isEnvironmentVariables() {
 
 async function setEnvironmentVariables(response: questionResponse) {
   return response === "Yes"
-    ? (await inquirer.prompt({
-        name: "set_environment_names",
-        type: "input",
-        message:
-          "What is name would be for environment variable (example: PG_DB PG_PORT) ?",
-      }),
-      await inquirer.prompt({
-        name: "set_environment_values",
-        type: "input",
-        message: "What is value would be for environment variable (example: )",
-      }))
+    ? {
+        name: await inquirer.prompt({
+          name: "set_environment_names",
+          type: "input",
+          message:
+            "What is name would be for environment variable (example: PG_DB PG_PORT) ?",
+        }),
+        value: await inquirer.prompt({
+          name: "set_environment_values",
+          type: "input",
+          message:
+            "What is value would be for environment variable (example: )",
+        }),
+      }
     : void 0;
 }
 
@@ -331,7 +396,8 @@ async function setLocalizeDetails(response: questionResponse) {
     ? await inquirer.prompt({
         name: "question_set_localize_details",
         type: "input",
-        message: "What is the languages do you want to use () ?",
+        message:
+          "What is the languages do you want to use (example: RU EN FR) ?",
       })
     : void 0;
 }
@@ -439,7 +505,7 @@ async function isIgnoreSomeFiles() {
   });
 }
 
-async function isIntegration() {
+async function isIntegrationInstrument() {
   return await inquirer.prompt({
     name: "question_is_integration",
     type: "list",
@@ -506,6 +572,7 @@ async function outputDir() {
     type: "input",
     message:
       "What is the folder do you want, that be an output (default: ./dist)",
+    default: "./dist",
   });
 }
 
@@ -516,8 +583,9 @@ export {
   staticLoader,
   supportFromCoffeScriptAnswer,
   entryPointsAnswer,
-  yamlExtension,
+  isYamlExtension,
   imageExtensions,
+  isPwaSupport,
   isAvoidErrorStyles,
   isDevServerAnswer,
   isFontsAnswer,
@@ -525,11 +593,11 @@ export {
   isLazyLoading,
   fontsExtensions,
   htmlPreprocessorsAnswer,
-  xmlExtension,
-  cacheWebpack,
+  isXmlExtension,
+  isCacheWebpack,
   contextAnswer,
   cssPreprocessors,
-  csvExtension,
+  isCsvExtension,
   isCssPreprocessorsAnswer,
   isHtmlPreprocessorAnswer,
   isImageExtensionAnswer,
@@ -542,9 +610,12 @@ export {
   addingBannerToChunk,
   isClosureLibrary,
   isEnvironmentVariables,
+  isCopyStaticFiles,
+  setFilesCatalogesCopy,
   setEnvironmentVariables,
   isLocalizeAnswer,
   isHMRAnswer,
+  chooseStaticFilesLoader,
   setLocalizeDetails,
   isMinimumChunkSize,
   isMaximumChunkSize,
@@ -555,8 +626,12 @@ export {
   setLevelRatioCompression,
   isCreateChromeProfileFile,
   isIgnoreSomeFiles,
-  isIntegration,
+  isIntegrationInstrument,
   compressionLevel,
   setMaximumChunkSize,
   setMinimumChunkSize,
+  setAliasAnswer,
+  setFilesForIgnore,
+  setFilesForIgnoreInWatchMode,
+  isIgnoreSomeFilesWatchMode,
 };

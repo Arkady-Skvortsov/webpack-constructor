@@ -68,9 +68,6 @@
   Do you want a caching in webpack ?
   Yes
   No
-  Do you want to use a dynamic imports in webpack ?
-  Yes
-  No
   Do you want to Splitting chunks?
   Yes
   No
@@ -100,12 +97,12 @@
   Do you want to create a environment variables for project ?
   Yes
   No
-  Do you want to discover all modules from the previous compilation upfront while watching for changes, trying to improve the incremental build times ?
-  Yes
-  No
   What is the variables would be ?
   key ...........
   value .........
+  Do you want to discover all modules from the previous compilation upfront while watching for changes, trying to improve the incremental build times ?
+  Yes
+  No
   Do you want to using localization in webpack ?
   Yes
   No
@@ -157,6 +154,6 @@
   Do you want copy ready catalogs/files in build folders ?
   Yes
   No
-  What is the catalogs/files would be ?
+  What is the catalogs/files would be in build folders ?
   ......
 ```

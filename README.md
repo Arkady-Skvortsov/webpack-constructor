@@ -12,6 +12,12 @@ I'm already tired of watching $100,000 frontend developers post in telegram/slac
 
 # How to use?
 
+# Download
+
+```sh
+  npm i webpack-constructor
+```
+
 # Choose preset / create custom
 
 ```sh
@@ -37,10 +43,6 @@ I'm already tired of watching $100,000 frontend developers post in telegram/slac
   development
 ```
 
-# Preset List
+# [Preset List](https://github.com/Arkady-Skvortsov/webpack-constructor/blob/main/PRESET.md)
 
-[a link](https://github.com/Arkady-Skvortsov/webpack-constructor/blob/main/PRESET.md)
-
-# Custom List (would be so soon)
-
-[a link](https://github.com/Arkady-Skvortsov/webpack-constructor/blob/main/CUSTOM.md)
+# [Custom List](https://github.com/Arkady-Skvortsov/webpack-constructor/blob/main/CUSTOM.md)
