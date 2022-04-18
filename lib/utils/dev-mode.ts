@@ -7,8 +7,8 @@ function setCSSRuleUse(mode: webpackMode, presetType?: preset) {
   return mode === "production"
     ? parseString("MiniCssExtractPlugin.loader")
     : presetType === "Vue"
-    ? "vue-style-loader".toString()
-    : "style-loader".toString();
+    ? `"vue-style-loader"`
+    : `"style-loader"`;
 }
 
 function setCssPlugin(mode: webpackMode) {

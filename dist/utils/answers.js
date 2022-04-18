@@ -39,10 +39,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isIntegrationInstrument = exports.isIgnoreSomeFiles = exports.isCreateChromeProfileFile = exports.setLevelRatioCompression = exports.setGlobalVariableValue = exports.setGlobalVariableName = exports.isGlobalVariableAnswer = exports.isCompressionAnswer = exports.isMaximumChunkSize = exports.isMinimumChunkSize = exports.setLocalizeDetails = exports.chooseStaticFilesLoader = exports.isHMRAnswer = exports.isLocalizeAnswer = exports.setEnvironmentVariables = exports.setFilesCatalogesCopy = exports.isCopyStaticFiles = exports.isEnvironmentVariables = exports.isClosureLibrary = exports.addingBannerToChunk = exports.isSplittingChunks = exports.isDiscoverPreviousCompilation = exports.pathToManifestForDLL = exports.contextSplitBundlesThroughDLL = exports.isSplitBundlesThroughDLL = exports.isFontsExtensionAnswer = exports.isImageExtensionAnswer = exports.isHtmlPreprocessorAnswer = exports.isCssPreprocessorsAnswer = exports.isCsvExtension = exports.cssPreprocessors = exports.contextAnswer = exports.isCacheWebpack = exports.isXmlExtension = exports.htmlPreprocessorsAnswer = exports.fontsExtensions = exports.isLazyLoading = exports.isImagesAnswer = exports.isFontsAnswer = exports.isDevServerAnswer = exports.isAvoidErrorStyles = exports.isPwaSupport = exports.imageExtensions = exports.isYamlExtension = exports.entryPointsAnswer = exports.supportFromCoffeScriptAnswer = exports.staticLoader = exports.splitChunksWebpack = exports.outputDir = exports.integrationInstruments = void 0;
-exports.isIgnoreSomeFilesWatchMode = exports.setFilesForIgnoreInWatchMode = exports.setFilesForIgnore = exports.setAliasAnswer = exports.setMinimumChunkSize = exports.setMaximumChunkSize = exports.compressionLevel = void 0;
+exports.isCreateChromeProfileFile = exports.setCompressionOptions = exports.setGlobalVariable = exports.isGlobalVariableAnswer = exports.isCompressionAnswer = exports.isMaximumChunkSize = exports.isMinimumChunkSize = exports.setLocalizeDetails = exports.isHMRAnswer = exports.isLocalizeAnswer = exports.setEnvironmentVariables = exports.setFilesCatalogesCopy = exports.isCopyStaticFiles = exports.isEnvironmentVariables = exports.chooseStaticFilesLoader = exports.isClosureLibrary = exports.addingBannerToChunk = exports.isCleanPlugin = exports.isCopyPlugin = exports.fontsOutDir = exports.isSplittingChunks = exports.isDiscoverPreviousCompilation = exports.supportSplitBundlesThroughDLL = exports.isSplitBundlesThroughDLL = exports.isFontsExtensionAnswer = exports.isImageExtensionAnswer = exports.isHtmlPreprocessorAnswer = exports.isCssPreprocessorsAnswer = exports.isCsvExtension = exports.cssPreprocessors = exports.contextAnswer = exports.isCacheWebpack = exports.isXmlExtension = exports.htmlPreprocessorsAnswer = exports.fontsExtensions = exports.isLazyLoading = exports.isImagesAnswer = exports.isFontsAnswer = exports.isDevServerAnswer = exports.fontsDir = exports.isAvoidErrorStyles = exports.isPwaSupport = exports.imageExtensions = exports.isYamlExtension = exports.entryPointsAnswer = exports.supportFromCoffeScriptAnswer = exports.staticLoader = exports.splitChunksWebpack = exports.outputDir = exports.integrationInstruments = void 0;
+exports.isIgnoreSomeFilesWatchMode = exports.setFilesForIgnoreInWatchMode = exports.setFilesForIgnore = exports.setAliasAnswer = exports.setMinimumChunkSize = exports.setMaximumChunkSize = exports.isIntegrationInstrument = exports.isIgnoreSomeFiles = void 0;
 var inquirer_1 = __importDefault(require("inquirer"));
 var extensions_1 = require("./helpers/extensions");
+var text_1 = require("./text");
 function contextAnswer() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -66,7 +67,7 @@ function entryPointsAnswer(preset, entrypoint) {
                 case 0: return [4 /*yield*/, inquirer_1.default.prompt({
                         name: "entry_point",
                         type: "input",
-                        message: "What is the entrypoint would be in webpack config (example: ".concat(entrypoint, "/main/").concat((0, extensions_1.generateExtensions)(preset), ") ?"),
+                        message: "What is the entrypoint would be in webpack config (example: ".concat(entrypoint, "/main").concat((0, extensions_1.generateExtensions)(preset), ") ?"),
                     })];
                 case 1: return [2 /*return*/, _a.sent()];
             }
@@ -216,6 +217,38 @@ function supportFromCoffeScriptAnswer() {
     });
 }
 exports.supportFromCoffeScriptAnswer = supportFromCoffeScriptAnswer;
+function isCopyPlugin() {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, inquirer_1.default.prompt({
+                        name: "question_is_copy_plugin",
+                        type: "list",
+                        message: "Do you want to copy individual files or entire directories, which already exist to the build directory ?",
+                        choices: ["Yes", "No"],
+                    })];
+                case 1: return [2 /*return*/, _a.sent()];
+            }
+        });
+    });
+}
+exports.isCopyPlugin = isCopyPlugin;
+function isCleanPlugin() {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, inquirer_1.default.prompt({
+                        name: "question_is_clean_plugin",
+                        type: "list",
+                        message: "Do you want that all files inside webpack's output.path directory, as well as all unused webpack assets after every successful rebuild would be removed ?",
+                        choices: ["Yes", "No"],
+                    })];
+                case 1: return [2 /*return*/, _a.sent()];
+            }
+        });
+    });
+}
+exports.isCleanPlugin = isCleanPlugin;
 function isCopyStaticFiles() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -368,54 +401,47 @@ function isSplitBundlesThroughDLL() {
     });
 }
 exports.isSplitBundlesThroughDLL = isSplitBundlesThroughDLL;
-function contextSplitBundlesThroughDLL(response) {
+function supportSplitBundlesThroughDLL(response) {
     return __awaiter(this, void 0, void 0, function () {
         var _a;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var _b;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
                 case 0:
-                    if (!(response === "Yes")) return [3 /*break*/, 2];
+                    if (!(response === "Yes")) return [3 /*break*/, 4];
+                    _b = {};
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_context_split_bundles_dll",
                             type: "input",
-                            message: "What is the context would be for bundle for DLL (example: ./src) ?",
+                            message: "What is the name would be for bundle for DLL (example: bundle) ?",
                         })];
                 case 1:
-                    _a = _b.sent();
-                    return [3 /*break*/, 3];
+                    _b.name = _c.sent();
+                    return [4 /*yield*/, inquirer_1.default.prompt({
+                            name: "question_path_to_files",
+                            type: "input",
+                            message: "What is the path to files for DLL (example: ./src)",
+                        })];
                 case 2:
-                    _a = void 0;
-                    _b.label = 3;
-                case 3: return [2 /*return*/, _a];
-            }
-        });
-    });
-}
-exports.contextSplitBundlesThroughDLL = contextSplitBundlesThroughDLL;
-function pathToManifestForDLL(response) {
-    return __awaiter(this, void 0, void 0, function () {
-        var _a;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    if (!(response === "Yes")) return [3 /*break*/, 2];
+                    _b.path = _c.sent();
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_path_to_manifest_dll",
                             type: "input",
                             message: "What is the path to manifest for DLL (example: ./src/manifest.json) ?",
                         })];
-                case 1:
-                    _a = _b.sent();
-                    return [3 /*break*/, 3];
-                case 2:
+                case 3:
+                    _a = (_b.manifest = _c.sent(),
+                        _b);
+                    return [3 /*break*/, 5];
+                case 4:
                     _a = void 0;
-                    _b.label = 3;
-                case 3: return [2 /*return*/, _a];
+                    _c.label = 5;
+                case 5: return [2 /*return*/, _a];
             }
         });
     });
 }
-exports.pathToManifestForDLL = pathToManifestForDLL;
+exports.supportSplitBundlesThroughDLL = supportSplitBundlesThroughDLL;
 function isDiscoverPreviousCompilation() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -495,7 +521,7 @@ function imageExtensions(response) {
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
-                    if (!(response === "yes")) return [3 /*break*/, 2];
+                    if (!(response === "Yes")) return [3 /*break*/, 2];
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_image_extensions",
                             type: "checkbox",
@@ -555,7 +581,7 @@ function fontsExtensions(response) {
     });
 }
 exports.fontsExtensions = fontsExtensions;
-function chooseStaticFilesLoader(response) {
+function fontsOutDir(response) {
     return __awaiter(this, void 0, void 0, function () {
         var _a;
         return __generator(this, function (_b) {
@@ -563,10 +589,9 @@ function chooseStaticFilesLoader(response) {
                 case 0:
                     if (!(response === "Yes")) return [3 /*break*/, 2];
                     return [4 /*yield*/, inquirer_1.default.prompt({
-                            name: "choose_static_files_loader",
-                            type: "list",
-                            message: "Whaat is loader you want to choose for static files ?",
-                            choices: ["file-loader", "url-loader", "raw-loader"],
+                            name: "question_fonts_dir",
+                            type: "input",
+                            message: "What is the directory would be an output for fonts ?",
                         })];
                 case 1:
                     _a = _b.sent();
@@ -579,7 +604,7 @@ function chooseStaticFilesLoader(response) {
         });
     });
 }
-exports.chooseStaticFilesLoader = chooseStaticFilesLoader;
+exports.fontsOutDir = fontsOutDir;
 function isXmlExtension() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -889,61 +914,49 @@ function isGlobalVariableAnswer() {
     });
 }
 exports.isGlobalVariableAnswer = isGlobalVariableAnswer;
-function setGlobalVariableName(response) {
+function setGlobalVariable(response) {
     return __awaiter(this, void 0, void 0, function () {
         var _a;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var _b;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
                 case 0:
-                    if (!(response === "Yes")) return [3 /*break*/, 2];
+                    if (!(response === "Yes")) return [3 /*break*/, 3];
+                    _b = {};
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_set_global_variable_name",
                             type: "input",
                             message: "What is the name(s) do you want for you variable(s) (example: PRODUCTION BROWSER_SUPPORTS_HTML5) ?",
                         })];
                 case 1:
-                    _a = _b.sent();
-                    return [3 /*break*/, 3];
-                case 2:
-                    _a = void 0;
-                    _b.label = 3;
-                case 3: return [2 /*return*/, _a];
-            }
-        });
-    });
-}
-exports.setGlobalVariableName = setGlobalVariableName;
-function setGlobalVariableValue(response) {
-    return __awaiter(this, void 0, void 0, function () {
-        var _a;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    if (!(response === "Yes")) return [3 /*break*/, 2];
+                    _b.name = _c.sent();
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_set_global_variable_value",
                             type: "input",
                             message: "What is the value(s) do you want for you variable(s) (example: true true) ?",
                         })];
-                case 1:
-                    _a = _b.sent();
-                    return [3 /*break*/, 3];
                 case 2:
+                    _a = (_b.value = _c.sent(),
+                        _b);
+                    return [3 /*break*/, 4];
+                case 3:
                     _a = void 0;
-                    _b.label = 3;
-                case 3: return [2 /*return*/, _a];
+                    _c.label = 4;
+                case 4: return [2 /*return*/, _a];
             }
         });
     });
 }
-exports.setGlobalVariableValue = setGlobalVariableValue;
-function setLevelRatioCompression(response) {
+exports.setGlobalVariable = setGlobalVariable;
+function setCompressionOptions(response) {
     return __awaiter(this, void 0, void 0, function () {
         var _a;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var _b;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
                 case 0:
-                    if (!(response === "Yes")) return [3 /*break*/, 2];
+                    if (!(response === "Yes")) return [3 /*break*/, 4];
+                    _b = {};
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_set_level_ratio_compression",
                             type: "list",
@@ -963,17 +976,33 @@ function setLevelRatioCompression(response) {
                             ],
                         })];
                 case 1:
-                    _a = _b.sent();
-                    return [3 /*break*/, 3];
+                    _b.ratio = _c.sent();
+                    return [4 /*yield*/, inquirer_1.default.prompt({
+                            name: "question_compression_level",
+                            type: "list",
+                            message: "What is the level for compression do you want to choose ?",
+                            choices: ["1", "2", "3", "4"],
+                        })];
                 case 2:
+                    _b.compressionLevel = _c.sent();
+                    return [4 /*yield*/, inquirer_1.default.prompt({
+                            name: "question_threshold_level",
+                            type: "input",
+                            message: "How many threshold would be for compression ?",
+                        })];
+                case 3:
+                    _a = (_b.threshold = _c.sent(),
+                        _b);
+                    return [3 /*break*/, 5];
+                case 4:
                     _a = void 0;
-                    _b.label = 3;
-                case 3: return [2 /*return*/, _a];
+                    _c.label = 5;
+                case 5: return [2 /*return*/, _a];
             }
         });
     });
 }
-exports.setLevelRatioCompression = setLevelRatioCompression;
+exports.setCompressionOptions = setCompressionOptions;
 function isCreateChromeProfileFile() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -990,6 +1019,31 @@ function isCreateChromeProfileFile() {
     });
 }
 exports.isCreateChromeProfileFile = isCreateChromeProfileFile;
+function chooseStaticFilesLoader(response) {
+    return __awaiter(this, void 0, void 0, function () {
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    if (!(response === "Yes")) return [3 /*break*/, 2];
+                    return [4 /*yield*/, inquirer_1.default.prompt({
+                            name: "question_is_choose_static_loader",
+                            type: "list",
+                            message: "What is the static files loader do you want to choose ?",
+                            choices: ["file-loader", "url-loader", "raw-loader"],
+                        })];
+                case 1:
+                    _a = _b.sent();
+                    return [3 /*break*/, 3];
+                case 2:
+                    _a = void 0;
+                    _b.label = 3;
+                case 3: return [2 /*return*/, _a];
+            }
+        });
+    });
+}
+exports.chooseStaticFilesLoader = chooseStaticFilesLoader;
 function isIgnoreSomeFiles() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -1022,31 +1076,6 @@ function isIntegrationInstrument() {
     });
 }
 exports.isIntegrationInstrument = isIntegrationInstrument;
-function compressionLevel(response) {
-    return __awaiter(this, void 0, void 0, function () {
-        var _a;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    if (!(response === "Yes")) return [3 /*break*/, 2];
-                    return [4 /*yield*/, inquirer_1.default.prompt({
-                            name: "question_compression_level",
-                            type: "list",
-                            message: "What is the level for compression do you want to choose ?",
-                            choices: ["1", "2", "3", "4"],
-                        })];
-                case 1:
-                    _a = _b.sent();
-                    return [3 /*break*/, 3];
-                case 2:
-                    _a = void 0;
-                    _b.label = 3;
-                case 3: return [2 /*return*/, _a];
-            }
-        });
-    });
-}
-exports.compressionLevel = compressionLevel;
 function staticLoader() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -1136,6 +1165,30 @@ function integrationInstruments(response) {
     });
 }
 exports.integrationInstruments = integrationInstruments;
+function fontsDir(response) {
+    return __awaiter(this, void 0, void 0, function () {
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    if (!(response === "Yes")) return [3 /*break*/, 2];
+                    return [4 /*yield*/, inquirer_1.default.prompt({
+                            name: "question_fonts_dir",
+                            type: "input",
+                            message: "What is the folder do you want, that be an output for fonts ?",
+                        })];
+                case 1:
+                    _a = _b.sent();
+                    return [3 /*break*/, 3];
+                case 2:
+                    _a = (0, text_1.parseString)("");
+                    _b.label = 3;
+                case 3: return [2 /*return*/, _a];
+            }
+        });
+    });
+}
+exports.fontsDir = fontsDir;
 function outputDir() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {

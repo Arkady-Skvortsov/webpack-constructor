@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateExtensions = void 0;
+exports.setPackOfExtensions = exports.generateExtensions = void 0;
 var text_1 = require("../text");
 function generateExtensions(presetType) {
     return presetType === "Typescript"
@@ -8,12 +8,16 @@ function generateExtensions(presetType) {
         : presetType === "Javascript"
             ? ".js"
             : presetType === "Vue"
-                ? [".vue", ".ts"].join(" ").split(", ")
+                ? ".vue .ts".split(", ").join(" ")
                 : presetType === "React"
-                    ? [".ts", ".tsx"].join(" ").split(", ")
+                    ? ".ts .tsx".split(", ").join(" ")
                     : presetType === "Svelte"
                         ? ".svelte"
                         : (0, text_1.parseString)("");
 }
 exports.generateExtensions = generateExtensions;
+function setPackOfExtensions(extensions) {
+    return "".concat(extensions.split(", "), "\n");
+}
+exports.setPackOfExtensions = setPackOfExtensions;
 //# sourceMappingURL=extensions.js.map

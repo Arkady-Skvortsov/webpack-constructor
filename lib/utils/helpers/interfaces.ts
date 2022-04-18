@@ -1,4 +1,13 @@
-import { questionResponse, version, webpackMode } from "./types";
+import {
+  cssLoader,
+  fontsExtensions,
+  htmlLoader,
+  integrationWebpack,
+  questionResponse,
+  staticLoader,
+  version,
+  webpackMode,
+} from "./types";
 
 interface webpackConfig {
   devMode: "production" | "development";
@@ -20,15 +29,18 @@ interface customWebpackConfig {
   aliasPath: string;
   isCoffeScriptSupport: questionResponse;
   isHtmlPreprocessorSupport: questionResponse;
-  htmlPreprocessor: string;
+  htmlPreprocessor: htmlLoader;
   htmlTemplate?: string;
   htmlTitle?: string;
+  LintTypescriptFilesPath?: string;
+  tslintFilePath?: string;
   isCssPreprocessorSupport: questionResponse;
-  cssPreprocessors: string;
+  cssPreprocessors: cssLoader;
+  staticLoader: staticLoader;
   isImageSupport: questionResponse;
   imageExtensionsSupport: string;
   isFontsSupport: questionResponse;
-  fontsExtensionsSupport: string;
+  fontsExtensionsSupport: fontsExtensions;
   isXmlSupport: questionResponse;
   isYamlSupport: questionResponse;
   isCsvSupport: questionResponse;
@@ -43,27 +55,27 @@ interface customWebpackConfig {
   isBannerSupport: questionResponse;
   isClosureSupport: questionResponse;
   isGlobalVariableSupport: questionResponse;
-  globalVariableName: string;
-  globalVariableValue: string;
+  globalVariable: globalVariable;
   isSplitBundlesThroughDLLSupport: questionResponse;
-  splitBundlesThroughDLLContextSupport: string;
-  manifestBundlesThroughDLLSupport: string;
+  dllOptions: dllOptions;
   isEnvironmentalVariablesSupport: questionResponse;
-  environmentVariableName: string;
-  environmentVariableValue: string;
+  environmentVariable: environmentVariable;
   isDiscoverPreviousCompilationSupport: questionResponse;
   isLocalizeSupport: questionResponse;
   localizeDetailsSupport: string;
+  isCleanPluginSUpport: questionResponse;
   isCreateChromeProfileFileSupport: questionResponse;
   isIgnoreSomeFilesSupport: questionResponse;
   isIntegrationSupport: questionResponse;
-  integrationSupport: string;
+  integrationSupport: integrationWebpack;
   isHMRSupport: questionResponse;
   isCompressionSupport: questionResponse;
-  compressionLevelSupport: string;
-  compressionRatioSupport: string;
+  compressionOptions: compressionOptions;
+  isCopyPluginSupport: questionResponse;
   isCopyStaticFilesSupport: questionResponse;
+  copyOptions?: copyOptions;
   filesCatalogesCopySupport: string;
+  fontsOutputDirectory: string;
   outputDirectory: string;
   isDevServerSupport: questionResponse;
   devMode: webpackMode;
@@ -80,4 +92,28 @@ interface copyOptions {
   to: string;
 }
 
-export { webpackConfig, customWebpackConfig, compressionOptions, copyOptions };
+interface dllOptions {
+  name: string;
+  path: string;
+  manifest: string;
+}
+
+interface environmentVariable {
+  name: any;
+  value: any;
+}
+
+interface globalVariable {
+  name: any;
+  value: any;
+}
+
+export {
+  webpackConfig,
+  customWebpackConfig,
+  compressionOptions,
+  copyOptions,
+  dllOptions,
+  environmentVariable,
+  globalVariable,
+};

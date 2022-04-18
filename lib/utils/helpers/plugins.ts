@@ -1,6 +1,18 @@
-import { integrationWebpack, questionResponse, webpackMode } from "./types";
+import {
+  integrationWebpack,
+  questionResponse,
+  webpackConfigType,
+  webpackMode,
+  webpackOption,
+} from "./types";
 import { setScriptFiles } from "../webpack-set.content";
-import { compressionOptions, copyOptions, webpackConfig } from "./interfaces";
+import {
+  compressionOptions,
+  copyOptions,
+  customWebpackConfig,
+  dllOptions,
+  webpackConfig,
+} from "./interfaces";
 import { preset } from "./enum";
 import { parseString } from "../text";
 import { outputFileName } from "../dev-mode";
@@ -16,7 +28,10 @@ new WebpackNotifierPlugin({
 })`;
 }
 
-function LinterChoose(lang: preset, options: webpackConfig) {
+function LinterChoose(
+  lang: preset,
+  options: webpackConfig | customWebpackConfig
+) {
   return lang === "Typescript"
     ? `new TsLintPlugin({
         files: [${setScriptFiles(options.LintTypescriptFilesPath)}],
@@ -31,7 +46,10 @@ function LinterChoose(lang: preset, options: webpackConfig) {
       }),`;
 }
 
-function isHtmlWebpackPlugin(presetType: preset, options: webpackConfig) {
+function isHtmlWebpackPlugin(
+  presetType: preset,
+  options: webpackConfig | customWebpackConfig
+) {
   return ["Typescript", "Javascript"].some((value) => value !== presetType)
     ? parseString(`
     new HtmlWebpackPlugin({
@@ -53,12 +71,16 @@ function setClosureLibrary(response: questionResponse) {
 
 function setEnvironmentPlugin(response: questionResponse, variables: any) {
   return response === "Yes"
-    ? `new DefinePlugin(${variables}),`
+    ? `new DefinePlugin({
+
+    }),`
     : parseString("");
 }
 
-function setDLLPlugin(response: questionResponse, options: string) {
-  return response === "Yes" ? `new DllPlugin(${options}),` : parseString("");
+function setDLLPlugin(response: questionResponse, options: dllOptions) {
+  return response === "Yes"
+    ? `new DllPlugin({ name: ${options.name}, path: path.resolve(__dirname, ${options.path}) }),`
+    : parseString("");
 }
 
 function setAutomaticPrefechPlugin(response: questionResponse) {
@@ -163,13 +185,12 @@ function setCompressionPlugin(
     : parseString("");
 }
 
-function setCopyWebpackPlugin(
-  response: questionResponse,
-  options: copyOptions
-) {
-  return response === "Yes"
-    ? `new CopyPlugin({ patterns: [ { from: "${options.from}", to: "${options.to}" } ] }),`
-    : parseString("");
+function setCopyWebpackPlugin(response: questionResponse) {
+  return response === "Yes" ? `new CopyWebpackPlugin(),` : parseString("");
+}
+
+function setCleanWebpackPlugin(response: questionResponse) {
+  return response === "Yes" ? `new CleanWebpackPlugin(),` : parseString("");
 }
 
 export {
@@ -180,6 +201,7 @@ export {
   setEnvironmentPlugin,
   setDLLPlugin,
   setAutomaticPrefechPlugin,
+  setCleanWebpackPlugin,
   setI18nPlugin,
   setProfillingPlugin,
   setIgnorePlugin,

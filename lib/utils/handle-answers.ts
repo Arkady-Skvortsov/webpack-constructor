@@ -2,17 +2,16 @@ import inquirer from "inquirer";
 import { basicTypes, version, webpackMode } from "./helpers/types";
 import { start } from "./start";
 import { preset } from "./helpers/enum";
-import { generateWebpackConfig, setAlias } from "./webpack-set.content";
+import { generateWebpackConfig } from "./webpack-set.content";
 import { addContentToPreset } from "./add-content-preset";
 import {
   addingBannerToChunk,
-  chooseStaticFilesLoader,
-  compressionLevel,
+  setCompressionOptions,
   contextAnswer,
-  contextSplitBundlesThroughDLL,
   cssPreprocessors,
   entryPointsAnswer,
   fontsExtensions,
+  chooseStaticFilesLoader,
   htmlPreprocessorsAnswer,
   imageExtensions,
   integrationInstruments,
@@ -42,17 +41,19 @@ import {
   isXmlExtension,
   isYamlExtension,
   outputDir,
-  pathToManifestForDLL,
   setAliasAnswer,
   setEnvironmentVariables,
   setFilesCatalogesCopy,
-  setGlobalVariableName,
-  setGlobalVariableValue,
-  setLevelRatioCompression,
+  setGlobalVariable,
   setLocalizeDetails,
   setMaximumChunkSize,
   setMinimumChunkSize,
   supportFromCoffeScriptAnswer,
+  supportSplitBundlesThroughDLL,
+  staticLoader,
+  isCopyPlugin,
+  isCleanPlugin,
+  fontsOutDir,
 } from "./answers";
 import { addContentToCustom } from "./add-content-custom";
 
@@ -94,16 +95,18 @@ async function choosePreset(type: basicTypes) {
   await handleAnswer(
     presetChoose.question_2,
     webpackMode.question_4,
-    webpackVersion.question_3
+    webpackVersion.question_3,
+    type
   );
 }
 
 async function handleAnswer(
   presetOptions: preset,
   mode: webpackMode,
-  webpackVersion: version
+  webpackVersion: version,
+  type: basicTypes
 ) {
-  await generateWebpackConfig(presetOptions, mode, webpackVersion);
+  await generateWebpackConfig(presetOptions, mode, webpackVersion, type);
   process.exit(1);
 }
 
@@ -122,7 +125,7 @@ async function checkPresetTsConfig(preset: preset) {
 }
 
 async function checkPresetFrameworkConfig(preset: preset) {
-  return ["Javascript", "Typescript"].some((value) => value !== preset)
+  return ["Vue", "React", "Svelte"].includes(preset)
     ? {
         langForFramework: await inquirer.prompt({
           name: "question_12",
@@ -136,7 +139,7 @@ async function checkPresetFrameworkConfig(preset: preset) {
 }
 
 async function checkPresetHTML(preset: preset, text: any) {
-  return ["React", "Vue", "Svelte"].some((value) => value !== preset)
+  return ["React", "Vue", "Svelte"].includes(preset)
     ? {
         htmlTitle: await inquirer.prompt({
           name: "question_6",
@@ -163,6 +166,7 @@ async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
   const setAliasPathes = await setAliasAnswer(
     contextPrintWrite.question_context
   );
+  const checkLangPreset = await checkPresetFrameworkConfig(presetType);
   const isCoffescriptSupport = await supportFromCoffeScriptAnswer();
   const isHtmlPreprocessorSupport = await isHtmlPreprocessorAnswer();
   const htmlPreprocessors = await htmlPreprocessorsAnswer(
@@ -172,16 +176,20 @@ async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
   const cssPreprocessorsSupport = await cssPreprocessors(
     isCssPreprocessor.question_is_css_preprocessor
   );
+  const isStaticLoaderSupport = await staticLoader();
+  const chooseStaticFilesLoaderSupport = await chooseStaticFilesLoader(
+    isStaticLoaderSupport.question_static_loader
+  );
   const isImageExtension = await isImageExtensionAnswer();
   const imageExtensionsSupport = await imageExtensions(
     isImageExtension.question_is_image_extensions
   );
   const isFontsSupport = await isFontsAnswer();
   const fontsExtensionsSupport = await fontsExtensions(isFontsSupport.is_fonts);
+  const fontsOutDirSupport = await fontsOutDir(isFontsSupport.is_fonts);
   const isXmlSupport = await isXmlExtension();
   const isYamlSupport = await isYamlExtension();
   const isCsvSupport = await isCsvExtension();
-  const fileLoaderSupport = await chooseStaticFilesLoader("Yes");
   const isLazyLoadingSupport = await isLazyLoading();
   const isAvoidErrorStylesSupport = await isAvoidErrorStyles();
   const isCacheWebpackSupport = await isCacheWebpack();
@@ -192,18 +200,11 @@ async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
   );
   const isClosureLibrarySupport = await isClosureLibrary();
   const isGlobalVariableSupport = await isGlobalVariableAnswer();
-  const SetGlobalVariableNameSupport = await setGlobalVariableName(
-    isGlobalVariableSupport.question_is_global_variable_answer
-  );
-  const SetGloabalVariableValueSupport = await setGlobalVariableValue(
+  const SetGlobalVariableSupport = await setGlobalVariable(
     isGlobalVariableSupport.question_is_global_variable_answer
   );
   const isSplitBundlesThroughDLLSupport = await isSplitBundlesThroughDLL();
-  const splitBundlesThroughDLLContextSupport =
-    await contextSplitBundlesThroughDLL(
-      isSplitBundlesThroughDLLSupport.question_is_split_bundles_dll
-    );
-  const manifestBundlesThroughDLLSupport = await pathToManifestForDLL(
+  const supportSplitBundlesDLL = await supportSplitBundlesThroughDLL(
     isSplitBundlesThroughDLLSupport.question_is_split_bundles_dll
   );
   const isEnvironmentVariablesSupport = await isEnvironmentVariables();
@@ -231,12 +232,11 @@ async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
   );
   const isHMRSupport = await isHMRAnswer();
   const isCompressionSupport = await isCompressionAnswer();
-  const setCompressionLevelSupport = await compressionLevel(
+  const setCompressionOptionsSupport = await setCompressionOptions(
     isCompressionSupport.question_is_compression_answer
   );
-  const setCompressionRatioSupport = await setLevelRatioCompression(
-    isCompressionSupport.question_is_compression_answer
-  );
+  const isCopyPluginSupport = await isCopyPlugin();
+  const isCleanPluginSupport = await isCleanPlugin();
   const isCopyStaticFilesSupport = await isCopyStaticFiles();
   const setFilesCatalogesCopySupport = await setFilesCatalogesCopy(
     isCopyStaticFilesSupport.is_copy_static_files
@@ -244,7 +244,7 @@ async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
   const setOutputDirectory = await outputDir();
   const isDevServerSupport = await isDevServerAnswer();
 
-  addContentToCustom(presetType, mode, {
+  return addContentToCustom(presetType, mode, {
     context: contextPrintWrite.question_context,
     entryPoint: entryPointWrite.entry_point,
     aliasPath: setAliasPathes.set_alias,
@@ -252,16 +252,20 @@ async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
     isHtmlPreprocessorSupport:
       isHtmlPreprocessorSupport.question_is_html_preprocessor,
     htmlPreprocessor: htmlPreprocessors?.question_html_preprocessor,
+    tslintFilePath: checkLangPreset?.langForFramework.question_12,
     isCssPreprocessorSupport: isCssPreprocessor.question_is_css_preprocessor,
     cssPreprocessors: cssPreprocessorsSupport?.question_css_preprocessor,
+    staticLoader: setFilesCatalogesCopySupport?.set_files_cataloges_copy,
     isImageSupport: isImageExtension.question_is_image_extensions,
     imageExtensionsSupport: imageExtensionsSupport?.question_image_extensions,
     isFontsSupport: isFontsSupport.is_fonts,
     fontsExtensionsSupport: fontsExtensionsSupport?.question_fonts_extensions,
+    fontsOutputDirectory: fontsOutDirSupport?.question_fonts_dir,
     isXmlSupport: isXmlSupport.question_xml_exension,
     isYamlSupport: isYamlSupport.question_yaml_extension,
     isCsvSupport: isCsvSupport.question_csv_extension,
-    fileLoaderSupport: fileLoaderSupport?.choose_static_files_loader,
+    fileLoaderSupport:
+      chooseStaticFilesLoaderSupport?.question_is_choose_static_loader,
     isLazyLoadingSupport: isLazyLoadingSupport.is_lazy_loading,
     isAvoidErrorStyleSupport: isAvoidErrorStylesSupport.is_avoid_error_styles,
     isCacheWebpackSupport: isCacheWebpackSupport.cache_webpack,
@@ -276,22 +280,25 @@ async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
     isClosureSupport: isClosureLibrarySupport.question_closure_library,
     isGlobalVariableSupport:
       isGlobalVariableSupport.question_is_global_variable_answer,
-    globalVariableName:
-      SetGlobalVariableNameSupport?.question_set_global_variable_name,
-    globalVariableValue:
-      SetGloabalVariableValueSupport?.question_set_global_variable_value,
+    globalVariable: {
+      name: SetGlobalVariableSupport?.name,
+      value: SetGlobalVariableSupport?.value,
+    },
     isSplitBundlesThroughDLLSupport:
       isSplitBundlesThroughDLLSupport.question_is_split_bundles_dll,
-    splitBundlesThroughDLLContextSupport:
-      splitBundlesThroughDLLContextSupport?.question_context_split_bundles_dll,
-    manifestBundlesThroughDLLSupport:
-      manifestBundlesThroughDLLSupport?.question_path_to_manifest_dll,
+    dllOptions: {
+      name: supportSplitBundlesDLL?.name.question_context_split_bundles_dll,
+      path: supportSplitBundlesDLL?.path.question_path_to_files,
+      manifest: supportSplitBundlesDLL?.manifest.question_path_to_manifest_dll,
+    },
     isEnvironmentalVariablesSupport:
       isEnvironmentVariablesSupport.question_environment_variables,
-    environmentVariableName:
-      setEnvironmentVariableNameAndValueSupport?.name.set_environment_names,
-    environmentVariableValue:
-      setEnvironmentVariableNameAndValueSupport?.value.set_environment_values,
+    environmentVariable: {
+      name: setEnvironmentVariableNameAndValueSupport?.name
+        .set_environment_names,
+      value:
+        setEnvironmentVariableNameAndValueSupport?.value.set_environment_values,
+    },
     isDiscoverPreviousCompilationSupport:
       isDiscoverPreviousCompilationSupport.question_discover_previous_compilation,
     isLocalizeSupport: isLocalizeSupport.question_is_localize,
@@ -305,10 +312,18 @@ async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
     integrationSupport: setIntegrationSupport?.question_integration_instrument,
     isHMRSupport: isHMRSupport.question_is_hmr,
     isCompressionSupport: isCompressionSupport.question_is_compression_answer,
-    compressionLevelSupport:
-      setCompressionLevelSupport?.question_compression_level,
-    compressionRatioSupport:
-      setCompressionRatioSupport?.question_set_level_ratio_compression,
+    compressionOptions: {
+      level:
+        setCompressionOptionsSupport?.compressionLevel
+          .question_compression_level,
+      ratio:
+        setCompressionOptionsSupport?.ratio
+          .question_set_level_ratio_compression,
+      threshold:
+        setCompressionOptionsSupport?.threshold.question_threshold_level,
+    },
+    isCopyPluginSupport: isCopyPluginSupport.question_is_copy_plugin,
+    isCleanPluginSUpport: isCleanPluginSupport.question_is_clean_plugin,
     isCopyStaticFilesSupport: isCopyStaticFilesSupport.is_copy_static_files,
     filesCatalogesCopySupport:
       setFilesCatalogesCopySupport?.set_files_cataloges_copy,

@@ -100,7 +100,7 @@ function choosePreset(type) {
                         })];
                 case 3:
                     webpackMode = _a.sent();
-                    return [4 /*yield*/, handleAnswer(presetChoose.question_2, webpackMode.question_4, webpackVersion.question_3)];
+                    return [4 /*yield*/, handleAnswer(presetChoose.question_2, webpackMode.question_4, webpackVersion.question_3, type)];
                 case 4:
                     _a.sent();
                     return [2 /*return*/];
@@ -108,11 +108,11 @@ function choosePreset(type) {
         });
     });
 }
-function handleAnswer(presetOptions, mode, webpackVersion) {
+function handleAnswer(presetOptions, mode, webpackVersion, type) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, webpack_set_content_1.generateWebpackConfig)(presetOptions, mode, webpackVersion)];
+                case 0: return [4 /*yield*/, (0, webpack_set_content_1.generateWebpackConfig)(presetOptions, mode, webpackVersion, type)];
                 case 1:
                     _a.sent();
                     process.exit(1);
@@ -155,7 +155,7 @@ function checkPresetFrameworkConfig(preset) {
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
-                    if (!["Javascript", "Typescript"].some(function (value) { return value !== preset; })) return [3 /*break*/, 2];
+                    if (!["Vue", "React", "Svelte"].includes(preset)) return [3 /*break*/, 2];
                     _b = {};
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_12",
@@ -182,7 +182,7 @@ function checkPresetHTML(preset, text) {
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
-                    if (!["React", "Vue", "Svelte"].some(function (value) { return value !== preset; })) return [3 /*break*/, 3];
+                    if (!["React", "Vue", "Svelte"].includes(preset)) return [3 /*break*/, 3];
                     _b = {};
                     return [4 /*yield*/, inquirer_1.default.prompt({
                             name: "question_6",
@@ -211,7 +211,7 @@ function checkPresetHTML(preset, text) {
 }
 function WebpackConfigCustom(presetType, mode) {
     return __awaiter(this, void 0, void 0, function () {
-        var contextPrintWrite, entryPointWrite, setAliasPathes, isCoffescriptSupport, isHtmlPreprocessorSupport, htmlPreprocessors, isCssPreprocessor, cssPreprocessorsSupport, isImageExtension, imageExtensionsSupport, isFontsSupport, fontsExtensionsSupport, isXmlSupport, isYamlSupport, isCsvSupport, fileLoaderSupport, isLazyLoadingSupport, isAvoidErrorStylesSupport, isCacheWebpackSupport, isSplittingChunksSupport, isPwaAnswer, isBannerSupport, isClosureLibrarySupport, isGlobalVariableSupport, SetGlobalVariableNameSupport, SetGloabalVariableValueSupport, isSplitBundlesThroughDLLSupport, splitBundlesThroughDLLContextSupport, manifestBundlesThroughDLLSupport, isEnvironmentVariablesSupport, setEnvironmentVariableNameAndValueSupport, isDiscoverPreviousCompilationSupport, isLocalizeSupport, setLocalizeDetailsSupport, setMinimumChunkSizeSupport, setMaximumChunkSizeSupport, isCreateChromeProfileFileSupport, isIgnoreSomeFilesSupport, isIntegrationSupport, setIntegrationSupport, isHMRSupport, isCompressionSupport, setCompressionLevelSupport, setCompressionRatioSupport, isCopyStaticFilesSupport, setFilesCatalogesCopySupport, setOutputDirectory, isDevServerSupport;
+        var contextPrintWrite, entryPointWrite, setAliasPathes, checkLangPreset, isCoffescriptSupport, isHtmlPreprocessorSupport, htmlPreprocessors, isCssPreprocessor, cssPreprocessorsSupport, isStaticLoaderSupport, chooseStaticFilesLoaderSupport, isImageExtension, imageExtensionsSupport, isFontsSupport, fontsExtensionsSupport, fontsOutDirSupport, isXmlSupport, isYamlSupport, isCsvSupport, isLazyLoadingSupport, isAvoidErrorStylesSupport, isCacheWebpackSupport, isSplittingChunksSupport, isPwaAnswer, isBannerSupport, isClosureLibrarySupport, isGlobalVariableSupport, SetGlobalVariableSupport, isSplitBundlesThroughDLLSupport, supportSplitBundlesDLL, isEnvironmentVariablesSupport, setEnvironmentVariableNameAndValueSupport, isDiscoverPreviousCompilationSupport, isLocalizeSupport, setLocalizeDetailsSupport, setMinimumChunkSizeSupport, setMaximumChunkSizeSupport, isCreateChromeProfileFileSupport, isIgnoreSomeFilesSupport, isIntegrationSupport, setIntegrationSupport, isHMRSupport, isCompressionSupport, setCompressionOptionsSupport, isCopyPluginSupport, isCleanPluginSupport, isCopyStaticFilesSupport, setFilesCatalogesCopySupport, setOutputDirectory, isDevServerSupport;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, (0, answers_1.contextAnswer)()];
@@ -223,194 +223,214 @@ function WebpackConfigCustom(presetType, mode) {
                     return [4 /*yield*/, (0, answers_1.setAliasAnswer)(contextPrintWrite.question_context)];
                 case 3:
                     setAliasPathes = _a.sent();
-                    return [4 /*yield*/, (0, answers_1.supportFromCoffeScriptAnswer)()];
+                    return [4 /*yield*/, checkPresetFrameworkConfig(presetType)];
                 case 4:
+                    checkLangPreset = _a.sent();
+                    return [4 /*yield*/, (0, answers_1.supportFromCoffeScriptAnswer)()];
+                case 5:
                     isCoffescriptSupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.isHtmlPreprocessorAnswer)()];
-                case 5:
+                case 6:
                     isHtmlPreprocessorSupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.htmlPreprocessorsAnswer)(isHtmlPreprocessorSupport.question_is_html_preprocessor)];
-                case 6:
+                case 7:
                     htmlPreprocessors = _a.sent();
                     return [4 /*yield*/, (0, answers_1.isCssPreprocessorsAnswer)()];
-                case 7:
+                case 8:
                     isCssPreprocessor = _a.sent();
                     return [4 /*yield*/, (0, answers_1.cssPreprocessors)(isCssPreprocessor.question_is_css_preprocessor)];
-                case 8:
-                    cssPreprocessorsSupport = _a.sent();
-                    return [4 /*yield*/, (0, answers_1.isImageExtensionAnswer)()];
                 case 9:
+                    cssPreprocessorsSupport = _a.sent();
+                    return [4 /*yield*/, (0, answers_1.staticLoader)()];
+                case 10:
+                    isStaticLoaderSupport = _a.sent();
+                    return [4 /*yield*/, (0, answers_1.chooseStaticFilesLoader)(isStaticLoaderSupport.question_static_loader)];
+                case 11:
+                    chooseStaticFilesLoaderSupport = _a.sent();
+                    return [4 /*yield*/, (0, answers_1.isImageExtensionAnswer)()];
+                case 12:
                     isImageExtension = _a.sent();
                     return [4 /*yield*/, (0, answers_1.imageExtensions)(isImageExtension.question_is_image_extensions)];
-                case 10:
+                case 13:
                     imageExtensionsSupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.isFontsAnswer)()];
-                case 11:
+                case 14:
                     isFontsSupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.fontsExtensions)(isFontsSupport.is_fonts)];
-                case 12:
+                case 15:
                     fontsExtensionsSupport = _a.sent();
+                    return [4 /*yield*/, (0, answers_1.fontsOutDir)(isFontsSupport.is_fonts)];
+                case 16:
+                    fontsOutDirSupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.isXmlExtension)()];
-                case 13:
+                case 17:
                     isXmlSupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.isYamlExtension)()];
-                case 14:
+                case 18:
                     isYamlSupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.isCsvExtension)()];
-                case 15:
+                case 19:
                     isCsvSupport = _a.sent();
-                    return [4 /*yield*/, (0, answers_1.chooseStaticFilesLoader)("Yes")];
-                case 16:
-                    fileLoaderSupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.isLazyLoading)()];
-                case 17:
+                case 20:
                     isLazyLoadingSupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.isAvoidErrorStyles)()];
-                case 18:
+                case 21:
                     isAvoidErrorStylesSupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.isCacheWebpack)()];
-                case 19:
+                case 22:
                     isCacheWebpackSupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.isSplittingChunks)()];
-                case 20:
+                case 23:
                     isSplittingChunksSupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.isPwaSupport)()];
-                case 21:
+                case 24:
                     isPwaAnswer = _a.sent();
                     return [4 /*yield*/, (0, answers_1.addingBannerToChunk)(isSplittingChunksSupport.question_is_splitting_chunks)];
-                case 22:
+                case 25:
                     isBannerSupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.isClosureLibrary)()];
-                case 23:
+                case 26:
                     isClosureLibrarySupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.isGlobalVariableAnswer)()];
-                case 24:
-                    isGlobalVariableSupport = _a.sent();
-                    return [4 /*yield*/, (0, answers_1.setGlobalVariableName)(isGlobalVariableSupport.question_is_global_variable_answer)];
-                case 25:
-                    SetGlobalVariableNameSupport = _a.sent();
-                    return [4 /*yield*/, (0, answers_1.setGlobalVariableValue)(isGlobalVariableSupport.question_is_global_variable_answer)];
-                case 26:
-                    SetGloabalVariableValueSupport = _a.sent();
-                    return [4 /*yield*/, (0, answers_1.isSplitBundlesThroughDLL)()];
                 case 27:
-                    isSplitBundlesThroughDLLSupport = _a.sent();
-                    return [4 /*yield*/, (0, answers_1.contextSplitBundlesThroughDLL)(isSplitBundlesThroughDLLSupport.question_is_split_bundles_dll)];
+                    isGlobalVariableSupport = _a.sent();
+                    return [4 /*yield*/, (0, answers_1.setGlobalVariable)(isGlobalVariableSupport.question_is_global_variable_answer)];
                 case 28:
-                    splitBundlesThroughDLLContextSupport = _a.sent();
-                    return [4 /*yield*/, (0, answers_1.pathToManifestForDLL)(isSplitBundlesThroughDLLSupport.question_is_split_bundles_dll)];
+                    SetGlobalVariableSupport = _a.sent();
+                    return [4 /*yield*/, (0, answers_1.isSplitBundlesThroughDLL)()];
                 case 29:
-                    manifestBundlesThroughDLLSupport = _a.sent();
-                    return [4 /*yield*/, (0, answers_1.isEnvironmentVariables)()];
+                    isSplitBundlesThroughDLLSupport = _a.sent();
+                    return [4 /*yield*/, (0, answers_1.supportSplitBundlesThroughDLL)(isSplitBundlesThroughDLLSupport.question_is_split_bundles_dll)];
                 case 30:
+                    supportSplitBundlesDLL = _a.sent();
+                    return [4 /*yield*/, (0, answers_1.isEnvironmentVariables)()];
+                case 31:
                     isEnvironmentVariablesSupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.setEnvironmentVariables)(isEnvironmentVariablesSupport.question_environment_variables)];
-                case 31:
+                case 32:
                     setEnvironmentVariableNameAndValueSupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.isDiscoverPreviousCompilation)()];
-                case 32:
+                case 33:
                     isDiscoverPreviousCompilationSupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.isLocalizeAnswer)()];
-                case 33:
+                case 34:
                     isLocalizeSupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.setLocalizeDetails)(isLocalizeSupport.question_is_localize)];
-                case 34:
+                case 35:
                     setLocalizeDetailsSupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.setMinimumChunkSize)(isSplittingChunksSupport.question_is_splitting_chunks)];
-                case 35:
+                case 36:
                     setMinimumChunkSizeSupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.setMaximumChunkSize)(isSplittingChunksSupport.question_is_splitting_chunks)];
-                case 36:
+                case 37:
                     setMaximumChunkSizeSupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.isCreateChromeProfileFile)()];
-                case 37:
+                case 38:
                     isCreateChromeProfileFileSupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.isIgnoreSomeFiles)()];
-                case 38:
+                case 39:
                     isIgnoreSomeFilesSupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.isIntegrationInstrument)()];
-                case 39:
+                case 40:
                     isIntegrationSupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.integrationInstruments)(isIntegrationSupport.question_is_integration)];
-                case 40:
+                case 41:
                     setIntegrationSupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.isHMRAnswer)()];
-                case 41:
+                case 42:
                     isHMRSupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.isCompressionAnswer)()];
-                case 42:
-                    isCompressionSupport = _a.sent();
-                    return [4 /*yield*/, (0, answers_1.compressionLevel)(isCompressionSupport.question_is_compression_answer)];
                 case 43:
-                    setCompressionLevelSupport = _a.sent();
-                    return [4 /*yield*/, (0, answers_1.setLevelRatioCompression)(isCompressionSupport.question_is_compression_answer)];
+                    isCompressionSupport = _a.sent();
+                    return [4 /*yield*/, (0, answers_1.setCompressionOptions)(isCompressionSupport.question_is_compression_answer)];
                 case 44:
-                    setCompressionRatioSupport = _a.sent();
-                    return [4 /*yield*/, (0, answers_1.isCopyStaticFiles)()];
+                    setCompressionOptionsSupport = _a.sent();
+                    return [4 /*yield*/, (0, answers_1.isCopyPlugin)()];
                 case 45:
+                    isCopyPluginSupport = _a.sent();
+                    return [4 /*yield*/, (0, answers_1.isCleanPlugin)()];
+                case 46:
+                    isCleanPluginSupport = _a.sent();
+                    return [4 /*yield*/, (0, answers_1.isCopyStaticFiles)()];
+                case 47:
                     isCopyStaticFilesSupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.setFilesCatalogesCopy)(isCopyStaticFilesSupport.is_copy_static_files)];
-                case 46:
+                case 48:
                     setFilesCatalogesCopySupport = _a.sent();
                     return [4 /*yield*/, (0, answers_1.outputDir)()];
-                case 47:
+                case 49:
                     setOutputDirectory = _a.sent();
                     return [4 /*yield*/, (0, answers_1.isDevServerAnswer)()];
-                case 48:
+                case 50:
                     isDevServerSupport = _a.sent();
-                    (0, add_content_custom_1.addContentToCustom)(presetType, mode, {
-                        context: contextPrintWrite.question_context,
-                        entryPoint: entryPointWrite.entry_point,
-                        aliasPath: setAliasPathes.set_alias,
-                        isCoffeScriptSupport: isCoffescriptSupport.question_coffe_script,
-                        isHtmlPreprocessorSupport: isHtmlPreprocessorSupport.question_is_html_preprocessor,
-                        htmlPreprocessor: htmlPreprocessors === null || htmlPreprocessors === void 0 ? void 0 : htmlPreprocessors.question_html_preprocessor,
-                        isCssPreprocessorSupport: isCssPreprocessor.question_is_css_preprocessor,
-                        cssPreprocessors: cssPreprocessorsSupport === null || cssPreprocessorsSupport === void 0 ? void 0 : cssPreprocessorsSupport.question_css_preprocessor,
-                        isImageSupport: isImageExtension.question_is_image_extensions,
-                        imageExtensionsSupport: imageExtensionsSupport === null || imageExtensionsSupport === void 0 ? void 0 : imageExtensionsSupport.question_image_extensions,
-                        isFontsSupport: isFontsSupport.is_fonts,
-                        fontsExtensionsSupport: fontsExtensionsSupport === null || fontsExtensionsSupport === void 0 ? void 0 : fontsExtensionsSupport.question_fonts_extensions,
-                        isXmlSupport: isXmlSupport.question_xml_exension,
-                        isYamlSupport: isYamlSupport.question_yaml_extension,
-                        isCsvSupport: isCsvSupport.question_csv_extension,
-                        fileLoaderSupport: fileLoaderSupport === null || fileLoaderSupport === void 0 ? void 0 : fileLoaderSupport.choose_static_files_loader,
-                        isLazyLoadingSupport: isLazyLoadingSupport.is_lazy_loading,
-                        isAvoidErrorStyleSupport: isAvoidErrorStylesSupport.is_avoid_error_styles,
-                        isCacheWebpackSupport: isCacheWebpackSupport.cache_webpack,
-                        isSplittingChunksSupport: isSplittingChunksSupport.question_is_splitting_chunks,
-                        minimumChunkSizeSupport: setMinimumChunkSizeSupport === null || setMinimumChunkSizeSupport === void 0 ? void 0 : setMinimumChunkSizeSupport.question_minimum_chunk_size,
-                        maximumChunkSizeSupport: setMaximumChunkSizeSupport === null || setMaximumChunkSizeSupport === void 0 ? void 0 : setMaximumChunkSizeSupport.question_maximum_chunk_size,
-                        isPwaAnswer: isPwaAnswer.question_build_pwa,
-                        isBannerSupport: isBannerSupport === null || isBannerSupport === void 0 ? void 0 : isBannerSupport.question_adding_banner_to_chunk,
-                        isClosureSupport: isClosureLibrarySupport.question_closure_library,
-                        isGlobalVariableSupport: isGlobalVariableSupport.question_is_global_variable_answer,
-                        globalVariableName: SetGlobalVariableNameSupport === null || SetGlobalVariableNameSupport === void 0 ? void 0 : SetGlobalVariableNameSupport.question_set_global_variable_name,
-                        globalVariableValue: SetGloabalVariableValueSupport === null || SetGloabalVariableValueSupport === void 0 ? void 0 : SetGloabalVariableValueSupport.question_set_global_variable_value,
-                        isSplitBundlesThroughDLLSupport: isSplitBundlesThroughDLLSupport.question_is_split_bundles_dll,
-                        splitBundlesThroughDLLContextSupport: splitBundlesThroughDLLContextSupport === null || splitBundlesThroughDLLContextSupport === void 0 ? void 0 : splitBundlesThroughDLLContextSupport.question_context_split_bundles_dll,
-                        manifestBundlesThroughDLLSupport: manifestBundlesThroughDLLSupport === null || manifestBundlesThroughDLLSupport === void 0 ? void 0 : manifestBundlesThroughDLLSupport.question_path_to_manifest_dll,
-                        isEnvironmentalVariablesSupport: isEnvironmentVariablesSupport.question_environment_variables,
-                        environmentVariableName: setEnvironmentVariableNameAndValueSupport === null || setEnvironmentVariableNameAndValueSupport === void 0 ? void 0 : setEnvironmentVariableNameAndValueSupport.name.set_environment_names,
-                        environmentVariableValue: setEnvironmentVariableNameAndValueSupport === null || setEnvironmentVariableNameAndValueSupport === void 0 ? void 0 : setEnvironmentVariableNameAndValueSupport.value.set_environment_values,
-                        isDiscoverPreviousCompilationSupport: isDiscoverPreviousCompilationSupport.question_discover_previous_compilation,
-                        isLocalizeSupport: isLocalizeSupport.question_is_localize,
-                        localizeDetailsSupport: setLocalizeDetailsSupport === null || setLocalizeDetailsSupport === void 0 ? void 0 : setLocalizeDetailsSupport.question_set_localize_details,
-                        isCreateChromeProfileFileSupport: isCreateChromeProfileFileSupport.question_is_create_chrome_profile_file,
-                        isIgnoreSomeFilesSupport: isIgnoreSomeFilesSupport.question_is_ignore_some_files,
-                        isIntegrationSupport: isIntegrationSupport.question_is_integration,
-                        integrationSupport: setIntegrationSupport === null || setIntegrationSupport === void 0 ? void 0 : setIntegrationSupport.question_integration_instrument,
-                        isHMRSupport: isHMRSupport.question_is_hmr,
-                        isCompressionSupport: isCompressionSupport.question_is_compression_answer,
-                        compressionLevelSupport: setCompressionLevelSupport === null || setCompressionLevelSupport === void 0 ? void 0 : setCompressionLevelSupport.question_compression_level,
-                        compressionRatioSupport: setCompressionRatioSupport === null || setCompressionRatioSupport === void 0 ? void 0 : setCompressionRatioSupport.question_set_level_ratio_compression,
-                        isCopyStaticFilesSupport: isCopyStaticFilesSupport.is_copy_static_files,
-                        filesCatalogesCopySupport: setFilesCatalogesCopySupport === null || setFilesCatalogesCopySupport === void 0 ? void 0 : setFilesCatalogesCopySupport.set_files_cataloges_copy,
-                        outputDirectory: setOutputDirectory.question_output_dir,
-                        isDevServerSupport: isDevServerSupport.is_dev_server,
-                        devMode: mode,
-                    });
-                    return [2 /*return*/];
+                    return [2 /*return*/, (0, add_content_custom_1.addContentToCustom)(presetType, mode, {
+                            context: contextPrintWrite.question_context,
+                            entryPoint: entryPointWrite.entry_point,
+                            aliasPath: setAliasPathes.set_alias,
+                            isCoffeScriptSupport: isCoffescriptSupport.question_coffe_script,
+                            isHtmlPreprocessorSupport: isHtmlPreprocessorSupport.question_is_html_preprocessor,
+                            htmlPreprocessor: htmlPreprocessors === null || htmlPreprocessors === void 0 ? void 0 : htmlPreprocessors.question_html_preprocessor,
+                            tslintFilePath: checkLangPreset === null || checkLangPreset === void 0 ? void 0 : checkLangPreset.langForFramework.question_12,
+                            isCssPreprocessorSupport: isCssPreprocessor.question_is_css_preprocessor,
+                            cssPreprocessors: cssPreprocessorsSupport === null || cssPreprocessorsSupport === void 0 ? void 0 : cssPreprocessorsSupport.question_css_preprocessor,
+                            staticLoader: setFilesCatalogesCopySupport === null || setFilesCatalogesCopySupport === void 0 ? void 0 : setFilesCatalogesCopySupport.set_files_cataloges_copy,
+                            isImageSupport: isImageExtension.question_is_image_extensions,
+                            imageExtensionsSupport: imageExtensionsSupport === null || imageExtensionsSupport === void 0 ? void 0 : imageExtensionsSupport.question_image_extensions,
+                            isFontsSupport: isFontsSupport.is_fonts,
+                            fontsExtensionsSupport: fontsExtensionsSupport === null || fontsExtensionsSupport === void 0 ? void 0 : fontsExtensionsSupport.question_fonts_extensions,
+                            fontsOutputDirectory: fontsOutDirSupport === null || fontsOutDirSupport === void 0 ? void 0 : fontsOutDirSupport.question_fonts_dir,
+                            isXmlSupport: isXmlSupport.question_xml_exension,
+                            isYamlSupport: isYamlSupport.question_yaml_extension,
+                            isCsvSupport: isCsvSupport.question_csv_extension,
+                            fileLoaderSupport: chooseStaticFilesLoaderSupport === null || chooseStaticFilesLoaderSupport === void 0 ? void 0 : chooseStaticFilesLoaderSupport.question_is_choose_static_loader,
+                            isLazyLoadingSupport: isLazyLoadingSupport.is_lazy_loading,
+                            isAvoidErrorStyleSupport: isAvoidErrorStylesSupport.is_avoid_error_styles,
+                            isCacheWebpackSupport: isCacheWebpackSupport.cache_webpack,
+                            isSplittingChunksSupport: isSplittingChunksSupport.question_is_splitting_chunks,
+                            minimumChunkSizeSupport: setMinimumChunkSizeSupport === null || setMinimumChunkSizeSupport === void 0 ? void 0 : setMinimumChunkSizeSupport.question_minimum_chunk_size,
+                            maximumChunkSizeSupport: setMaximumChunkSizeSupport === null || setMaximumChunkSizeSupport === void 0 ? void 0 : setMaximumChunkSizeSupport.question_maximum_chunk_size,
+                            isPwaAnswer: isPwaAnswer.question_build_pwa,
+                            isBannerSupport: isBannerSupport === null || isBannerSupport === void 0 ? void 0 : isBannerSupport.question_adding_banner_to_chunk,
+                            isClosureSupport: isClosureLibrarySupport.question_closure_library,
+                            isGlobalVariableSupport: isGlobalVariableSupport.question_is_global_variable_answer,
+                            globalVariable: {
+                                name: SetGlobalVariableSupport === null || SetGlobalVariableSupport === void 0 ? void 0 : SetGlobalVariableSupport.name,
+                                value: SetGlobalVariableSupport === null || SetGlobalVariableSupport === void 0 ? void 0 : SetGlobalVariableSupport.value,
+                            },
+                            isSplitBundlesThroughDLLSupport: isSplitBundlesThroughDLLSupport.question_is_split_bundles_dll,
+                            dllOptions: {
+                                name: supportSplitBundlesDLL === null || supportSplitBundlesDLL === void 0 ? void 0 : supportSplitBundlesDLL.name.question_context_split_bundles_dll,
+                                path: supportSplitBundlesDLL === null || supportSplitBundlesDLL === void 0 ? void 0 : supportSplitBundlesDLL.path.question_path_to_files,
+                                manifest: supportSplitBundlesDLL === null || supportSplitBundlesDLL === void 0 ? void 0 : supportSplitBundlesDLL.manifest.question_path_to_manifest_dll,
+                            },
+                            isEnvironmentalVariablesSupport: isEnvironmentVariablesSupport.question_environment_variables,
+                            environmentVariable: {
+                                name: setEnvironmentVariableNameAndValueSupport === null || setEnvironmentVariableNameAndValueSupport === void 0 ? void 0 : setEnvironmentVariableNameAndValueSupport.name.set_environment_names,
+                                value: setEnvironmentVariableNameAndValueSupport === null || setEnvironmentVariableNameAndValueSupport === void 0 ? void 0 : setEnvironmentVariableNameAndValueSupport.value.set_environment_values,
+                            },
+                            isDiscoverPreviousCompilationSupport: isDiscoverPreviousCompilationSupport.question_discover_previous_compilation,
+                            isLocalizeSupport: isLocalizeSupport.question_is_localize,
+                            localizeDetailsSupport: setLocalizeDetailsSupport === null || setLocalizeDetailsSupport === void 0 ? void 0 : setLocalizeDetailsSupport.question_set_localize_details,
+                            isCreateChromeProfileFileSupport: isCreateChromeProfileFileSupport.question_is_create_chrome_profile_file,
+                            isIgnoreSomeFilesSupport: isIgnoreSomeFilesSupport.question_is_ignore_some_files,
+                            isIntegrationSupport: isIntegrationSupport.question_is_integration,
+                            integrationSupport: setIntegrationSupport === null || setIntegrationSupport === void 0 ? void 0 : setIntegrationSupport.question_integration_instrument,
+                            isHMRSupport: isHMRSupport.question_is_hmr,
+                            isCompressionSupport: isCompressionSupport.question_is_compression_answer,
+                            compressionOptions: {
+                                level: setCompressionOptionsSupport === null || setCompressionOptionsSupport === void 0 ? void 0 : setCompressionOptionsSupport.compressionLevel.question_compression_level,
+                                ratio: setCompressionOptionsSupport === null || setCompressionOptionsSupport === void 0 ? void 0 : setCompressionOptionsSupport.ratio.question_set_level_ratio_compression,
+                                threshold: setCompressionOptionsSupport === null || setCompressionOptionsSupport === void 0 ? void 0 : setCompressionOptionsSupport.threshold.question_threshold_level,
+                            },
+                            isCopyPluginSupport: isCopyPluginSupport.question_is_copy_plugin,
+                            isCleanPluginSUpport: isCleanPluginSupport.question_is_clean_plugin,
+                            isCopyStaticFilesSupport: isCopyStaticFilesSupport.is_copy_static_files,
+                            filesCatalogesCopySupport: setFilesCatalogesCopySupport === null || setFilesCatalogesCopySupport === void 0 ? void 0 : setFilesCatalogesCopySupport.set_files_cataloges_copy,
+                            outputDirectory: setOutputDirectory.question_output_dir,
+                            isDevServerSupport: isDevServerSupport.is_dev_server,
+                            devMode: mode,
+                        })];
             }
         });
     });

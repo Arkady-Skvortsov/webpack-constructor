@@ -10,7 +10,7 @@ type integrationWebpack = "Grunt" | "Gulp" | "Mocha" | "Karma";
 type staticLoader = "file-loader" | "url-loader" | "raw-loader";
 type cssLoader = "(Sass/Scss)" | "Less" | "Stylus" | "PostCss";
 type htmlLoader = "Pug" | "Jade" | "EJS" | "HandleBars";
-type imageExtensions = ".png" | ".jpeg" | ".jpg" | ".svg" | ".gif" | ".webp";
+type imageExtensions = ".png" & ".jpeg" & ".jpg" & ".svg" & ".gif" & ".webp";
 type fontsExtensions = ".woff" | ".ttf" | ".eot" | ".svg" | ".otf";
 type version = 4 | 5;
 

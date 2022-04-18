@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setCopyWebpackPlugin = exports.setCompressionPlugin = exports.setHMRPlugin = exports.setIntegrationWebpack = exports.setIgnorePlugin = exports.setProfillingPlugin = exports.setI18nPlugin = exports.setAutomaticPrefechPlugin = exports.setDLLPlugin = exports.setEnvironmentPlugin = exports.setClosureLibrary = exports.isHtmlWebpackPlugin = exports.LinterChoose = exports.setWebpackNotifierPlugin = void 0;
+exports.setCopyWebpackPlugin = exports.setCompressionPlugin = exports.setHMRPlugin = exports.setIntegrationWebpack = exports.setIgnorePlugin = exports.setProfillingPlugin = exports.setI18nPlugin = exports.setCleanWebpackPlugin = exports.setAutomaticPrefechPlugin = exports.setDLLPlugin = exports.setEnvironmentPlugin = exports.setClosureLibrary = exports.isHtmlWebpackPlugin = exports.LinterChoose = exports.setWebpackNotifierPlugin = void 0;
 var webpack_set_content_1 = require("../webpack-set.content");
 var text_1 = require("../text");
 var dev_mode_1 = require("../dev-mode");
@@ -28,12 +28,14 @@ function setClosureLibrary(response) {
 exports.setClosureLibrary = setClosureLibrary;
 function setEnvironmentPlugin(response, variables) {
     return response === "Yes"
-        ? "new DefinePlugin(".concat(variables, "),")
+        ? "new DefinePlugin({\n\n    }),"
         : (0, text_1.parseString)("");
 }
 exports.setEnvironmentPlugin = setEnvironmentPlugin;
 function setDLLPlugin(response, options) {
-    return response === "Yes" ? "new DllPlugin(".concat(options, "),") : (0, text_1.parseString)("");
+    return response === "Yes"
+        ? "new DllPlugin({ name: ".concat(options.name, ", path: path.resolve(__dirname, ").concat(options.path, ") }),")
+        : (0, text_1.parseString)("");
 }
 exports.setDLLPlugin = setDLLPlugin;
 function setAutomaticPrefechPlugin(response) {
@@ -84,10 +86,12 @@ function setCompressionPlugin(response, options) {
         : (0, text_1.parseString)("");
 }
 exports.setCompressionPlugin = setCompressionPlugin;
-function setCopyWebpackPlugin(response, options) {
-    return response === "Yes"
-        ? "new CopyPlugin({ patterns: [ { from: \"".concat(options.from, "\", to: \"").concat(options.to, "\" } ] }),")
-        : (0, text_1.parseString)("");
+function setCopyWebpackPlugin(response) {
+    return response === "Yes" ? "new CopyWebpackPlugin()," : (0, text_1.parseString)("");
 }
 exports.setCopyWebpackPlugin = setCopyWebpackPlugin;
+function setCleanWebpackPlugin(response) {
+    return response === "Yes" ? "new CleanWebpackPlugin()," : (0, text_1.parseString)("");
+}
+exports.setCleanWebpackPlugin = setCleanWebpackPlugin;
 //# sourceMappingURL=plugins.js.map

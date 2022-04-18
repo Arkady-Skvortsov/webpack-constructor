@@ -7,8 +7,8 @@ function setCSSRuleUse(mode, presetType) {
     return mode === "production"
         ? (0, text_1.parseString)("MiniCssExtractPlugin.loader")
         : presetType === "Vue"
-            ? "vue-style-loader".toString()
-            : "style-loader".toString();
+            ? "\"vue-style-loader\""
+            : "\"style-loader\"";
 }
 exports.setCSSRuleUse = setCSSRuleUse;
 function setCssPlugin(mode) {

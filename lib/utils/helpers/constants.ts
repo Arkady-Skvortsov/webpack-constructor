@@ -1,7 +1,7 @@
 import { parseString } from "../text";
 import { preset } from "./enum";
 import { stringParser } from "./parser";
-import { webpackMode } from "./types";
+import { basicTypes, webpackMode } from "./types";
 
 const whitespace = new RegExp(/^.+\s.+$/, "g");
 const extensions = new RegExp(/\.(js|ts|tsx|jsx|svelte|vue|sass|scss|)$/, "g");

@@ -2,6 +2,7 @@ import inquirer from "inquirer";
 import { preset } from "./helpers/enum";
 import { generateExtensions } from "./helpers/extensions";
 import { questionResponse } from "./helpers/types";
+import { parseString } from "./text";
 
 async function contextAnswer() {
   return await inquirer.prompt({
@@ -17,7 +18,7 @@ async function entryPointsAnswer(preset: preset, entrypoint: string) {
   return await inquirer.prompt({
     name: "entry_point",
     type: "input",
-    message: `What is the entrypoint would be in webpack config (example: ${entrypoint}/main/${generateExtensions(
+    message: `What is the entrypoint would be in webpack config (example: ${entrypoint}/main${generateExtensions(
       preset
     )}) ?`,
   });
@@ -102,6 +103,26 @@ async function supportFromCoffeScriptAnswer() {
   });
 }
 
+async function isCopyPlugin() {
+  return await inquirer.prompt({
+    name: "question_is_copy_plugin",
+    type: "list",
+    message:
+      "Do you want to copy individual files or entire directories, which already exist to the build directory ?",
+    choices: ["Yes", "No"],
+  });
+}
+
+async function isCleanPlugin() {
+  return await inquirer.prompt({
+    name: "question_is_clean_plugin",
+    type: "list",
+    message:
+      "Do you want that all files inside webpack's output.path directory, as well as all unused webpack assets after every successful rebuild would be removed ?",
+    choices: ["Yes", "No"],
+  });
+}
+
 async function isCopyStaticFiles() {
   return await inquirer.prompt({
     name: "is_copy_static_files",
@@ -177,25 +198,27 @@ async function isSplitBundlesThroughDLL() {
   });
 }
 
-async function contextSplitBundlesThroughDLL(response: questionResponse) {
+async function supportSplitBundlesThroughDLL(response: questionResponse) {
   return response === "Yes"
-    ? await inquirer.prompt({
-        name: "question_context_split_bundles_dll",
-        type: "input",
-        message:
-          "What is the context would be for bundle for DLL (example: ./src) ?",
-      })
-    : void 0;
-}
-
-async function pathToManifestForDLL(response: questionResponse) {
-  return response === "Yes"
-    ? await inquirer.prompt({
-        name: "question_path_to_manifest_dll",
-        type: "input",
-        message:
-          "What is the path to manifest for DLL (example: ./src/manifest.json) ?",
-      })
+    ? {
+        name: await inquirer.prompt({
+          name: "question_context_split_bundles_dll",
+          type: "input",
+          message:
+            "What is the name would be for bundle for DLL (example: bundle) ?",
+        }),
+        path: await inquirer.prompt({
+          name: "question_path_to_files",
+          type: "input",
+          message: "What is the path to files for DLL (example: ./src)",
+        }),
+        manifest: await inquirer.prompt({
+          name: "question_path_to_manifest_dll",
+          type: "input",
+          message:
+            "What is the path to manifest for DLL (example: ./src/manifest.json) ?",
+        }),
+      }
     : void 0;
 }
 
@@ -238,8 +261,8 @@ async function isImageExtensionAnswer() {
   });
 }
 
-async function imageExtensions(response: "yes" | "no") {
-  return response === "yes"
+async function imageExtensions(response: questionResponse) {
+  return response === "Yes"
     ? await inquirer.prompt({
         name: "question_image_extensions",
         type: "checkbox",
@@ -269,13 +292,12 @@ async function fontsExtensions(response: questionResponse) {
     : void 0;
 }
 
-async function chooseStaticFilesLoader(response: questionResponse) {
+async function fontsOutDir(response: questionResponse) {
   return response === "Yes"
     ? await inquirer.prompt({
-        name: "choose_static_files_loader",
-        type: "list",
-        message: "Whaat is loader you want to choose for static files ?",
-        choices: ["file-loader", "url-loader", "raw-loader"],
+        name: "question_fonts_dir",
+        type: "input",
+        message: "What is the directory would be an output for fonts ?",
       })
     : void 0;
 }
@@ -442,48 +464,58 @@ async function isGlobalVariableAnswer() {
   });
 }
 
-async function setGlobalVariableName(response: questionResponse) {
+async function setGlobalVariable(response: questionResponse) {
   return response === "Yes"
-    ? await inquirer.prompt({
-        name: "question_set_global_variable_name",
-        type: "input",
-        message:
-          "What is the name(s) do you want for you variable(s) (example: PRODUCTION BROWSER_SUPPORTS_HTML5) ?",
-      })
+    ? {
+        name: await inquirer.prompt({
+          name: "question_set_global_variable_name",
+          type: "input",
+          message:
+            "What is the name(s) do you want for you variable(s) (example: PRODUCTION BROWSER_SUPPORTS_HTML5) ?",
+        }),
+        value: await inquirer.prompt({
+          name: "question_set_global_variable_value",
+          type: "input",
+          message:
+            "What is the value(s) do you want for you variable(s) (example: true true) ?",
+        }),
+      }
     : void 0;
 }
 
-async function setGlobalVariableValue(response: questionResponse) {
+async function setCompressionOptions(response: questionResponse) {
   return response === "Yes"
-    ? await inquirer.prompt({
-        name: "question_set_global_variable_value",
-        type: "input",
-        message:
-          "What is the value(s) do you want for you variable(s) (example: true true) ?",
-      })
-    : void 0;
-}
-
-async function setLevelRatioCompression(response: questionResponse) {
-  return response === "Yes"
-    ? await inquirer.prompt({
-        name: "question_set_level_ratio_compression",
-        type: "list",
-        message: "What is ratio level do you want to set for compression ?",
-        choices: [
-          "0",
-          "0.1",
-          "0.2",
-          "0.3",
-          "0.4",
-          "0.5",
-          "0.6",
-          "0.7",
-          "0.8",
-          "0.9",
-          "1",
-        ],
-      })
+    ? {
+        ratio: await inquirer.prompt({
+          name: "question_set_level_ratio_compression",
+          type: "list",
+          message: "What is ratio level do you want to set for compression ?",
+          choices: [
+            "0",
+            "0.1",
+            "0.2",
+            "0.3",
+            "0.4",
+            "0.5",
+            "0.6",
+            "0.7",
+            "0.8",
+            "0.9",
+            "1",
+          ],
+        }),
+        compressionLevel: await inquirer.prompt({
+          name: "question_compression_level",
+          type: "list",
+          message: "What is the level for compression do you want to choose ?",
+          choices: ["1", "2", "3", "4"],
+        }),
+        threshold: await inquirer.prompt({
+          name: "question_threshold_level",
+          type: "input",
+          message: "How many threshold would be for compression ?",
+        }),
+      }
     : void 0;
 }
 
@@ -494,6 +526,17 @@ async function isCreateChromeProfileFile() {
     message: "Do you want to create Chrome profile file ?",
     choices: ["Yes", "No"],
   });
+}
+
+async function chooseStaticFilesLoader(response: questionResponse) {
+  return response === "Yes"
+    ? await inquirer.prompt({
+        name: "question_is_choose_static_loader",
+        type: "list",
+        message: "What is the static files loader do you want to choose ?",
+        choices: ["file-loader", "url-loader", "raw-loader"],
+      })
+    : void 0;
 }
 
 async function isIgnoreSomeFiles() {
@@ -513,17 +556,6 @@ async function isIntegrationInstrument() {
       "Do you want some integration with instruments(like: Gulp) in webpack ?",
     choices: ["Yes", "No"],
   });
-}
-
-async function compressionLevel(response: questionResponse) {
-  return response === "Yes"
-    ? await inquirer.prompt({
-        name: "question_compression_level",
-        type: "list",
-        message: "What is the level for compression do you want to choose ?",
-        choices: ["1", "2", "3", "4"],
-      })
-    : void 0;
 }
 
 async function staticLoader() {
@@ -566,6 +598,16 @@ async function integrationInstruments(response: questionResponse) {
     : void 0;
 }
 
+async function fontsDir(response: questionResponse) {
+  return response === "Yes"
+    ? await inquirer.prompt({
+        name: "question_fonts_dir",
+        type: "input",
+        message: `What is the folder do you want, that be an output for fonts ?`,
+      })
+    : parseString("");
+}
+
 async function outputDir() {
   return await inquirer.prompt({
     name: "question_output_dir",
@@ -587,6 +629,7 @@ export {
   imageExtensions,
   isPwaSupport,
   isAvoidErrorStyles,
+  fontsDir,
   isDevServerAnswer,
   isFontsAnswer,
   isImagesAnswer,
@@ -603,31 +646,31 @@ export {
   isImageExtensionAnswer,
   isFontsExtensionAnswer,
   isSplitBundlesThroughDLL,
-  contextSplitBundlesThroughDLL,
-  pathToManifestForDLL,
+  supportSplitBundlesThroughDLL,
   isDiscoverPreviousCompilation,
   isSplittingChunks,
+  fontsOutDir,
+  isCopyPlugin,
+  isCleanPlugin,
   addingBannerToChunk,
   isClosureLibrary,
+  chooseStaticFilesLoader,
   isEnvironmentVariables,
   isCopyStaticFiles,
   setFilesCatalogesCopy,
   setEnvironmentVariables,
   isLocalizeAnswer,
   isHMRAnswer,
-  chooseStaticFilesLoader,
   setLocalizeDetails,
   isMinimumChunkSize,
   isMaximumChunkSize,
   isCompressionAnswer,
   isGlobalVariableAnswer,
-  setGlobalVariableName,
-  setGlobalVariableValue,
-  setLevelRatioCompression,
+  setGlobalVariable,
+  setCompressionOptions,
   isCreateChromeProfileFile,
   isIgnoreSomeFiles,
   isIntegrationInstrument,
-  compressionLevel,
   setMaximumChunkSize,
   setMinimumChunkSize,
   setAliasAnswer,

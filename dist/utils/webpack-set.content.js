@@ -107,19 +107,38 @@ function setSourceMaps(mode) {
     return mode === "production" ? "source-maps" : "eval-source-map";
 }
 exports.setSourceMaps = setSourceMaps;
-function generateWebpackConfig(type, mode, version) {
+function generateWebpackConfig(type, mode, version, basicType) {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, _b, _c, e_1;
+        var configType, _a, _b, _c, e_1;
+        var _this = this;
         return __generator(this, function (_d) {
             switch (_d.label) {
                 case 0:
                     _d.trys.push([0, 5, , 6]);
-                    return [4 /*yield*/, (0, packages_1.installPackagesForPresets)(type, mode, version)];
+                    return [4 /*yield*/, (0, packages_1.installPackagesForPresets)(type, mode, version, basicType)];
                 case 1:
                     _d.sent();
+                    configType = function () { return __awaiter(_this, void 0, void 0, function () {
+                        var _a;
+                        return __generator(this, function (_b) {
+                            switch (_b.label) {
+                                case 0:
+                                    if (!(basicType === "Preset")) return [3 /*break*/, 2];
+                                    return [4 /*yield*/, (0, handle_answers_1.WebpackConfigOptions)(type, mode)];
+                                case 1:
+                                    _a = _b.sent();
+                                    return [3 /*break*/, 4];
+                                case 2: return [4 /*yield*/, (0, handle_answers_1.WebpackConfigCustom)(type, mode)];
+                                case 3:
+                                    _a = _b.sent();
+                                    _b.label = 4;
+                                case 4: return [2 /*return*/, _a];
+                            }
+                        });
+                    }); };
                     _b = (_a = fs).writeFileSync;
                     _c = ["webpack.config.js"];
-                    return [4 /*yield*/, (0, handle_answers_1.WebpackConfigOptions)(type, mode)];
+                    return [4 /*yield*/, configType()];
                 case 2:
                     _b.apply(_a, _c.concat([_d.sent()]));
                     return [4 /*yield*/, (0, add_scripts_1.addScriptsForPackageJson)("package.json", mode)];

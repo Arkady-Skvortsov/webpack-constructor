@@ -3,19 +3,22 @@ import { createSpinner } from "nanospinner";
 import { preset } from "./enum";
 import { promise } from "./promise";
 import { stringParser } from "./parser";
-import { version, webpackMode } from "./types";
+import { basicTypes, version, webpackMode } from "./types";
 import { parseString } from "../text";
+import { customWebpackConfig } from "./interfaces";
 
 async function installPackagesForPresets(
   presetType: preset,
   mode: webpackMode,
-  version: version
+  version: version,
+  type: basicTypes
 ) {
   let installationSpinner = createSpinner(
     `Install packages for ${presetType}`
   ).start();
 
   await promise();
+
   //  ${
   //     version == 4
   //       ? parseString("webpack@4.41.5")
@@ -48,6 +51,61 @@ async function installPackagesForPresets(
         : parseString("webpack-notifier style-loader")
     }`
   );
+  // : execSync(
+  //     `npm i webpack webpack-cli ${
+  //       customOptions.isDevServerSupport
+  //         ? parseString("webpack-dev-server")
+  //         : parseString("")
+  //     } ${
+  //       customOptions.isYamlSupport
+  //         ? parseString("yaml-loader")
+  //         : parseString("")
+  //     } ${
+  //       customOptions.isCoffeScriptSupport
+  //         ? parseString("coffeescript coffee-loader")
+  //         : parseString("")
+  //     } ${
+  //       customOptions.isCsvSupport
+  //         ? parseString("csv-loader")
+  //         : parseString("")
+  //     } ${
+  //       customOptions.isXmlSupport
+  //         ? parseString("xml-loader")
+  //         : parseString("")
+  //     } ${
+  //       customOptions.isPwaAnswer
+  //         ? parseString("workbox-webpack-plugin http-server")
+  //         : parseString("")
+  //     } ${
+  //       customOptions.isCompressionSupport
+  //         ? parseString("compression-webpack-plugin")
+  //         : parseString("")
+  //     } ${
+  //       customOptions.isAvoidErrorStyleSupport
+  //         ? parseString("stylelint-webpack-plugin")
+  //         : parseString("")
+  //     } ${
+  //       customOptions.isClosureSupport
+  //         ? parseString("closure-webpack-plugin google-closure-compiler")
+  //         : parseString("")
+  //     } ${
+  //       customOptions.isCleanPluginSUpport
+  //         ? parseString("clean-webpack-plugin")
+  //         : parseString("")
+  //     } ${
+  //       customOptions.isCopyPluginSupport
+  //         ? parseString("copy-webpack-plugin")
+  //         : parseString("")
+  //     } ${
+  //       customOptions.isImageSupport
+  //         ? parseString("image-webpack-loader")
+  //         : parseString("")
+  //     } ${
+  //       customOptions.isLocalizeSupport
+  //         ? parseString("i18n-webpack-plugin")
+  //         : parseString("")
+  //     } @types/webpack`
+  //   );
 
   installationSpinner.success({
     text: `Packages for ${presetType} had been installed`,

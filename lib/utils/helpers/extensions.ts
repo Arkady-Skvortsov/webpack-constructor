@@ -7,12 +7,16 @@ function generateExtensions(presetType: preset) {
     : presetType === "Javascript"
     ? ".js"
     : presetType === "Vue"
-    ? [".vue", ".ts"].join(" ").split(", ")
+    ? ".vue .ts".split(", ").join(" ")
     : presetType === "React"
-    ? [".ts", ".tsx"].join(" ").split(", ")
+    ? ".ts .tsx".split(", ").join(" ")
     : presetType === "Svelte"
     ? ".svelte"
     : parseString("");
 }
 
-export { generateExtensions };
+function setPackOfExtensions(extensions: string) {
+  return `${extensions.split(", ")}\n`;
+}
+
+export { generateExtensions, setPackOfExtensions };

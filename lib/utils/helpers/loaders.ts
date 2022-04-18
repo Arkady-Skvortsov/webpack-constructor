@@ -1,6 +1,7 @@
 import { setCSSRuleUse } from "../dev-mode";
 import { parseString } from "../text";
 import { preset } from "./enum";
+import { setInExpression } from "./expression";
 import {
   cssLoader,
   fontsExtensions,
@@ -76,52 +77,94 @@ function setCssPreprocessorLoader(
   `;
 }
 
-function setHtmlLoader(loaderType: htmlLoader) {
-  const type =
-    loaderType === "EJS"
-      ? { expression: /.ejs$/, loader: "ejs-loader" }
-      : loaderType === "HandleBars"
-      ? { expression: /.hbs|handlebars$/, loader: "handlebars-loader" }
-      : loaderType === "Pug"
-      ? { expression: /.pug$/, loader: "pug-loader" }
-      : loaderType === "Jade"
-      ? { expression: /.jade$/, loader: "jade-loader" }
-      : { expression: /.html$/, loader: "html-loader" };
+function setHtmlLoader(loaderType: htmlLoader, presetType: preset) {
+  const type = ["Vue", "React", "Svelte"].some(
+    (typePreset) => typePreset !== presetType
+  )
+    ? {}
+    : loaderType === "EJS"
+    ? { expression: /.ejs$/, loader: "ejs-loader" }
+    : loaderType === "HandleBars"
+    ? { expression: /.hbs|handlebars$/, loader: "handlebars-loader" }
+    : loaderType === "Pug"
+    ? { expression: /.pug$/, loader: "pug-loader" }
+    : loaderType === "Jade"
+    ? { expression: /.jade$/, loader: "jade-loader" }
+    : { expression: /.html$/, loader: "html-loader" };
 
   return `
     {
       test: ${type.expression},
       use: [${type.loader}]
+    };`;
+}
+
+function setImageExtensions(
+  response: questionResponse,
+  loaderType: string,
+  staticLoader: staticLoader
+) {
+  if (response === "Yes") {
+    const type =
+      loaderType === ".gif"
+        ? { extension: ".gif", option: `gifsicle: { interlaced: false }` }
+        : loaderType === ".jpeg"
+        ? { extension: ".jpeg", option: `mozjpeg: { progressive: true }` }
+        : loaderType === ".jpg"
+        ? { extension: ".jpg" }
+        : loaderType === ".png"
+        ? { extension: ".png", option: `optipng: { enabled: false }` }
+        : loaderType === ".webp"
+        ? { extension: ".webp", option: `webp: { quality: 85 }` }
+        : loaderType === ".svg"
+        ? { extension: ".svg", option: `svgo: {  }` }
+        : {};
+
+    `{
+      test: ${setInExpression(type.extension)},
+      use: [
+        ${setStaticLoader(staticLoader)},
+        {
+          loader: "image-webpack-loader",
+          options: {
+            ${type.option}
+          }
+        }
+      ]
+    }`;
+  }
+}
+
+function setFontsExtensions(
+  loaderType: fontsExtensions,
+  staticLoader: staticLoader,
+  fontsDir: string
+) {
+  const type =
+    loaderType === ".eot"
+      ? `.eot`
+      : loaderType === ".otf"
+      ? `.otf`
+      : loaderType === ".svg"
+      ? `.svg`
+      : loaderType === ".ttf"
+      ? `.ttf`
+      : loaderType === ".woff"
+      ? `.woff`
+      : parseString("");
+
+  return `
+    {
+      test: ${setInExpression(type)},
+      use: {
+        loader: ${staticLoader},
+        options: {
+          name: "[name].[ext]",
+          outputPath: "${fontsDir}"
+        }
+      }
     }
   `;
-}
-
-function setImageExtensions(loaderType: imageExtensions) {
-  return loaderType === ".gif"
-    ? ``
-    : loaderType === ".jpeg"
-    ? ``
-    : loaderType === ".jpg"
-    ? ``
-    : loaderType === ".png"
-    ? ``
-    : loaderType === ".webp"
-    ? ``
-    : parseString("");
-}
-
-function setFontsExtensions(loaderType: fontsExtensions) {
-  return loaderType === ".eot"
-    ? ``
-    : loaderType === ".otf"
-    ? ``
-    : loaderType === ".svg"
-    ? ``
-    : loaderType === ".ttf"
-    ? ``
-    : loaderType === ".woff"
-    ? ``
-    : parseString("");
 }
 
 function setCoffeeScript(response: questionResponse) {

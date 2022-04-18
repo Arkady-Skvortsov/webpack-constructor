@@ -1,0 +1,3 @@
+function setCacheSupport() {}
+
+export { setCacheSupport };

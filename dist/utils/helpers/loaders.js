@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.setFontsExtensions = exports.setImageExtensions = exports.setStaticLoader = exports.setCsvLoader = exports.setYamlLoader = exports.setXmlLoader = exports.setCoffeeScript = exports.setHtmlLoader = exports.setCssPreprocessorLoader = exports.langLoader = void 0;
+var dev_mode_1 = require("../dev-mode");
 var text_1 = require("../text");
-var enum_1 = require("./enum");
+var expression_1 = require("./expression");
 function langLoader(presetType) {
     return presetType === "Typescript"
         ? "{\n        test: /.ts$/,\n        exclude: /node_modules/,\n        use: \"ts-loader\",\n      },"
@@ -26,51 +27,57 @@ function setCssPreprocessorLoader(loaderType, devMode, presetType) {
                 ? { expression: /\.css$/, loader: "postcss-loader" }
                 : loaderType === "Stylus"
                     ? { expression: /\.styl$/, loader: "stylus-loader" }
-                    : (0, text_1.parseString)("");
-    return Object.values(type).join(", ").split(" ");
+                    : {};
+    return "\n    {\n      test: ".concat(type.expression, ",\n      use: [").concat((0, dev_mode_1.setCSSRuleUse)(devMode, presetType), ", \"css-loader\", \"").concat(type.loader, "\"]\n    }\n  ");
 }
 exports.setCssPreprocessorLoader = setCssPreprocessorLoader;
-console.log(setCssPreprocessorLoader("(Sass/Scss)", "development", enum_1.preset.JAVASCRIPT));
-function setHtmlLoader(loaderType) {
-    return loaderType === "EJS"
-        ? "{\n      test: /.ejs$/,\n      use: [\"ejs-loader\"]\n    }"
-        : loaderType === "HandleBars"
-            ? "{ \n      test: /.hbs|handlebars$/, \n      use: [\"handlebars-loader\"] \n    }"
-            : loaderType === "Pug"
-                ? "{ \n      test: /.pug$/, \n      use: [\"pug-loader\"]\n    }"
-                : loaderType === "Jade"
-                    ? "\n      {\n        test: /.jade$/,\n        use: [\"jade-loader\"]\n      }\n    "
-                    : "{\n      test: /.html$/,\n      use: [\"html-loader\"]\n    }";
+function setHtmlLoader(loaderType, presetType) {
+    var type = ["Vue", "React", "Svelte"].some(function (typePreset) { return typePreset !== presetType; })
+        ? {}
+        : loaderType === "EJS"
+            ? { expression: /.ejs$/, loader: "ejs-loader" }
+            : loaderType === "HandleBars"
+                ? { expression: /.hbs|handlebars$/, loader: "handlebars-loader" }
+                : loaderType === "Pug"
+                    ? { expression: /.pug$/, loader: "pug-loader" }
+                    : loaderType === "Jade"
+                        ? { expression: /.jade$/, loader: "jade-loader" }
+                        : { expression: /.html$/, loader: "html-loader" };
+    return "\n    {\n      test: ".concat(type.expression, ",\n      use: [").concat(type.loader, "]\n    };");
 }
 exports.setHtmlLoader = setHtmlLoader;
-function setImageExtensions(loaderType) {
-    return loaderType === ".gif"
-        ? ""
-        : loaderType === ".jpeg"
-            ? ""
-            : loaderType === ".jpg"
-                ? ""
-                : loaderType === ".png"
-                    ? ""
-                    : loaderType === ".svg"
-                        ? ""
+function setImageExtensions(response, loaderType, staticLoader) {
+    if (response === "Yes") {
+        var type = loaderType === ".gif"
+            ? { extension: ".gif", option: "gifsicle: { interlaced: false }" }
+            : loaderType === ".jpeg"
+                ? { extension: ".jpeg", option: "mozjpeg: { progressive: true }" }
+                : loaderType === ".jpg"
+                    ? { extension: ".jpg" }
+                    : loaderType === ".png"
+                        ? { extension: ".png", option: "optipng: { enabled: false }" }
                         : loaderType === ".webp"
-                            ? ""
-                            : (0, text_1.parseString)("");
+                            ? { extension: ".webp", option: "webp: { quality: 85 }" }
+                            : loaderType === ".svg"
+                                ? { extension: ".svg", option: "svgo: {  }" }
+                                : {};
+        "{\n      test: ".concat((0, expression_1.setInExpression)(type.extension), ",\n      use: [\n        ").concat(setStaticLoader(staticLoader), ",\n        {\n          loader: \"image-webpack-loader\",\n          options: {\n            ").concat(type.option, "\n          }\n        }\n      ]\n    }");
+    }
 }
 exports.setImageExtensions = setImageExtensions;
-function setFontsExtensions(loaderType) {
-    return loaderType === ".eot"
-        ? ""
+function setFontsExtensions(loaderType, staticLoader, fontsDir) {
+    var type = loaderType === ".eot"
+        ? ".eot"
         : loaderType === ".otf"
-            ? ""
+            ? ".otf"
             : loaderType === ".svg"
-                ? ""
+                ? ".svg"
                 : loaderType === ".ttf"
-                    ? ""
+                    ? ".ttf"
                     : loaderType === ".woff"
-                        ? ""
+                        ? ".woff"
                         : (0, text_1.parseString)("");
+    return "\n    {\n      test: ".concat((0, expression_1.setInExpression)(type), ",\n      use: {\n        loader: ").concat(staticLoader, ",\n        options: {\n          name: \"[name].[ext]\",\n          outputPath: \"").concat(fontsDir, "\"\n        }\n      }\n    }\n  ");
 }
 exports.setFontsExtensions = setFontsExtensions;
 function setCoffeeScript(response) {

@@ -1,12 +1,12 @@
 import * as fs from "fs";
 import { deleteLine } from "./delete-line";
-import { WebpackConfigOptions } from "./handle-answers";
+import { WebpackConfigCustom, WebpackConfigOptions } from "./handle-answers";
 import { whitespace } from "./helpers/constants";
 import { preset } from "./helpers/enum";
 import { installPackagesForPresets } from "./helpers/packages";
 import { addScriptsForPackageJson } from "./add-scripts";
 import { figletText } from "./text";
-import { version, webpackMode } from "./helpers/types";
+import { basicTypes, version, webpackMode } from "./helpers/types";
 
 function setAlias(alias: string) {
   return !whitespace.test(alias)
@@ -62,15 +62,18 @@ function setSourceMaps(mode: "production" | "development") {
 async function generateWebpackConfig(
   type: preset,
   mode: webpackMode,
-  version: version
+  version: version,
+  basicType: basicTypes
 ) {
   try {
-    await installPackagesForPresets(type, mode, version);
+    await installPackagesForPresets(type, mode, version, basicType);
 
-    fs.writeFileSync(
-      "webpack.config.js",
-      await WebpackConfigOptions(type, mode)
-    );
+    const configType = async () =>
+      basicType === "Preset"
+        ? await WebpackConfigOptions(type, mode)
+        : await WebpackConfigCustom(type, mode);
+
+    fs.writeFileSync("webpack.config.js", await configType());
 
     await addScriptsForPackageJson("package.json", mode);
 
