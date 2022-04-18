@@ -1,8 +1,8 @@
 {
   "name": "webpack-constructor",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "",
-  "main": "./dist/index.js",
+  "main": "./lib/index.ts",
   "scripts": {
     "build": "tsc --build",
     "start": "ts-node ./lib/index.ts",
