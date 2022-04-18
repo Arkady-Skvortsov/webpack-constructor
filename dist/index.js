@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const handle_answers_1 = require("./utils/handle-answers");
