@@ -1,9 +1,12 @@
 {
   "compilerOptions": {
     "outDir": "dist",
-    "target": "es5",
+    "target": "esnext",
+    "rootDir": "./lib",
     "module": "commonjs",
     "strict": true,
+    "lib": ["ES6"],
+    "baseUrl": ".",
     "moduleResolution": "node",
     "sourceMap": true,
     "downlevelIteration": true,
