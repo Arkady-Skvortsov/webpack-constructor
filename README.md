@@ -18,6 +18,8 @@ I'm already tired of watching $100,000 frontend developers post in telegram/slac
   npm i webpack-constructor
 ```
 
+[webpack-constructor](https://www.npmjs.com/package/webpack-constructor)
+
 # Choose preset / create custom
 
 ```sh
