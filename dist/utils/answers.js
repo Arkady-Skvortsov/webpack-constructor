@@ -1,13 +1,50 @@
+#!/usr/bin/env node
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isCreateChromeProfileFile = exports.setCompressionOptions = exports.setGlobalVariable = exports.isGlobalVariableAnswer = exports.isCompressionAnswer = exports.isMaximumChunkSize = exports.isMinimumChunkSize = exports.setLocalizeDetails = exports.isHMRAnswer = exports.isLocalizeAnswer = exports.setEnvironmentVariables = exports.setFilesCatalogesCopy = exports.isCopyStaticFiles = exports.isEnvironmentVariables = exports.chooseStaticFilesLoader = exports.isClosureLibrary = exports.addingBannerToChunk = exports.isCleanPlugin = exports.isCopyPlugin = exports.fontsOutDir = exports.isSplittingChunks = exports.isDiscoverPreviousCompilation = exports.supportSplitBundlesThroughDLL = exports.isSplitBundlesThroughDLL = exports.isFontsExtensionAnswer = exports.isImageExtensionAnswer = exports.isHtmlPreprocessorAnswer = exports.isCssPreprocessorsAnswer = exports.isCsvExtension = exports.cssPreprocessors = exports.contextAnswer = exports.isCacheWebpack = exports.isXmlExtension = exports.htmlPreprocessorsAnswer = exports.fontsExtensions = exports.isLazyLoading = exports.isImagesAnswer = exports.isFontsAnswer = exports.isDevServerAnswer = exports.fontsDir = exports.isAvoidErrorStyles = exports.isPwaSupport = exports.imageExtensions = exports.isYamlExtension = exports.entryPointsAnswer = exports.supportFromCoffeScriptAnswer = exports.staticLoader = exports.splitChunksWebpack = exports.outputDir = exports.integrationInstruments = void 0;
-exports.isIgnoreSomeFilesWatchMode = exports.setFilesForIgnoreInWatchMode = exports.setFilesForIgnore = exports.setAliasAnswer = exports.setMinimumChunkSize = exports.setMaximumChunkSize = exports.isIntegrationInstrument = exports.isIgnoreSomeFiles = void 0;
+exports.isLocalizeAnswer = exports.setEnvironmentVariables = exports.setFilesCatalogesCopy = exports.isCopyStaticFiles = exports.isEnvironmentVariables = exports.chooseStaticFilesLoader = exports.isClosureLibrary = exports.addingBannerToChunk = exports.isCleanPlugin = exports.isCopyPlugin = exports.fontsOutDir = exports.isSplittingChunks = exports.isDiscoverPreviousCompilation = exports.supportSplitBundlesThroughDLL = exports.isSplitBundlesThroughDLL = exports.isFontsExtensionAnswer = exports.isImageExtensionAnswer = exports.isHtmlPreprocessorAnswer = exports.isCssPreprocessorsAnswer = exports.isCsvExtension = exports.cssPreprocessors = exports.contextAnswer = exports.isCacheWebpack = exports.isXmlExtension = exports.htmlPreprocessorsAnswer = exports.fontsExtensions = exports.isLazyLoading = exports.isImagesAnswer = exports.isFontsAnswer = exports.isDevServerAnswer = exports.checkPresetFrameworkConfig = exports.checkPresetHTML = exports.chooseWebpackMode = exports.chooseWebpackVersion = exports.chooseBasicPreset = exports.checkPresetTsConfig = exports.fontsDir = exports.devServerPort = exports.chooseWatchFiles = exports.isAvoidErrorStyles = exports.basicChoose = exports.isPwaSupport = exports.imageExtensions = exports.isYamlExtension = exports.entryPointsAnswer = exports.supportFromCoffeScriptAnswer = exports.staticLoader = exports.splitChunksWebpack = exports.outputDir = exports.integrationInstruments = void 0;
+exports.isIgnoreSomeFilesWatchMode = exports.setFilesForIgnoreInWatchMode = exports.setFilesForIgnore = exports.setAliasAnswer = exports.setMinimumChunkSize = exports.setMaximumChunkSize = exports.isIntegrationInstrument = exports.isIgnoreSomeFiles = exports.isCreateChromeProfileFile = exports.setCompressionOptions = exports.setGlobalVariable = exports.isGlobalVariableAnswer = exports.isCompressionAnswer = exports.isMaximumChunkSize = exports.isMinimumChunkSize = exports.setLocalizeDetails = exports.isHMRAnswer = void 0;
 const inquirer_1 = __importDefault(require("inquirer"));
 const extensions_1 = require("./helpers/extensions");
 const text_1 = require("./text");
+async function basicChoose() {
+    return await inquirer_1.default.prompt({
+        name: "question_basic_choose",
+        type: "list",
+        message: "Are you want a basic preset or you want to create a custom?",
+        choices: ["Preset", "Custom"],
+    });
+}
+exports.basicChoose = basicChoose;
+async function chooseBasicPreset() {
+    return await inquirer_1.default.prompt({
+        name: "question_choose_basic_preset",
+        type: "list",
+        message: "What do you want to choose from presets?",
+        choices: ["Vue", "React", "Svelte", "Typescript", "Javascript"],
+    });
+}
+exports.chooseBasicPreset = chooseBasicPreset;
+async function chooseWebpackVersion() {
+    return await inquirer_1.default.prompt({
+        name: "question_webpack_version",
+        type: "list",
+        message: "What is the version of webpack do you want to use?",
+        choices: ["4", "5"],
+    });
+}
+exports.chooseWebpackVersion = chooseWebpackVersion;
+async function chooseWebpackMode() {
+    return await inquirer_1.default.prompt({
+        name: "question_is_webpack_mode",
+        type: "list",
+        message: "What is the development mode do you want for webpack ?",
+        choices: ["development", "production"],
+    });
+}
+exports.chooseWebpackMode = chooseWebpackMode;
 async function contextAnswer() {
     return await inquirer_1.default.prompt({
         name: "question_context",
@@ -25,6 +62,50 @@ async function entryPointsAnswer(preset, entrypoint) {
     });
 }
 exports.entryPointsAnswer = entryPointsAnswer;
+async function checkPresetTsConfig(preset) {
+    return preset === "Typescript"
+        ? {
+            tslintFilePath: await inquirer_1.default.prompt({
+                name: "question_check_preset_ts_config",
+                type: "input",
+                message: "What is the path to you'r tslint.json file (default: ./tslint.json)?",
+                default: "./tslint.json",
+            }),
+        }
+        : void 0;
+}
+exports.checkPresetTsConfig = checkPresetTsConfig;
+async function checkPresetFrameworkConfig(preset) {
+    return ["Vue", "React", "Svelte"].includes(preset)
+        ? {
+            langForFramework: await inquirer_1.default.prompt({
+                name: "question_preset_framework_config",
+                type: "list",
+                message: "What is the language you want to select for that framework ?",
+                choices: ["Javascript", "Typescript"],
+            }),
+        }
+        : void 0;
+}
+exports.checkPresetFrameworkConfig = checkPresetFrameworkConfig;
+async function checkPresetHTML(preset, text) {
+    return !["React", "Vue", "Svelte"].includes(preset)
+        ? {
+            htmlTitle: await inquirer_1.default.prompt({
+                name: "question_preset_html",
+                type: "input",
+                message: "What is the title do you want in html page (example: Hello world) ?",
+                default: "Hello world",
+            }),
+            htmlTemplate: await inquirer_1.default.prompt({
+                name: "question_7",
+                type: "input",
+                message: `What is the html template would be in webpack config (example: ${text}/main.html) ?`,
+            }),
+        }
+        : void 0;
+}
+exports.checkPresetHTML = checkPresetHTML;
 async function setAliasAnswer(context) {
     return await inquirer_1.default.prompt({
         name: "set_alias",
@@ -607,4 +688,22 @@ async function outputDir() {
     });
 }
 exports.outputDir = outputDir;
+async function devServerPort() {
+    return await inquirer_1.default.prompt({
+        name: "question_dev_server_port",
+        type: "input",
+        message: "What is the port would be in Dev Server (default: 3500) ?",
+        default: 3500,
+    });
+}
+exports.devServerPort = devServerPort;
+async function chooseWatchFiles(port) {
+    return await inquirer_1.default.prompt({
+        name: "question_13",
+        type: "input",
+        message: `What is the folder with files do you want to watch for changes with starting devServer (example: ${port.dev_server_port}/html) ?`,
+        default: `${port.dev_server_port}/html`,
+    });
+}
+exports.chooseWatchFiles = chooseWatchFiles;
 //# sourceMappingURL=answers.js.map

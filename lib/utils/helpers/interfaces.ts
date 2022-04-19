@@ -78,6 +78,7 @@ interface customWebpackConfig {
   fontsOutputDirectory: string;
   outputDirectory: string;
   isDevServerSupport: questionResponse;
+  devServerPort: number;
   devMode: webpackMode;
 }
 

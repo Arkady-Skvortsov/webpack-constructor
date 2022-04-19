@@ -1,8 +1,46 @@
+#!/usr/bin/env node
+
 import inquirer from "inquirer";
 import { preset } from "./helpers/enum";
 import { generateExtensions } from "./helpers/extensions";
 import { questionResponse } from "./helpers/types";
 import { parseString } from "./text";
+
+async function basicChoose() {
+  return await inquirer.prompt({
+    name: "question_basic_choose",
+    type: "list",
+    message: "Are you want a basic preset or you want to create a custom?",
+    choices: ["Preset", "Custom"],
+  });
+}
+
+async function chooseBasicPreset() {
+  return await inquirer.prompt({
+    name: "question_choose_basic_preset",
+    type: "list",
+    message: "What do you want to choose from presets?",
+    choices: ["Vue", "React", "Svelte", "Typescript", "Javascript"],
+  });
+}
+
+async function chooseWebpackVersion() {
+  return await inquirer.prompt({
+    name: "question_webpack_version",
+    type: "list",
+    message: "What is the version of webpack do you want to use?",
+    choices: ["4", "5"],
+  });
+}
+
+async function chooseWebpackMode() {
+  return await inquirer.prompt({
+    name: "question_is_webpack_mode",
+    type: "list",
+    message: "What is the development mode do you want for webpack ?",
+    choices: ["development", "production"],
+  });
+}
 
 async function contextAnswer() {
   return await inquirer.prompt({
@@ -22,6 +60,53 @@ async function entryPointsAnswer(preset: preset, entrypoint: string) {
       preset
     )}) ?`,
   });
+}
+
+async function checkPresetTsConfig(preset: preset) {
+  return preset === "Typescript"
+    ? {
+        tslintFilePath: await inquirer.prompt({
+          name: "question_check_preset_ts_config",
+          type: "input",
+          message:
+            "What is the path to you'r tslint.json file (default: ./tslint.json)?",
+          default: "./tslint.json",
+        }),
+      }
+    : void 0;
+}
+
+async function checkPresetFrameworkConfig(preset: preset) {
+  return ["Vue", "React", "Svelte"].includes(preset)
+    ? {
+        langForFramework: await inquirer.prompt({
+          name: "question_preset_framework_config",
+          type: "list",
+          message:
+            "What is the language you want to select for that framework ?",
+          choices: ["Javascript", "Typescript"],
+        }),
+      }
+    : void 0;
+}
+
+async function checkPresetHTML(preset: preset, text: any) {
+  return !["React", "Vue", "Svelte"].includes(preset)
+    ? {
+        htmlTitle: await inquirer.prompt({
+          name: "question_preset_html",
+          type: "input",
+          message:
+            "What is the title do you want in html page (example: Hello world) ?",
+          default: "Hello world",
+        }),
+        htmlTemplate: await inquirer.prompt({
+          name: "question_7",
+          type: "input",
+          message: `What is the html template would be in webpack config (example: ${text}/main.html) ?`,
+        }),
+      }
+    : void 0;
 }
 
 async function setAliasAnswer(context: string) {
@@ -618,6 +703,24 @@ async function outputDir() {
   });
 }
 
+async function devServerPort() {
+  return await inquirer.prompt({
+    name: "question_dev_server_port",
+    type: "input",
+    message: "What is the port would be in Dev Server (default: 3500) ?",
+    default: 3500,
+  });
+}
+
+async function chooseWatchFiles(port: any) {
+  return await inquirer.prompt({
+    name: "question_13",
+    type: "input",
+    message: `What is the folder with files do you want to watch for changes with starting devServer (example: ${port.dev_server_port}/html) ?`,
+    default: `${port.dev_server_port}/html`,
+  });
+}
+
 export {
   integrationInstruments,
   outputDir,
@@ -628,8 +731,17 @@ export {
   isYamlExtension,
   imageExtensions,
   isPwaSupport,
+  basicChoose,
   isAvoidErrorStyles,
+  chooseWatchFiles,
+  devServerPort,
   fontsDir,
+  checkPresetTsConfig,
+  chooseBasicPreset,
+  chooseWebpackVersion,
+  chooseWebpackMode,
+  checkPresetHTML,
+  checkPresetFrameworkConfig,
   isDevServerAnswer,
   isFontsAnswer,
   isImagesAnswer,

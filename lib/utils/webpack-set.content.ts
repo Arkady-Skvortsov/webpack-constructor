@@ -7,6 +7,7 @@ import { installPackagesForPresets } from "./helpers/packages";
 import { addScriptsForPackageJson } from "./add-scripts";
 import { figletText } from "./text";
 import { basicTypes, version, webpackMode } from "./helpers/types";
+import { customWebpackConfig } from "./helpers/interfaces";
 
 function setAlias(alias: string) {
   return !whitespace.test(alias)
@@ -66,20 +67,30 @@ async function generateWebpackConfig(
   basicType: basicTypes
 ) {
   try {
-    await installPackagesForPresets(type, mode, version, basicType);
+    let customOptions: customWebpackConfig;
 
-    const configType = async () =>
-      basicType === "Preset"
-        ? await WebpackConfigOptions(type, mode)
-        : await WebpackConfigCustom(type, mode);
+    const configType = async () => {
+      if (basicType === "Preset") return await WebpackConfigOptions(type, mode);
+      else {
+        return await WebpackConfigCustom(type, mode);
+      }
+    };
 
     fs.writeFileSync("webpack.config.js", await configType());
 
     await addScriptsForPackageJson("package.json", mode);
 
+    deleteLine("webpack.config.js");
+
     await figletText(type);
 
-    deleteLine("webpack.config.js");
+    await installPackagesForPresets(
+      type,
+      mode,
+      version,
+      basicType,
+      await configType()
+    );
   } catch (e) {
     console.log(e);
   }

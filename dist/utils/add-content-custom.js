@@ -47,7 +47,6 @@ module.exports = {
     ${(0, plugins_1.setClosureLibrary)(options.isClosureSupport)}
     ${(0, plugins_1.setEnvironmentPlugin)(options.isEnvironmentalVariablesSupport, options.environmentVariable)}
     ${(0, plugins_1.setDLLPlugin)(options.isSplitBundlesThroughDLLSupport, options.dllOptions)}
-   
     ${(0, plugins_1.setCleanWebpackPlugin)(options.isCleanPluginSUpport)}
     ${(0, plugins_1.setI18nPlugin)(options.isLocalizeSupport)}
     ${(0, plugins_1.setProfillingPlugin)(options.isCreateChromeProfileFileSupport)}

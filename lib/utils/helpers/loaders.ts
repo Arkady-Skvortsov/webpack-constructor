@@ -78,9 +78,7 @@ function setCssPreprocessorLoader(
 }
 
 function setHtmlLoader(loaderType: htmlLoader, presetType: preset) {
-  const type = ["Vue", "React", "Svelte"].some(
-    (typePreset) => typePreset !== presetType
-  )
+  const type = !["Vue", "React", "Svelte"].includes(presetType)
     ? {}
     : loaderType === "EJS"
     ? { expression: /.ejs$/, loader: "ejs-loader" }
@@ -99,6 +97,54 @@ function setHtmlLoader(loaderType: htmlLoader, presetType: preset) {
     };`;
 }
 
+async function parseHtmlLoaders(loaderType: string) {
+  return loaderType
+    .split(" ")
+    .forEach((loader) =>
+      loader === "Pug"
+        ? "pug-loader"
+        : loader === "EJS"
+        ? "ejs-loader"
+        : loader === "Handlebars"
+        ? "handlebards-loader"
+        : loader === "Jade"
+        ? "jade-loader"
+        : "html-loader"
+    );
+}
+
+async function parseCssLoaders(loaderType: string) {
+  return loaderType
+    .split(" ")
+    .map((loader) =>
+      loader === "(Sass/Scss)"
+        ? "sass-loader"
+        : loader === "Less"
+        ? "less-loaderr"
+        : loader === "PostCss"
+        ? "postcss-loader"
+        : loader === "Stylus"
+        ? "stylus-loader"
+        : "css-loader"
+    );
+}
+
+async function parseIntegration(integrationType: string) {
+  return integrationType
+    .split(" ")
+    .forEach((integration) =>
+      integration === "Gulp"
+        ? "webpack-stream"
+        : integration === "Grunt"
+        ? "grunt-webpack"
+        : integration === "Karma"
+        ? "karma-webpack"
+        : integration === "Mocha"
+        ? "mocha-webpack"
+        : ""
+    );
+}
+
 function setImageExtensions(
   response: questionResponse,
   loaderType: string,
@@ -107,20 +153,20 @@ function setImageExtensions(
   if (response === "Yes") {
     const type =
       loaderType === ".gif"
-        ? { extension: ".gif", option: `gifsicle: { interlaced: false }` }
+        ? { extension: "gif", option: `gifsicle: { interlaced: false }` }
         : loaderType === ".jpeg"
-        ? { extension: ".jpeg", option: `mozjpeg: { progressive: true }` }
+        ? { extension: "jpeg", option: `mozjpeg: { progressive: true }` }
         : loaderType === ".jpg"
-        ? { extension: ".jpg" }
+        ? { extension: "jpg" }
         : loaderType === ".png"
-        ? { extension: ".png", option: `optipng: { enabled: false }` }
+        ? { extension: "png", option: `optipng: { enabled: false }` }
         : loaderType === ".webp"
-        ? { extension: ".webp", option: `webp: { quality: 85 }` }
+        ? { extension: "webp", option: `webp: { quality: 85 }` }
         : loaderType === ".svg"
-        ? { extension: ".svg", option: `svgo: {  }` }
+        ? { extension: "svg", option: `svgo: {  }` }
         : {};
 
-    `{
+    return `{
       test: ${setInExpression(type.extension)},
       use: [
         ${setStaticLoader(staticLoader)},
@@ -222,7 +268,10 @@ export {
   langLoader,
   setCssPreprocessorLoader,
   setHtmlLoader,
+  parseCssLoaders,
+  parseHtmlLoaders,
   setCoffeeScript,
+  parseIntegration,
   setXmlLoader,
   setYamlLoader,
   setCsvLoader,

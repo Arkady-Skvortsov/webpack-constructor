@@ -1,10 +1,6 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WebpackConfigCustom = exports.WebpackConfigOptions = exports.firstChoose = void 0;
-const inquirer_1 = __importDefault(require("inquirer"));
 const start_1 = require("./start");
 const webpack_set_content_1 = require("./webpack-set.content");
 const add_content_preset_1 = require("./add-content-preset");
@@ -12,86 +8,25 @@ const answers_1 = require("./answers");
 const add_content_custom_1 = require("./add-content-custom");
 async function firstChoose() {
     await (0, start_1.start)();
-    const basicChoose = await inquirer_1.default.prompt({
-        name: "question_1",
-        type: "list",
-        message: "Are you want a basic preset or you want to create a custom?",
-        choices: ["Preset", "Custom"],
-    });
-    await choosePreset(basicChoose.question_1);
+    const basic = await (0, answers_1.basicChoose)();
+    await choosePreset(basic.question_basic_choose);
 }
 exports.firstChoose = firstChoose;
 async function choosePreset(type) {
-    const presetChoose = await inquirer_1.default.prompt({
-        name: "question_2",
-        type: "list",
-        message: "What do you want to choose from presets?",
-        choices: ["Vue", "React", "Svelte", "Typescript", "Javascript"],
-    });
-    const webpackVersion = await inquirer_1.default.prompt({
-        name: "question_3",
-        type: "list",
-        message: "What is the version of webpack do you want to use?",
-        choices: ["4", "5"],
-    });
-    const webpackMode = await inquirer_1.default.prompt({
-        name: "question_4",
-        type: "list",
-        message: "What is the development mode do you want for webpack ?",
-        choices: ["development", "production"],
-    });
-    await handleAnswer(presetChoose.question_2, webpackMode.question_4, webpackVersion.question_3, type);
+    const presetChoose = await (0, answers_1.chooseBasicPreset)();
+    const webpackVersion = await (0, answers_1.chooseWebpackVersion)();
+    const webpackMode = await (0, answers_1.chooseWebpackMode)();
+    await handleAnswer(presetChoose.question_choose_basic_preset, webpackMode.question_is_webpack_mode, webpackVersion.question_webpack_version, type);
 }
 async function handleAnswer(presetOptions, mode, webpackVersion, type) {
     await (0, webpack_set_content_1.generateWebpackConfig)(presetOptions, mode, webpackVersion, type);
     process.exit(1);
 }
-async function checkPresetTsConfig(preset) {
-    return preset === "Typescript"
-        ? {
-            tslintFilePath: await inquirer_1.default.prompt({
-                name: "question_12",
-                type: "input",
-                message: "What is the path to you'r tslint.json file (default: ./tslint.json)?",
-                default: "./tslint.json",
-            }),
-        }
-        : void 0;
-}
-async function checkPresetFrameworkConfig(preset) {
-    return ["Vue", "React", "Svelte"].includes(preset)
-        ? {
-            langForFramework: await inquirer_1.default.prompt({
-                name: "question_12",
-                type: "list",
-                message: "What is the language you want to select for that framework ?",
-                choices: ["Javascript", "Typescript"],
-            }),
-        }
-        : void 0;
-}
-async function checkPresetHTML(preset, text) {
-    return ["React", "Vue", "Svelte"].includes(preset)
-        ? {
-            htmlTitle: await inquirer_1.default.prompt({
-                name: "question_6",
-                type: "input",
-                message: "What is the title do you want in html page (example: Hello world) ?",
-                default: "Hello world",
-            }),
-            htmlTemplate: await inquirer_1.default.prompt({
-                name: "question_7",
-                type: "input",
-                message: `What is the html template would be in webpack config (example: ${text}/main.html) ?`,
-            }),
-        }
-        : void 0;
-}
 async function WebpackConfigCustom(presetType, mode) {
     const contextPrintWrite = await (0, answers_1.contextAnswer)();
     const entryPointWrite = await (0, answers_1.entryPointsAnswer)(presetType, contextPrintWrite.question_context);
     const setAliasPathes = await (0, answers_1.setAliasAnswer)(contextPrintWrite.question_context);
-    const checkLangPreset = await checkPresetFrameworkConfig(presetType);
+    const checkLangPreset = await (0, answers_1.checkPresetFrameworkConfig)(presetType);
     const isCoffescriptSupport = await (0, answers_1.supportFromCoffeScriptAnswer)();
     const isHtmlPreprocessorSupport = await (0, answers_1.isHtmlPreprocessorAnswer)();
     const htmlPreprocessors = await (0, answers_1.htmlPreprocessorsAnswer)(isHtmlPreprocessorSupport.question_is_html_preprocessor);
@@ -138,14 +73,15 @@ async function WebpackConfigCustom(presetType, mode) {
     const setFilesCatalogesCopySupport = await (0, answers_1.setFilesCatalogesCopy)(isCopyStaticFilesSupport.is_copy_static_files);
     const setOutputDirectory = await (0, answers_1.outputDir)();
     const isDevServerSupport = await (0, answers_1.isDevServerAnswer)();
-    return (0, add_content_custom_1.addContentToCustom)(presetType, mode, {
+    const devServerPortSupport = await (0, answers_1.devServerPort)();
+    const customConf = {
         context: contextPrintWrite.question_context,
         entryPoint: entryPointWrite.entry_point,
         aliasPath: setAliasPathes.set_alias,
         isCoffeScriptSupport: isCoffescriptSupport.question_coffe_script,
         isHtmlPreprocessorSupport: isHtmlPreprocessorSupport.question_is_html_preprocessor,
         htmlPreprocessor: htmlPreprocessors?.question_html_preprocessor,
-        tslintFilePath: checkLangPreset?.langForFramework.question_12,
+        tslintFilePath: checkLangPreset?.langForFramework.question_preset_framework_config,
         isCssPreprocessorSupport: isCssPreprocessor.question_is_css_preprocessor,
         cssPreprocessors: cssPreprocessorsSupport?.question_css_preprocessor,
         staticLoader: setFilesCatalogesCopySupport?.set_files_cataloges_copy,
@@ -206,38 +142,30 @@ async function WebpackConfigCustom(presetType, mode) {
         filesCatalogesCopySupport: setFilesCatalogesCopySupport?.set_files_cataloges_copy,
         outputDirectory: setOutputDirectory.question_output_dir,
         isDevServerSupport: isDevServerSupport.is_dev_server,
+        devServerPort: devServerPortSupport.question_dev_server_port,
         devMode: mode,
-    });
+    };
+    return (0, add_content_custom_1.addContentToCustom)(presetType, mode, customConf) ?? customConf;
 }
 exports.WebpackConfigCustom = WebpackConfigCustom;
 async function WebpackConfigOptions(presetType, mode) {
     const contextPointWrite = await (0, answers_1.contextAnswer)();
     const entryPointWrite = await (0, answers_1.entryPointsAnswer)(presetType, contextPointWrite.question_context);
     const aliasPathWrite = await (0, answers_1.setAliasAnswer)(contextPointWrite.question_context);
-    const portWrite = await inquirer_1.default.prompt({
-        name: "question_8",
-        type: "input",
-        message: "What is the port would be in Dev Server (default: 3500) ?",
-        default: 3500,
-    });
+    const portWrite = await (0, answers_1.devServerPort)();
     const outputFolder = await (0, answers_1.outputDir)();
-    const htmlPreset = await checkPresetHTML(presetType, contextPointWrite.question_context);
-    const checkLangPreset = await checkPresetFrameworkConfig(presetType);
-    const checkTsConfigPreset = await checkPresetTsConfig(checkLangPreset?.langForFramework.question_12);
-    const watchFilesPath = await inquirer_1.default.prompt({
-        name: "question_13",
-        type: "input",
-        message: `What is the folder with files do you want to watch for changes with starting devServer (example: ${contextPointWrite.question_context}/html) ?`,
-        default: `${contextPointWrite.question_context}/html`,
-    });
+    const htmlPreset = await (0, answers_1.checkPresetHTML)(presetType, contextPointWrite.question_context);
+    const checkLangPreset = await (0, answers_1.checkPresetFrameworkConfig)(presetType);
+    const checkTsConfigPreset = await (0, answers_1.checkPresetTsConfig)(checkLangPreset?.langForFramework.question_preset_framework_config);
+    const watchFilesPath = await (0, answers_1.chooseWatchFiles)(portWrite);
     return (0, add_content_preset_1.addContentToPreset)(presetType, {
         context: contextPointWrite.question_context,
         entryPoint: entryPointWrite.entry_point,
         aliasPath: aliasPathWrite.set_alias,
-        devPort: portWrite.question_8,
-        htmlTitle: htmlPreset?.htmlTitle.question_6,
+        devPort: portWrite.question_dev_server_port,
+        htmlTitle: htmlPreset?.htmlTitle.question_preset_html,
         htmlTemplate: htmlPreset?.htmlTemplate.question_7,
-        tslintFilePath: checkTsConfigPreset?.tslintFilePath.question_12,
+        tslintFilePath: checkTsConfigPreset?.tslintFilePath.question_check_preset_ts_config,
         outputFolder: outputFolder.question_output_dir,
         watchFiles: watchFilesPath.question_13,
         devMode: mode,

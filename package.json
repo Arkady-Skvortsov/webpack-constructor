@@ -1,7 +1,8 @@
 {
   "name": "webpack-constructor",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "",
+  "bin": "./dist/utils/answers.js",
   "main": "./dist/index.js",
   "scripts": {
     "build": "tsc --build",

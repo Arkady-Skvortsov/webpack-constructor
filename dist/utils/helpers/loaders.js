@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setFontsExtensions = exports.setImageExtensions = exports.setStaticLoader = exports.setCsvLoader = exports.setYamlLoader = exports.setXmlLoader = exports.setCoffeeScript = exports.setHtmlLoader = exports.setCssPreprocessorLoader = exports.langLoader = void 0;
+exports.setFontsExtensions = exports.setImageExtensions = exports.setStaticLoader = exports.setCsvLoader = exports.setYamlLoader = exports.setXmlLoader = exports.parseIntegration = exports.setCoffeeScript = exports.parseHtmlLoaders = exports.parseCssLoaders = exports.setHtmlLoader = exports.setCssPreprocessorLoader = exports.langLoader = void 0;
 const dev_mode_1 = require("../dev-mode");
 const text_1 = require("../text");
 const expression_1 = require("./expression");
@@ -62,7 +62,7 @@ function setCssPreprocessorLoader(loaderType, devMode, presetType) {
 }
 exports.setCssPreprocessorLoader = setCssPreprocessorLoader;
 function setHtmlLoader(loaderType, presetType) {
-    const type = ["Vue", "React", "Svelte"].some((typePreset) => typePreset !== presetType)
+    const type = !["Vue", "React", "Svelte"].includes(presetType)
         ? {}
         : loaderType === "EJS"
             ? { expression: /.ejs$/, loader: "ejs-loader" }
@@ -80,22 +80,64 @@ function setHtmlLoader(loaderType, presetType) {
     };`;
 }
 exports.setHtmlLoader = setHtmlLoader;
+async function parseHtmlLoaders(loaderType) {
+    return loaderType
+        .split(" ")
+        .forEach((loader) => loader === "Pug"
+        ? "pug-loader"
+        : loader === "EJS"
+            ? "ejs-loader"
+            : loader === "Handlebars"
+                ? "handlebards-loader"
+                : loader === "Jade"
+                    ? "jade-loader"
+                    : "html-loader");
+}
+exports.parseHtmlLoaders = parseHtmlLoaders;
+async function parseCssLoaders(loaderType) {
+    return loaderType
+        .split(" ")
+        .map((loader) => loader === "(Sass/Scss)"
+        ? "sass-loader"
+        : loader === "Less"
+            ? "less-loaderr"
+            : loader === "PostCss"
+                ? "postcss-loader"
+                : loader === "Stylus"
+                    ? "stylus-loader"
+                    : "css-loader");
+}
+exports.parseCssLoaders = parseCssLoaders;
+async function parseIntegration(integrationType) {
+    return integrationType
+        .split(" ")
+        .forEach((integration) => integration === "Gulp"
+        ? "webpack-stream"
+        : integration === "Grunt"
+            ? "grunt-webpack"
+            : integration === "Karma"
+                ? "karma-webpack"
+                : integration === "Mocha"
+                    ? "mocha-webpack"
+                    : "");
+}
+exports.parseIntegration = parseIntegration;
 function setImageExtensions(response, loaderType, staticLoader) {
     if (response === "Yes") {
         const type = loaderType === ".gif"
-            ? { extension: ".gif", option: `gifsicle: { interlaced: false }` }
+            ? { extension: "gif", option: `gifsicle: { interlaced: false }` }
             : loaderType === ".jpeg"
-                ? { extension: ".jpeg", option: `mozjpeg: { progressive: true }` }
+                ? { extension: "jpeg", option: `mozjpeg: { progressive: true }` }
                 : loaderType === ".jpg"
-                    ? { extension: ".jpg" }
+                    ? { extension: "jpg" }
                     : loaderType === ".png"
-                        ? { extension: ".png", option: `optipng: { enabled: false }` }
+                        ? { extension: "png", option: `optipng: { enabled: false }` }
                         : loaderType === ".webp"
-                            ? { extension: ".webp", option: `webp: { quality: 85 }` }
+                            ? { extension: "webp", option: `webp: { quality: 85 }` }
                             : loaderType === ".svg"
-                                ? { extension: ".svg", option: `svgo: {  }` }
+                                ? { extension: "svg", option: `svgo: {  }` }
                                 : {};
-        `{
+        return `{
       test: ${(0, expression_1.setInExpression)(type.extension)},
       use: [
         ${setStaticLoader(staticLoader)},

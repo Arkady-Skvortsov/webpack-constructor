@@ -69,14 +69,19 @@ function setSourceMaps(mode) {
 exports.setSourceMaps = setSourceMaps;
 async function generateWebpackConfig(type, mode, version, basicType) {
     try {
-        await (0, packages_1.installPackagesForPresets)(type, mode, version, basicType);
-        const configType = async () => basicType === "Preset"
-            ? await (0, handle_answers_1.WebpackConfigOptions)(type, mode)
-            : await (0, handle_answers_1.WebpackConfigCustom)(type, mode);
+        let customOptions;
+        const configType = async () => {
+            if (basicType === "Preset")
+                return await (0, handle_answers_1.WebpackConfigOptions)(type, mode);
+            else {
+                return await (0, handle_answers_1.WebpackConfigCustom)(type, mode);
+            }
+        };
         fs.writeFileSync("webpack.config.js", await configType());
         await (0, add_scripts_1.addScriptsForPackageJson)("package.json", mode);
-        await (0, text_1.figletText)(type);
         (0, delete_line_1.deleteLine)("webpack.config.js");
+        await (0, text_1.figletText)(type);
+        await (0, packages_1.installPackagesForPresets)(type, mode, version, basicType, await configType());
     }
     catch (e) {
         console.log(e);

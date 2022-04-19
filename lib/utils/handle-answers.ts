@@ -1,4 +1,3 @@
-import inquirer from "inquirer";
 import { basicTypes, version, webpackMode } from "./helpers/types";
 import { start } from "./start";
 import { preset } from "./helpers/enum";
@@ -54,48 +53,38 @@ import {
   isCopyPlugin,
   isCleanPlugin,
   fontsOutDir,
+  checkPresetFrameworkConfig,
+  basicChoose,
+  chooseBasicPreset,
+  chooseWebpackVersion,
+  chooseWebpackMode,
+  devServerPort,
+  checkPresetTsConfig,
+  checkPresetHTML,
+  chooseWatchFiles,
 } from "./answers";
 import { addContentToCustom } from "./add-content-custom";
+import { customWebpackConfig } from "./helpers/interfaces";
 
 async function firstChoose() {
   await start();
 
-  const basicChoose = await inquirer.prompt({
-    name: "question_1",
-    type: "list",
-    message: "Are you want a basic preset or you want to create a custom?",
-    choices: ["Preset", "Custom"],
-  });
+  const basic = await basicChoose();
 
-  await choosePreset(basicChoose.question_1);
+  await choosePreset(basic.question_basic_choose);
 }
 
 async function choosePreset(type: basicTypes) {
-  const presetChoose = await inquirer.prompt({
-    name: "question_2",
-    type: "list",
-    message: "What do you want to choose from presets?",
-    choices: ["Vue", "React", "Svelte", "Typescript", "Javascript"],
-  });
+  const presetChoose = await chooseBasicPreset();
 
-  const webpackVersion = await inquirer.prompt({
-    name: "question_3",
-    type: "list",
-    message: "What is the version of webpack do you want to use?",
-    choices: ["4", "5"],
-  });
+  const webpackVersion = await chooseWebpackVersion();
 
-  const webpackMode = await inquirer.prompt({
-    name: "question_4",
-    type: "list",
-    message: "What is the development mode do you want for webpack ?",
-    choices: ["development", "production"],
-  });
+  const webpackMode = await chooseWebpackMode();
 
   await handleAnswer(
-    presetChoose.question_2,
-    webpackMode.question_4,
-    webpackVersion.question_3,
+    presetChoose.question_choose_basic_preset,
+    webpackMode.question_is_webpack_mode,
+    webpackVersion.question_webpack_version,
     type
   );
 }
@@ -108,53 +97,6 @@ async function handleAnswer(
 ) {
   await generateWebpackConfig(presetOptions, mode, webpackVersion, type);
   process.exit(1);
-}
-
-async function checkPresetTsConfig(preset: preset) {
-  return preset === "Typescript"
-    ? {
-        tslintFilePath: await inquirer.prompt({
-          name: "question_12",
-          type: "input",
-          message:
-            "What is the path to you'r tslint.json file (default: ./tslint.json)?",
-          default: "./tslint.json",
-        }),
-      }
-    : void 0;
-}
-
-async function checkPresetFrameworkConfig(preset: preset) {
-  return ["Vue", "React", "Svelte"].includes(preset)
-    ? {
-        langForFramework: await inquirer.prompt({
-          name: "question_12",
-          type: "list",
-          message:
-            "What is the language you want to select for that framework ?",
-          choices: ["Javascript", "Typescript"],
-        }),
-      }
-    : void 0;
-}
-
-async function checkPresetHTML(preset: preset, text: any) {
-  return ["React", "Vue", "Svelte"].includes(preset)
-    ? {
-        htmlTitle: await inquirer.prompt({
-          name: "question_6",
-          type: "input",
-          message:
-            "What is the title do you want in html page (example: Hello world) ?",
-          default: "Hello world",
-        }),
-        htmlTemplate: await inquirer.prompt({
-          name: "question_7",
-          type: "input",
-          message: `What is the html template would be in webpack config (example: ${text}/main.html) ?`,
-        }),
-      }
-    : void 0;
 }
 
 async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
@@ -243,8 +185,9 @@ async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
   );
   const setOutputDirectory = await outputDir();
   const isDevServerSupport = await isDevServerAnswer();
+  const devServerPortSupport = await devServerPort();
 
-  return addContentToCustom(presetType, mode, {
+  const customConf = {
     context: contextPrintWrite.question_context,
     entryPoint: entryPointWrite.entry_point,
     aliasPath: setAliasPathes.set_alias,
@@ -252,7 +195,8 @@ async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
     isHtmlPreprocessorSupport:
       isHtmlPreprocessorSupport.question_is_html_preprocessor,
     htmlPreprocessor: htmlPreprocessors?.question_html_preprocessor,
-    tslintFilePath: checkLangPreset?.langForFramework.question_12,
+    tslintFilePath:
+      checkLangPreset?.langForFramework.question_preset_framework_config,
     isCssPreprocessorSupport: isCssPreprocessor.question_is_css_preprocessor,
     cssPreprocessors: cssPreprocessorsSupport?.question_css_preprocessor,
     staticLoader: setFilesCatalogesCopySupport?.set_files_cataloges_copy,
@@ -329,8 +273,11 @@ async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
       setFilesCatalogesCopySupport?.set_files_cataloges_copy,
     outputDirectory: setOutputDirectory.question_output_dir,
     isDevServerSupport: isDevServerSupport.is_dev_server,
+    devServerPort: devServerPortSupport.question_dev_server_port,
     devMode: mode,
-  });
+  };
+
+  return addContentToCustom(presetType, mode, customConf) ?? customConf;
 }
 
 async function WebpackConfigOptions(presetType: preset, mode: webpackMode) {
@@ -345,12 +292,7 @@ async function WebpackConfigOptions(presetType: preset, mode: webpackMode) {
     contextPointWrite.question_context
   );
 
-  const portWrite = await inquirer.prompt({
-    name: "question_8",
-    type: "input",
-    message: "What is the port would be in Dev Server (default: 3500) ?",
-    default: 3500,
-  });
+  const portWrite = await devServerPort();
 
   const outputFolder = await outputDir();
 
@@ -362,24 +304,20 @@ async function WebpackConfigOptions(presetType: preset, mode: webpackMode) {
   const checkLangPreset = await checkPresetFrameworkConfig(presetType);
 
   const checkTsConfigPreset = await checkPresetTsConfig(
-    checkLangPreset?.langForFramework.question_12
+    checkLangPreset?.langForFramework.question_preset_framework_config
   );
 
-  const watchFilesPath = await inquirer.prompt({
-    name: "question_13",
-    type: "input",
-    message: `What is the folder with files do you want to watch for changes with starting devServer (example: ${contextPointWrite.question_context}/html) ?`,
-    default: `${contextPointWrite.question_context}/html`,
-  });
+  const watchFilesPath = await chooseWatchFiles(portWrite);
 
   return addContentToPreset(presetType, {
     context: contextPointWrite.question_context,
     entryPoint: entryPointWrite.entry_point,
     aliasPath: aliasPathWrite.set_alias,
-    devPort: portWrite.question_8,
-    htmlTitle: htmlPreset?.htmlTitle.question_6,
+    devPort: portWrite.question_dev_server_port,
+    htmlTitle: htmlPreset?.htmlTitle.question_preset_html,
     htmlTemplate: htmlPreset?.htmlTemplate.question_7,
-    tslintFilePath: checkTsConfigPreset?.tslintFilePath.question_12,
+    tslintFilePath:
+      checkTsConfigPreset?.tslintFilePath.question_check_preset_ts_config,
     outputFolder: outputFolder.question_output_dir,
     watchFiles: watchFilesPath.question_13,
     devMode: mode,

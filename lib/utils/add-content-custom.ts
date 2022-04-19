@@ -2,7 +2,6 @@ import { outputDir } from "./answers";
 import {
   optimizeProductionCSS,
   optimizeProductionHTML,
-  setHTMLPreset,
   setTerserPlugin,
 } from "./dev-mode";
 import { setCacheSupport } from "./helpers/cache";
@@ -94,7 +93,6 @@ module.exports = {
       options.environmentVariable
     )}
     ${setDLLPlugin(options.isSplitBundlesThroughDLLSupport, options.dllOptions)}
-   
     ${setCleanWebpackPlugin(options.isCleanPluginSUpport)}
     ${setI18nPlugin(options.isLocalizeSupport)}
     ${setProfillingPlugin(options.isCreateChromeProfileFileSupport)}

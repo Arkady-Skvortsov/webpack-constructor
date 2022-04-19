@@ -1,3 +1,4 @@
+import * as fs from "fs";
 import {
   integrationWebpack,
   questionResponse,
@@ -113,8 +114,9 @@ function setIgnorePlugin(response: questionResponse) {
 }
 
 function setIntegrationWebpack(integration: integrationWebpack) {
-  return integration === "Grunt"
-    ? `
+  const integrationInstrument =
+    integration === "Grunt"
+      ? `
 const webpackConfig = require('./webpack.config.js');
 
 module.exports = function (grunt) {
@@ -130,8 +132,8 @@ module.exports = function (grunt) {
 
   grunt.loadNpmTasks('grunt-webpack');
 };`
-    : integration === "Gulp"
-    ? `
+      : integration === "Gulp"
+      ? `
 const gulp = require('gulp');
 const webpack = require('webpack-stream');
 gulp.task('default', function () {
@@ -145,8 +147,8 @@ gulp.task('default', function () {
     .pipe(gulp.dest('dist/'));
 }); 
     `
-    : integration === "Karma"
-    ? `
+      : integration === "Karma"
+      ? `
 module.exports = function (config) {
   config.set({
     frameworks: ['webpack'],
@@ -165,9 +167,14 @@ module.exports = function (config) {
   });
 };
     `
-    : integration === "Mocha"
-    ? `Mocha`
-    : parseString("");
+      : integration === "Mocha"
+      ? `Mocha`
+      : parseString("");
+
+  fs.writeFileSync(
+    `integration.${integration.toLocaleLowerCase()}.js`,
+    integrationInstrument
+  );
 }
 
 function setHMRPlugin(response: questionResponse) {
