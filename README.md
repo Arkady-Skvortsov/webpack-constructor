@@ -1,9 +1,5 @@
 ## Webpack-constructor
 
-# ALERT (⚠️) It's own experience of the library author! Download it if you already have a project!
-
-# ALERT (⚠️) Right now library has a problems with downloads, and choose a custom presets with template! Lib updating every day! It's would be fixed so soon!
-
 # About
 
 You can build you'r variation of webpack configuration or choose that author created
