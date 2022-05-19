@@ -73,9 +73,10 @@ module.exports = {
       )}
     ]
   },
-  cache: {
-    ${setCacheSupport()}
-  },
+  ${setCacheSupport(
+    options.isCacheWebpackSupport,
+    options.cacheOptionsSettings
+  )}
   resolve: {
     alias: {
       ${setAlias(options.aliasPath)}

@@ -62,6 +62,7 @@ import {
   checkPresetTsConfig,
   checkPresetHTML,
   chooseWatchFiles,
+  ChooseCacheOptions,
 } from "./answers";
 import { addContentToCustom } from "./add-content-custom";
 import { customWebpackConfig } from "./helpers/interfaces";
@@ -145,6 +146,8 @@ async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
   const SetGlobalVariableSupport = await setGlobalVariable(
     isGlobalVariableSupport.question_is_global_variable_answer
   );
+  const isCacheSupport = await isCacheWebpack();
+  const cacheOptions = await ChooseCacheOptions(isCacheSupport.cache_webpack);
   const isSplitBundlesThroughDLLSupport = await isSplitBundlesThroughDLL();
   const supportSplitBundlesDLL = await supportSplitBundlesThroughDLL(
     isSplitBundlesThroughDLLSupport.question_is_split_bundles_dll
@@ -187,7 +190,7 @@ async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
   const isDevServerSupport = await isDevServerAnswer();
   const devServerPortSupport = await devServerPort();
 
-  const customConf = {
+  const customConf: customWebpackConfig = {
     context: contextPrintWrite.question_context,
     entryPoint: entryPointWrite.entry_point,
     aliasPath: setAliasPathes.set_alias,
@@ -234,6 +237,24 @@ async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
       name: supportSplitBundlesDLL?.name.question_context_split_bundles_dll,
       path: supportSplitBundlesDLL?.path.question_path_to_files,
       manifest: supportSplitBundlesDLL?.manifest.question_path_to_manifest_dll,
+    },
+    cacheOptionsSettings: {
+      name: cacheOptions?.name,
+      type: cacheOptions?.cacheType,
+      allowCollectingMemory: cacheOptions?.allowCollectingMemory,
+      cacheDirectory: cacheOptions?.cacheDirectory,
+      cacheLocation: cacheOptions?.cacheLocation,
+      compression: cacheOptions?.compression,
+      hashAlgorithm: cacheOptions?.hashAlgorithm,
+      idleTimeout: cacheOptions?.idleTimeout,
+      idleTimeoutForInitialStore: cacheOptions?.idleTimeoutForInitialStore,
+      idleTimeoutAfterLargeChanges: cacheOptions?.idleTimeoutAfterLargeChanges,
+      maxAge: cacheOptions?.maxAge,
+      maxGenerations: cacheOptions?.maxGenerations,
+      maxMemoryGenerations: cacheOptions?.maxMemoryGenerations,
+      profile: cacheOptions?.profile,
+      store: cacheOptions?.store,
+      version: cacheOptions?.version,
     },
     isEnvironmentalVariablesSupport:
       isEnvironmentVariablesSupport.question_environment_variables,

@@ -1,4 +1,6 @@
 import {
+  cacheCompression,
+  cacheType,
   cssLoader,
   fontsExtensions,
   htmlLoader,
@@ -48,6 +50,7 @@ interface customWebpackConfig {
   isLazyLoadingSupport: questionResponse;
   isAvoidErrorStyleSupport: questionResponse;
   isCacheWebpackSupport: questionResponse;
+  cacheOptionsSettings: cacheOptions;
   isSplittingChunksSupport: questionResponse;
   minimumChunkSizeSupport: string;
   maximumChunkSizeSupport: string;
@@ -109,6 +112,26 @@ interface globalVariable {
   value: any;
 }
 
+interface cacheOptions {
+  type: cacheType;
+  name?: string;
+  allowCollectingMemory?: boolean;
+  cacheDirectory?: string;
+  cacheLocation: string;
+  compression: cacheCompression;
+  hashAlgorithm?: string;
+  idleTimeout?: number;
+  idleTimeoutAfterLargeChanges?: number;
+  idleTimeoutForInitialStore?: number | undefined;
+  maxAge?: number;
+  maxGenerations?: any | 1;
+  maxMemoryGenerations?: 0 | 1 | any;
+  maxCacheUnaffected?: boolean;
+  profile?: boolean;
+  store?: "pack";
+  version?: string;
+}
+
 export {
   webpackConfig,
   customWebpackConfig,
@@ -117,4 +140,5 @@ export {
   dllOptions,
   environmentVariable,
   globalVariable,
+  cacheOptions,
 };

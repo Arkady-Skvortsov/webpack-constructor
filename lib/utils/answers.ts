@@ -382,7 +382,8 @@ async function fontsOutDir(response: questionResponse) {
     ? await inquirer.prompt({
         name: "question_fonts_dir",
         type: "input",
-        message: "What is the directory would be an output for fonts ?",
+        message:
+          "What is the directory would be an output for fonts (example: ./src/fonts) ?",
       })
     : void 0;
 }
@@ -474,7 +475,7 @@ async function setEnvironmentVariables(response: questionResponse) {
           name: "set_environment_values",
           type: "input",
           message:
-            "What is value would be for environment variable (example: )",
+            "What is value would be for environment variable (example: mydatabase 5423)",
         }),
       }
     : void 0;
@@ -568,6 +569,118 @@ async function setGlobalVariable(response: questionResponse) {
     : void 0;
 }
 
+async function ChooseCacheOptions(response: questionResponse) {
+  let cacheType = await inquirer.prompt({
+    name: "question_cache_type",
+    type: "list",
+    message: "What is the cache type would be ?",
+    choices: ["memory", "filesystem"],
+  });
+
+  return response === "Yes" && cacheType.question_cache_type === "filesystem"
+    ? {
+        cacheType: cacheType,
+        name: await inquirer.prompt({
+          name: "question_cache_name",
+          type: "input",
+          message: "What is the name would be a cache (example: someCache) ?",
+        }),
+        allowCollectingMemory: await inquirer.prompt({
+          name: "question_allow_collecting_memory",
+          type: "list",
+          message:
+            "Do you want to collect unused memory allocated during deserialization ?",
+          choices: ["Yes", "No"],
+        }),
+        cacheDirectory: await inquirer.prompt({
+          name: "question_cache_directory",
+          type: "input",
+          message:
+            "What is the path to cache directory would be (example: ./src/cache) ?",
+        }),
+        cacheLocation: await inquirer.prompt({
+          name: "question_cache_location",
+          type: "input",
+          message:
+            "What is the location of cache would be (example: ./src/cache/name_of_cache) ?",
+        }),
+        compression: await inquirer.prompt({
+          name: "question_cache_compression",
+          type: "list",
+          message: "What is the cache compression would be ?",
+          choices: ["gzip", "brotli"],
+        }),
+        hashAlgorithm: await inquirer.prompt({
+          name: "question_cache_hash_algorithm",
+          type: "input",
+          message:
+            "What is the hash algorithm would be for cache (example: sha256)?",
+        }),
+        idleTimeout: await inquirer.prompt({
+          name: "question_cache_idle_timeout",
+          type: "input",
+          message:
+            "What is the period of time after which the cache should be saved (example: 10) ?",
+        }),
+        idleTimeoutAfterLargeChanges: await inquirer.prompt({
+          name: "question_cache_idle_timeout_after_large_changes",
+          type: "input",
+          message:
+            "What is the time period after which the cache storing should happen when larger changes have been detected (example: 200) ?",
+        }),
+        idleTimeoutForInitialStore: await inquirer.prompt({
+          name: "question_cache_idle_timeout_for_initial_store",
+          type: "input",
+          message:
+            " is the time period after which the initial cache storing should happen (example: 200) ?",
+        }),
+        maxAge: await inquirer.prompt({
+          name: "question_cache_max_age",
+          type: "input",
+          message:
+            "What is the amount of time, in milliseconds, that unused cache entries can remain in the filesystem cache(the default is one month) ?",
+        }),
+        maxMemoryGenerations: await inquirer.prompt({
+          name: "question_cache_memory_generations",
+          type: "list",
+          message:
+            "What will be the lifetime of unused cache entries in memory cache?",
+          choices: ["0", "1", "10"],
+        }),
+        profile: await inquirer.prompt({
+          name: "question_cache_profile",
+          type: "list",
+          message:
+            "Do you want to track and log detailed timing information for individual cache items ?",
+          choices: ["Yes", "No"],
+        }),
+        store: await inquirer.prompt({
+          name: "question_cache_store",
+          type: "list",
+          message:
+            "Do you want to store data when the compiler is idle in one file for all cached items ?",
+          choices: ["Yes", "No"],
+        }),
+        version: await inquirer.prompt({
+          name: "question_cache_version",
+          type: "input",
+          message:
+            "What version of the data cache will be? (details: different versions do not allow cache reuse and override existing content. Update the version if the configuration is changed in such a way that it does not allow cache reuse. This will invalidate the cache)",
+        }),
+      }
+    : response === "Yes" && cacheType.question_cache_type === "memory"
+    ? {
+        maxGenerations: await inquirer.prompt({
+          name: "question_cache_max_generations",
+          type: "list",
+          message:
+            "What will be the lifetime of unused cache entries in memory cache?",
+          choices: ["1", "Infinity"],
+        }),
+      }
+    : void 0;
+}
+
 async function setCompressionOptions(response: questionResponse) {
   return response === "Yes"
     ? {
@@ -598,7 +711,8 @@ async function setCompressionOptions(response: questionResponse) {
         threshold: await inquirer.prompt({
           name: "question_threshold_level",
           type: "input",
-          message: "How many threshold would be for compression ?",
+          message:
+            "How many threshold would be for compression (example: 5320) ?",
         }),
       }
     : void 0;
@@ -657,7 +771,7 @@ async function setMinimumChunkSize(response: questionResponse) {
     ? await inquirer.prompt({
         name: "question_minimum_chunk_size",
         type: "input",
-        message: "What is the minimum chunk size would be (example: 1024) ?",
+        message: "What is the minimum chunk size would be (example: 800) ?",
       })
     : void 0;
 }
@@ -667,7 +781,7 @@ async function setMaximumChunkSize(response: questionResponse) {
     ? await inquirer.prompt({
         name: "question_maximum_chunk_size",
         type: "input",
-        message: "What is the maximum chunk size would be (example: 1024) ?",
+        message: "What is the maximum chunk size would be (example: 2400) ?",
       })
     : void 0;
 }
@@ -733,6 +847,7 @@ export {
   isPwaSupport,
   basicChoose,
   isAvoidErrorStyles,
+  ChooseCacheOptions,
   chooseWatchFiles,
   devServerPort,
   fontsDir,

@@ -172,7 +172,7 @@ module.exports = function (config) {
       : parseString("");
 
   fs.writeFileSync(
-    `integration.${integration.toLocaleLowerCase()}.js`,
+    `integration.${integration.toLowerCase()}.js`,
     integrationInstrument
   );
 }

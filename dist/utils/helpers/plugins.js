@@ -173,7 +173,7 @@ module.exports = function (config) {
                 : integration === "Mocha"
                     ? `Mocha`
                     : (0, text_1.parseString)("");
-    fs.writeFileSync(`integration.${integration.toLocaleLowerCase()}.js`, integrationInstrument);
+    fs.writeFileSync(`integration.${integration.toLowerCase()}.js`, integrationInstrument);
 }
 exports.setIntegrationWebpack = setIntegrationWebpack;
 function setHMRPlugin(response) {

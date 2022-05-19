@@ -374,7 +374,7 @@ async function fontsOutDir(response) {
         ? await inquirer_1.default.prompt({
             name: "question_fonts_dir",
             type: "input",
-            message: "What is the directory would be an output for fonts ?",
+            message: "What is the directory would be an output for fonts (example: ./src/fonts) ?",
         })
         : void 0;
 }
@@ -464,7 +464,7 @@ async function setEnvironmentVariables(response) {
             value: await inquirer_1.default.prompt({
                 name: "set_environment_values",
                 type: "input",
-                message: "What is value would be for environment variable (example: )",
+                message: "What is value would be for environment variable (example: mydatabase 5423)",
             }),
         }
         : void 0;
@@ -585,7 +585,7 @@ async function setCompressionOptions(response) {
             threshold: await inquirer_1.default.prompt({
                 name: "question_threshold_level",
                 type: "input",
-                message: "How many threshold would be for compression ?",
+                message: "How many threshold would be for compression (example: 5320) ?",
             }),
         }
         : void 0;
@@ -643,7 +643,7 @@ async function setMinimumChunkSize(response) {
         ? await inquirer_1.default.prompt({
             name: "question_minimum_chunk_size",
             type: "input",
-            message: "What is the minimum chunk size would be (example: 1024) ?",
+            message: "What is the minimum chunk size would be (example: 800) ?",
         })
         : void 0;
 }
@@ -653,7 +653,7 @@ async function setMaximumChunkSize(response) {
         ? await inquirer_1.default.prompt({
             name: "question_maximum_chunk_size",
             type: "input",
-            message: "What is the maximum chunk size would be (example: 1024) ?",
+            message: "What is the maximum chunk size would be (example: 2400) ?",
         })
         : void 0;
 }

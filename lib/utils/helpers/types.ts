@@ -12,6 +12,8 @@ type cssLoader = "(Sass/Scss)" | "Less" | "Stylus" | "PostCss";
 type htmlLoader = "Pug" | "Jade" | "EJS" | "HandleBars";
 type imageExtensions = ".png" & ".jpeg" & ".jpg" & ".svg" & ".gif" & ".webp";
 type fontsExtensions = ".woff" | ".ttf" | ".eot" | ".svg" | ".otf";
+type cacheType = "memory" | "filesystem";
+type cacheCompression = compressionAlgorithm | "brotli" | false;
 type version = 4 | 5;
 
 export {
@@ -30,4 +32,6 @@ export {
   fontsExtensions,
   compressionAlgorithm,
   integrationWebpack,
+  cacheType,
+  cacheCompression,
 };
