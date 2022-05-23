@@ -17,7 +17,7 @@ describe("Webpack", () => {
         watchFiles: "./src/assets",
       });
 
-      const content = fs.readFileSync("./webpack-mock.js", "utf-8");
+      const content = fs.readFileSync("./webpack-mock.js", "utf8");
       expect(presetContent).toBe(content);
     } catch (e) {
       console.log(e);

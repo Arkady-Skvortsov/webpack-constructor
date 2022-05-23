@@ -86,7 +86,7 @@ function setCacheSupport(
              : parseString("")
          }
       }`
-    : `cache: false`;
+    : `cache: false,`;
 }
 
 function setCachingSupport() {}

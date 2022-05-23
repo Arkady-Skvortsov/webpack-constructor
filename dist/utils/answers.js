@@ -4,11 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isLocalizeAnswer = exports.setEnvironmentVariables = exports.setFilesCatalogesCopy = exports.isCopyStaticFiles = exports.isEnvironmentVariables = exports.chooseStaticFilesLoader = exports.isClosureLibrary = exports.addingBannerToChunk = exports.isCleanPlugin = exports.isCopyPlugin = exports.fontsOutDir = exports.isSplittingChunks = exports.isDiscoverPreviousCompilation = exports.supportSplitBundlesThroughDLL = exports.isSplitBundlesThroughDLL = exports.isFontsExtensionAnswer = exports.isImageExtensionAnswer = exports.isHtmlPreprocessorAnswer = exports.isCssPreprocessorsAnswer = exports.isCsvExtension = exports.cssPreprocessors = exports.contextAnswer = exports.isCacheWebpack = exports.isXmlExtension = exports.htmlPreprocessorsAnswer = exports.fontsExtensions = exports.isLazyLoading = exports.isImagesAnswer = exports.isFontsAnswer = exports.isDevServerAnswer = exports.checkPresetFrameworkConfig = exports.checkPresetHTML = exports.chooseWebpackMode = exports.chooseWebpackVersion = exports.chooseBasicPreset = exports.checkPresetTsConfig = exports.fontsDir = exports.devServerPort = exports.chooseWatchFiles = exports.isAvoidErrorStyles = exports.basicChoose = exports.isPwaSupport = exports.imageExtensions = exports.isYamlExtension = exports.entryPointsAnswer = exports.supportFromCoffeScriptAnswer = exports.staticLoader = exports.splitChunksWebpack = exports.outputDir = exports.integrationInstruments = void 0;
-exports.isIgnoreSomeFilesWatchMode = exports.setFilesForIgnoreInWatchMode = exports.setFilesForIgnore = exports.setAliasAnswer = exports.setMinimumChunkSize = exports.setMaximumChunkSize = exports.isIntegrationInstrument = exports.isIgnoreSomeFiles = exports.isCreateChromeProfileFile = exports.setCompressionOptions = exports.setGlobalVariable = exports.isGlobalVariableAnswer = exports.isCompressionAnswer = exports.isMaximumChunkSize = exports.isMinimumChunkSize = exports.setLocalizeDetails = exports.isHMRAnswer = void 0;
+exports.setFilesCatalogesCopy = exports.isCopyStaticFiles = exports.isEnvironmentVariables = exports.chooseStaticFilesLoader = exports.isClosureLibrary = exports.addingBannerToChunk = exports.isCleanPlugin = exports.isCopyPlugin = exports.fontsOutDir = exports.isSplittingChunks = exports.isDiscoverPreviousCompilation = exports.supportSplitBundlesThroughDLL = exports.isSplitBundlesThroughDLL = exports.isFontsExtensionAnswer = exports.isImageExtensionAnswer = exports.isHtmlPreprocessorAnswer = exports.isCssPreprocessorsAnswer = exports.isCsvExtension = exports.cssPreprocessors = exports.contextAnswer = exports.imagesOutDir = exports.isCacheWebpack = exports.isXmlExtension = exports.htmlPreprocessorsAnswer = exports.fontsExtensions = exports.isLazyLoading = exports.isImagesAnswer = exports.isFontsAnswer = exports.isDevServerAnswer = exports.checkPresetFrameworkConfig = exports.checkPresetHTML = exports.chooseWebpackMode = exports.chooseWebpackVersion = exports.chooseBasicPreset = exports.checkPresetTsConfig = exports.fontsDir = exports.devServerPort = exports.chooseWatchFiles = exports.ChooseCacheOptions = exports.isAvoidErrorStyles = exports.basicChoose = exports.isPwaSupport = exports.imageExtensions = exports.isYamlExtension = exports.entryPointsAnswer = exports.supportFromCoffeScriptAnswer = exports.staticLoader = exports.splitChunksWebpack = exports.outputDir = exports.integrationInstruments = void 0;
+exports.isIgnoreSomeFilesWatchMode = exports.setFilesForIgnoreInWatchMode = exports.setFilesForIgnore = exports.setAliasAnswer = exports.setMinimumChunkSize = exports.setMaximumChunkSize = exports.isIntegrationInstrument = exports.isIgnoreSomeFiles = exports.isCreateChromeProfileFile = exports.setCompressionOptions = exports.setGlobalVariable = exports.isGlobalVariableAnswer = exports.isCompressionAnswer = exports.isMaximumChunkSize = exports.isMinimumChunkSize = exports.setLocalizeDetails = exports.isHMRAnswer = exports.isLocalizeAnswer = exports.setEnvironmentVariables = void 0;
 const inquirer_1 = __importDefault(require("inquirer"));
 const extensions_1 = require("./helpers/extensions");
-const text_1 = require("./text");
 async function basicChoose() {
     return await inquirer_1.default.prompt({
         name: "question_basic_choose",
@@ -54,11 +53,11 @@ async function contextAnswer() {
     });
 }
 exports.contextAnswer = contextAnswer;
-async function entryPointsAnswer(preset, entrypoint) {
+async function entryPointsAnswer(preset, entrypoint, subType) {
     return await inquirer_1.default.prompt({
         name: "entry_point",
         type: "input",
-        message: `What is the entrypoint would be in webpack config (example: ${entrypoint}/main${(0, extensions_1.generateExtensions)(preset)}) ?`,
+        message: `What is the entrypoint would be in webpack config (example: ${entrypoint}/main${(0, extensions_1.generateExtensions)(preset, subType)}) ?`,
     });
 }
 exports.entryPointsAnswer = entryPointsAnswer;
@@ -349,6 +348,16 @@ async function imageExtensions(response) {
         : void 0;
 }
 exports.imageExtensions = imageExtensions;
+async function imagesOutDir(response) {
+    return response === "Yes"
+        ? await inquirer_1.default.prompt({
+            name: "question_images_dir",
+            type: "input",
+            message: "What is the directory would be an output for images (example: ./src/images) ?",
+        })
+        : void 0;
+}
+exports.imagesOutDir = imagesOutDir;
 async function isFontsExtensionAnswer() {
     return await inquirer_1.default.prompt({
         name: "question_is_font_extensions",
@@ -358,6 +367,7 @@ async function isFontsExtensionAnswer() {
     });
 }
 exports.isFontsExtensionAnswer = isFontsExtensionAnswer;
+async function isCachingSupport() { }
 async function fontsExtensions(response) {
     return response === "Yes"
         ? await inquirer_1.default.prompt({
@@ -555,6 +565,104 @@ async function setGlobalVariable(response) {
         : void 0;
 }
 exports.setGlobalVariable = setGlobalVariable;
+async function ChooseCacheOptions(response) {
+    let cacheType = await inquirer_1.default.prompt({
+        name: "question_cache_type",
+        type: "list",
+        message: "What is the cache type would be ?",
+        choices: ["memory", "filesystem"],
+    });
+    return response === "Yes" && cacheType.question_cache_type === "filesystem"
+        ? {
+            cacheType: cacheType,
+            name: await inquirer_1.default.prompt({
+                name: "question_cache_name",
+                type: "input",
+                message: "What is the name would be a cache (example: someCache) ?",
+            }),
+            allowCollectingMemory: await inquirer_1.default.prompt({
+                name: "question_allow_collecting_memory",
+                type: "list",
+                message: "Do you want to collect unused memory allocated during deserialization ?",
+                choices: ["Yes", "No"],
+            }),
+            cacheDirectory: await inquirer_1.default.prompt({
+                name: "question_cache_directory",
+                type: "input",
+                message: "What is the path to cache directory would be (example: ./src/cache) ?",
+            }),
+            cacheLocation: await inquirer_1.default.prompt({
+                name: "question_cache_location",
+                type: "input",
+                message: "What is the location of cache would be (example: ./src/cache/name_of_cache) ?",
+            }),
+            compression: await inquirer_1.default.prompt({
+                name: "question_cache_compression",
+                type: "list",
+                message: "What is the cache compression would be ?",
+                choices: ["gzip", "brotli"],
+            }),
+            hashAlgorithm: await inquirer_1.default.prompt({
+                name: "question_cache_hash_algorithm",
+                type: "input",
+                message: "What is the hash algorithm would be for cache (example: sha256)?",
+            }),
+            idleTimeout: await inquirer_1.default.prompt({
+                name: "question_cache_idle_timeout",
+                type: "input",
+                message: "What is the period of time after which the cache should be saved (example: 10) ?",
+            }),
+            idleTimeoutAfterLargeChanges: await inquirer_1.default.prompt({
+                name: "question_cache_idle_timeout_after_large_changes",
+                type: "input",
+                message: "What is the time period after which the cache storing should happen when larger changes have been detected (example: 200) ?",
+            }),
+            idleTimeoutForInitialStore: await inquirer_1.default.prompt({
+                name: "question_cache_idle_timeout_for_initial_store",
+                type: "input",
+                message: " is the time period after which the initial cache storing should happen (example: 200) ?",
+            }),
+            maxAge: await inquirer_1.default.prompt({
+                name: "question_cache_max_age",
+                type: "input",
+                message: "What is the amount of time, in milliseconds, that unused cache entries can remain in the filesystem cache(the default is one month) ?",
+            }),
+            maxMemoryGenerations: await inquirer_1.default.prompt({
+                name: "question_cache_memory_generations",
+                type: "list",
+                message: "What will be the lifetime of unused cache entries in memory cache?",
+                choices: ["0", "1", "10"],
+            }),
+            profile: await inquirer_1.default.prompt({
+                name: "question_cache_profile",
+                type: "list",
+                message: "Do you want to track and log detailed timing information for individual cache items ?",
+                choices: ["Yes", "No"],
+            }),
+            store: await inquirer_1.default.prompt({
+                name: "question_cache_store",
+                type: "list",
+                message: "Do you want to store data when the compiler is idle in one file for all cached items ?",
+                choices: ["Yes", "No"],
+            }),
+            version: await inquirer_1.default.prompt({
+                name: "question_cache_version",
+                type: "input",
+                message: "What version of the data cache will be? (details: different versions do not allow cache reuse and override existing content. Update the version if the configuration is changed in such a way that it does not allow cache reuse. This will invalidate the cache)",
+            }),
+        }
+        : response === "Yes" && cacheType.question_cache_type === "memory"
+            ? {
+                maxGenerations: await inquirer_1.default.prompt({
+                    name: "question_cache_max_generations",
+                    type: "list",
+                    message: "What will be the lifetime of unused cache entries in memory cache?",
+                    choices: ["1", "Infinity"],
+                }),
+            }
+            : void 0;
+}
+exports.ChooseCacheOptions = ChooseCacheOptions;
 async function setCompressionOptions(response) {
     return response === "Yes"
         ? {
@@ -676,7 +784,7 @@ async function fontsDir(response) {
             type: "input",
             message: `What is the folder do you want, that be an output for fonts ?`,
         })
-        : (0, text_1.parseString)("");
+        : void 0;
 }
 exports.fontsDir = fontsDir;
 async function outputDir() {

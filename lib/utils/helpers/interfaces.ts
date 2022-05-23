@@ -14,6 +14,7 @@ import {
 interface webpackConfig {
   devMode: "production" | "development";
   context: string;
+  language?: "Typescript" | "Javascript";
   entryPoint: string;
   aliasPath: string;
   htmlTemplate?: string;
@@ -79,6 +80,7 @@ interface customWebpackConfig {
   copyOptions?: copyOptions;
   filesCatalogesCopySupport: string;
   fontsOutputDirectory: string;
+  imagesOutputDirectory: string;
   outputDirectory: string;
   isDevServerSupport: questionResponse;
   devServerPort: number;
@@ -122,7 +124,7 @@ interface cacheOptions {
   hashAlgorithm?: string;
   idleTimeout?: number;
   idleTimeoutAfterLargeChanges?: number;
-  idleTimeoutForInitialStore?: number | undefined;
+  idleTimeoutForInitialStore?: number;
   maxAge?: number;
   maxGenerations?: any | 1;
   maxMemoryGenerations?: 0 | 1 | any;

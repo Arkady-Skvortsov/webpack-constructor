@@ -3,8 +3,7 @@
 import inquirer from "inquirer";
 import { preset } from "./helpers/enum";
 import { generateExtensions } from "./helpers/extensions";
-import { questionResponse } from "./helpers/types";
-import { parseString } from "./text";
+import { linterChoose, questionResponse } from "./helpers/types";
 
 async function basicChoose() {
   return await inquirer.prompt({
@@ -52,12 +51,17 @@ async function contextAnswer() {
   });
 }
 
-async function entryPointsAnswer(preset: preset, entrypoint: string) {
+async function entryPointsAnswer(
+  preset: preset,
+  entrypoint: string,
+  subType: linterChoose
+) {
   return await inquirer.prompt({
     name: "entry_point",
     type: "input",
     message: `What is the entrypoint would be in webpack config (example: ${entrypoint}/main${generateExtensions(
-      preset
+      preset,
+      subType
     )}) ?`,
   });
 }
@@ -357,6 +361,17 @@ async function imageExtensions(response: questionResponse) {
     : void 0;
 }
 
+async function imagesOutDir(response: questionResponse) {
+  return response === "Yes"
+    ? await inquirer.prompt({
+        name: "question_images_dir",
+        type: "input",
+        message:
+          "What is the directory would be an output for images (example: ./src/images) ?",
+      })
+    : void 0;
+}
+
 async function isFontsExtensionAnswer() {
   return await inquirer.prompt({
     name: "question_is_font_extensions",
@@ -365,6 +380,8 @@ async function isFontsExtensionAnswer() {
     choices: ["Yes", "No"],
   });
 }
+
+async function isCachingSupport() {}
 
 async function fontsExtensions(response: questionResponse) {
   return response === "Yes"
@@ -804,7 +821,7 @@ async function fontsDir(response: questionResponse) {
         type: "input",
         message: `What is the folder do you want, that be an output for fonts ?`,
       })
-    : parseString("");
+    : void 0;
 }
 
 async function outputDir() {
@@ -865,6 +882,7 @@ export {
   htmlPreprocessorsAnswer,
   isXmlExtension,
   isCacheWebpack,
+  imagesOutDir,
   contextAnswer,
   cssPreprocessors,
   isCsvExtension,

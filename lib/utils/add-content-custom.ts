@@ -82,7 +82,16 @@ module.exports = {
       ${setAlias(options.aliasPath)}
     },
     extensions: [
-      ${setPackOfExtensions(".ts .tsx .css .sass .scss .html .png .woff .ttf")}
+      ${setPackOfExtensions(
+        `${presetType}${options.htmlPreprocessor}${options.cssPreprocessors}${
+          options.htmlPreprocessor
+        }${options.fontsExtensionsSupport}${options.imageExtensionsSupport}${
+          options.isCsvSupport ? ".csv" : void 0
+        }${options.isXmlSupport ? ".xml" : void 0}
+        ${options.isYamlSupport ? ".yaml" : void 0}${
+          options.isCoffeScriptSupport ? ".coffee" : void 0
+        }`
+      )}
     ]
   },
   plugins: [

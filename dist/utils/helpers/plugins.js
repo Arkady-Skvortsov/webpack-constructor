@@ -84,7 +84,7 @@ function setEnvironmentPlugin(response, variables) {
 exports.setEnvironmentPlugin = setEnvironmentPlugin;
 function setDLLPlugin(response, options) {
     return response === "Yes"
-        ? `new DllPlugin({ name: ${options.name}, path: path.resolve(__dirname, ${options.path}) }),`
+        ? `new DllPlugin({ name: ${options.name}, path: path.resolve(__dirname, "${options.path}") }),`
         : (0, text_1.parseString)("");
 }
 exports.setDLLPlugin = setDLLPlugin;
@@ -173,7 +173,7 @@ module.exports = function (config) {
                 : integration === "Mocha"
                     ? `Mocha`
                     : (0, text_1.parseString)("");
-    fs.writeFileSync(`integration.${integration.toLowerCase()}.js`, integrationInstrument);
+    fs.writeFileSync(`integration.${integration}.js`, integrationInstrument);
 }
 exports.setIntegrationWebpack = setIntegrationWebpack;
 function setHMRPlugin(response) {

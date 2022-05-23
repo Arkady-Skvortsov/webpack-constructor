@@ -24,9 +24,9 @@ async function handleAnswer(presetOptions, mode, webpackVersion, type) {
 }
 async function WebpackConfigCustom(presetType, mode) {
     const contextPrintWrite = await (0, answers_1.contextAnswer)();
-    const entryPointWrite = await (0, answers_1.entryPointsAnswer)(presetType, contextPrintWrite.question_context);
-    const setAliasPathes = await (0, answers_1.setAliasAnswer)(contextPrintWrite.question_context);
     const checkLangPreset = await (0, answers_1.checkPresetFrameworkConfig)(presetType);
+    const entryPointWrite = await (0, answers_1.entryPointsAnswer)(presetType, contextPrintWrite.question_context, checkLangPreset?.langForFramework.question_preset_framework_config);
+    const setAliasPathes = await (0, answers_1.setAliasAnswer)(contextPrintWrite.question_context);
     const isCoffescriptSupport = await (0, answers_1.supportFromCoffeScriptAnswer)();
     const isHtmlPreprocessorSupport = await (0, answers_1.isHtmlPreprocessorAnswer)();
     const htmlPreprocessors = await (0, answers_1.htmlPreprocessorsAnswer)(isHtmlPreprocessorSupport.question_is_html_preprocessor);
@@ -36,6 +36,7 @@ async function WebpackConfigCustom(presetType, mode) {
     const chooseStaticFilesLoaderSupport = await (0, answers_1.chooseStaticFilesLoader)(isStaticLoaderSupport.question_static_loader);
     const isImageExtension = await (0, answers_1.isImageExtensionAnswer)();
     const imageExtensionsSupport = await (0, answers_1.imageExtensions)(isImageExtension.question_is_image_extensions);
+    const imageOutDirSupport = await (0, answers_1.imagesOutDir)(isImageExtension.question_is_image_extensions);
     const isFontsSupport = await (0, answers_1.isFontsAnswer)();
     const fontsExtensionsSupport = await (0, answers_1.fontsExtensions)(isFontsSupport.is_fonts);
     const fontsOutDirSupport = await (0, answers_1.fontsOutDir)(isFontsSupport.is_fonts);
@@ -44,13 +45,14 @@ async function WebpackConfigCustom(presetType, mode) {
     const isCsvSupport = await (0, answers_1.isCsvExtension)();
     const isLazyLoadingSupport = await (0, answers_1.isLazyLoading)();
     const isAvoidErrorStylesSupport = await (0, answers_1.isAvoidErrorStyles)();
-    const isCacheWebpackSupport = await (0, answers_1.isCacheWebpack)();
     const isSplittingChunksSupport = await (0, answers_1.isSplittingChunks)();
     const isPwaAnswer = await (0, answers_1.isPwaSupport)();
     const isBannerSupport = await (0, answers_1.addingBannerToChunk)(isSplittingChunksSupport.question_is_splitting_chunks);
     const isClosureLibrarySupport = await (0, answers_1.isClosureLibrary)();
     const isGlobalVariableSupport = await (0, answers_1.isGlobalVariableAnswer)();
     const SetGlobalVariableSupport = await (0, answers_1.setGlobalVariable)(isGlobalVariableSupport.question_is_global_variable_answer);
+    const isCacheSupport = await (0, answers_1.isCacheWebpack)();
+    const cacheOptions = await (0, answers_1.ChooseCacheOptions)(isCacheSupport.cache_webpack);
     const isSplitBundlesThroughDLLSupport = await (0, answers_1.isSplitBundlesThroughDLL)();
     const supportSplitBundlesDLL = await (0, answers_1.supportSplitBundlesThroughDLL)(isSplitBundlesThroughDLLSupport.question_is_split_bundles_dll);
     const isEnvironmentVariablesSupport = await (0, answers_1.isEnvironmentVariables)();
@@ -87,6 +89,7 @@ async function WebpackConfigCustom(presetType, mode) {
         staticLoader: setFilesCatalogesCopySupport?.set_files_cataloges_copy,
         isImageSupport: isImageExtension.question_is_image_extensions,
         imageExtensionsSupport: imageExtensionsSupport?.question_image_extensions,
+        imagesOutputDirectory: imageOutDirSupport?.question_images_dir,
         isFontsSupport: isFontsSupport.is_fonts,
         fontsExtensionsSupport: fontsExtensionsSupport?.question_fonts_extensions,
         fontsOutputDirectory: fontsOutDirSupport?.question_fonts_dir,
@@ -96,7 +99,6 @@ async function WebpackConfigCustom(presetType, mode) {
         fileLoaderSupport: chooseStaticFilesLoaderSupport?.question_is_choose_static_loader,
         isLazyLoadingSupport: isLazyLoadingSupport.is_lazy_loading,
         isAvoidErrorStyleSupport: isAvoidErrorStylesSupport.is_avoid_error_styles,
-        isCacheWebpackSupport: isCacheWebpackSupport.cache_webpack,
         isSplittingChunksSupport: isSplittingChunksSupport.question_is_splitting_chunks,
         minimumChunkSizeSupport: setMinimumChunkSizeSupport?.question_minimum_chunk_size,
         maximumChunkSizeSupport: setMaximumChunkSizeSupport?.question_maximum_chunk_size,
@@ -113,6 +115,27 @@ async function WebpackConfigCustom(presetType, mode) {
             name: supportSplitBundlesDLL?.name.question_context_split_bundles_dll,
             path: supportSplitBundlesDLL?.path.question_path_to_files,
             manifest: supportSplitBundlesDLL?.manifest.question_path_to_manifest_dll,
+        },
+        isCacheWebpackSupport: isCacheSupport.cache_webpack,
+        cacheOptionsSettings: {
+            name: cacheOptions?.name?.question_cache_name,
+            type: cacheOptions?.cacheType?.question_cache_type,
+            allowCollectingMemory: cacheOptions?.allowCollectingMemory?.question_allow_collecting_memory,
+            cacheDirectory: cacheOptions?.cacheDirectory?.question_cache_directory,
+            cacheLocation: cacheOptions?.cacheLocation?.question_cache_location,
+            compression: cacheOptions?.compression?.question_cache_compression,
+            hashAlgorithm: cacheOptions?.hashAlgorithm?.question_cache_hash_algorithm,
+            idleTimeout: cacheOptions?.idleTimeout?.question_cache_idle_timeout,
+            idleTimeoutForInitialStore: cacheOptions?.idleTimeoutForInitialStore
+                ?.question_cache_idle_timeout_for_initial_store,
+            idleTimeoutAfterLargeChanges: cacheOptions?.idleTimeoutAfterLargeChanges
+                ?.question_cache_idle_timeout_after_large_changes,
+            maxAge: cacheOptions?.maxAge?.question_cache_max_age,
+            maxGenerations: cacheOptions?.maxGenerations?.question_cache_max_generations,
+            maxMemoryGenerations: cacheOptions?.maxMemoryGenerations?.question_cache_memory_generations,
+            profile: cacheOptions?.profile?.question_cache_profile,
+            store: cacheOptions?.store?.question_cache_store,
+            version: cacheOptions?.version?.question_cache_version,
         },
         isEnvironmentalVariablesSupport: isEnvironmentVariablesSupport.question_environment_variables,
         environmentVariable: {
@@ -150,12 +173,12 @@ async function WebpackConfigCustom(presetType, mode) {
 exports.WebpackConfigCustom = WebpackConfigCustom;
 async function WebpackConfigOptions(presetType, mode) {
     const contextPointWrite = await (0, answers_1.contextAnswer)();
-    const entryPointWrite = await (0, answers_1.entryPointsAnswer)(presetType, contextPointWrite.question_context);
+    const checkLangPreset = await (0, answers_1.checkPresetFrameworkConfig)(presetType);
+    const entryPointWrite = await (0, answers_1.entryPointsAnswer)(presetType, contextPointWrite.question_context, checkLangPreset?.langForFramework.question_preset_framework_config);
     const aliasPathWrite = await (0, answers_1.setAliasAnswer)(contextPointWrite.question_context);
     const portWrite = await (0, answers_1.devServerPort)();
     const outputFolder = await (0, answers_1.outputDir)();
     const htmlPreset = await (0, answers_1.checkPresetHTML)(presetType, contextPointWrite.question_context);
-    const checkLangPreset = await (0, answers_1.checkPresetFrameworkConfig)(presetType);
     const checkTsConfigPreset = await (0, answers_1.checkPresetTsConfig)(checkLangPreset?.langForFramework.question_preset_framework_config);
     const watchFilesPath = await (0, answers_1.chooseWatchFiles)(portWrite);
     return (0, add_content_preset_1.addContentToPreset)(presetType, {

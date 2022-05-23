@@ -30,15 +30,14 @@ module.exports = {
       ${(0, loaders_1.setFontsExtensions)(options.fontsExtensionsSupport, options.staticLoader, options.fontsOutputDirectory)}
     ]
   },
-  cache: {
-    ${(0, cache_1.setCacheSupport)()}
-  },
+  ${(0, cache_1.setCacheSupport)(options.isCacheWebpackSupport, options.cacheOptionsSettings)}
   resolve: {
     alias: {
       ${(0, webpack_set_content_1.setAlias)(options.aliasPath)}
     },
     extensions: [
-      ${(0, extensions_1.setPackOfExtensions)(".ts .tsx .css .sass .scss .html .png .woff .ttf")}
+      ${(0, extensions_1.setPackOfExtensions)(`${presetType}${options.htmlPreprocessor}${options.cssPreprocessors}${options.htmlPreprocessor}${options.fontsExtensionsSupport}${options.imageExtensionsSupport}${options.isCsvSupport ? ".csv" : void 0}${options.isXmlSupport ? ".xml" : void 0}
+        ${options.isYamlSupport ? ".yaml" : void 0}${options.isCoffeScriptSupport ? ".coffee" : void 0}`)}
     ]
   },
   plugins: [

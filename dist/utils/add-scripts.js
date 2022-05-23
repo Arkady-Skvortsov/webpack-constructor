@@ -27,7 +27,7 @@ exports.addScriptsForPackageJson = void 0;
 const fs = __importStar(require("fs"));
 const text_1 = require("./text");
 async function addScriptsForPackageJson(filePath, mode) {
-    const content = fs.readFileSync(filePath, "utf-8");
+    const content = fs.readFileSync(filePath, "utf8");
     const jsonContent = JSON.parse(content);
     let scripts = jsonContent.scripts;
     const confMode = mode === "production"
