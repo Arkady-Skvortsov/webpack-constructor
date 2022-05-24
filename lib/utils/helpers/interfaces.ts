@@ -5,7 +5,9 @@ import {
   fontsExtensions,
   htmlLoader,
   integrationWebpack,
+  linterChoose,
   questionResponse,
+  splitChunkType,
   staticLoader,
   version,
   webpackMode,
@@ -35,6 +37,8 @@ interface customWebpackConfig {
   htmlPreprocessor: htmlLoader;
   htmlTemplate?: string;
   htmlTitle?: string;
+  isLinterSupport: questionResponse;
+  esLintOptions: esLintOptions;
   LintTypescriptFilesPath?: string;
   tslintFilePath?: string;
   isCssPreprocessorSupport: questionResponse;
@@ -51,6 +55,7 @@ interface customWebpackConfig {
   isLazyLoadingSupport: questionResponse;
   isAvoidErrorStyleSupport: questionResponse;
   isCacheWebpackSupport: questionResponse;
+  cacheTypeOptionsSupport: cacheType;
   cacheOptionsSettings: cacheOptions;
   isSplittingChunksSupport: questionResponse;
   minimumChunkSizeSupport: string;
@@ -73,6 +78,8 @@ interface customWebpackConfig {
   isIntegrationSupport: questionResponse;
   integrationSupport: integrationWebpack;
   isHMRSupport: questionResponse;
+  isHashModuleSupport: questionResponse;
+  hashModuleIdsSupport: hashModuleIdsSupport;
   isCompressionSupport: questionResponse;
   compressionOptions: compressionOptions;
   isCopyPluginSupport: questionResponse;
@@ -98,6 +105,26 @@ interface copyOptions {
   to: string;
 }
 
+interface esLintOptions {
+  context: string;
+  eslintPath: string;
+  extensions: string;
+  exclude: string;
+  files: string;
+  fix: questionResponse;
+  lintDirtyModulesOnly: questionResponse;
+  threads: questionResponse;
+  emitError: questionResponse;
+  emitWarning: questionResponse;
+  failOnError: questionResponse;
+  failOnWarning: questionResponse;
+  quiet: questionResponse;
+}
+
+interface tsLintOptions {
+  files: string;
+}
+
 interface dllOptions {
   name: string;
   path: string;
@@ -109,9 +136,43 @@ interface environmentVariable {
   value: any;
 }
 
+interface hashModuleIdsSupport {
+  context: any;
+  hashFunction: any;
+  hashDigest: any;
+  hashDigestLegnth: any;
+}
+
 interface globalVariable {
   name: any;
   value: any;
+}
+
+interface environmentVariable {
+  name: any;
+  value: any;
+}
+
+interface splitChunksOpotions {
+  chunks: splitChunkType;
+  minSize: number;
+  minRemainingSize: number;
+  minChunks: number;
+  maxAsyncRequests: number;
+  maxInitialRequests: number;
+  enforceSizeThreshold: number;
+  cacheGroups: {
+    defaultVendors: {
+      test: string;
+      priority: number;
+      reuseExistingChunk: boolean;
+    };
+    default: {
+      minChunks: number;
+      priority: number;
+      reuseExistingChunk: boolean;
+    };
+  };
 }
 
 interface cacheOptions {
@@ -140,6 +201,9 @@ export {
   compressionOptions,
   copyOptions,
   dllOptions,
+  esLintOptions,
+  tsLintOptions,
+  hashModuleIdsSupport,
   environmentVariable,
   globalVariable,
   cacheOptions,

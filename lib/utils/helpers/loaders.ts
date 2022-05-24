@@ -141,7 +141,7 @@ async function parseIntegration(integrationType: string) {
         ? "karma-webpack"
         : integration === "Mocha"
         ? "mocha-webpack"
-        : ""
+        : parseString("")
     );
 }
 

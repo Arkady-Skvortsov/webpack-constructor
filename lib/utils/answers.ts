@@ -3,7 +3,7 @@
 import inquirer from "inquirer";
 import { preset } from "./helpers/enum";
 import { generateExtensions } from "./helpers/extensions";
-import { linterChoose, questionResponse } from "./helpers/types";
+import { cacheType, linterChoose, questionResponse } from "./helpers/types";
 
 async function basicChoose() {
   return await inquirer.prompt({
@@ -498,6 +498,155 @@ async function setEnvironmentVariables(response: questionResponse) {
     : void 0;
 }
 
+async function isLinter() {
+  return await inquirer.prompt({
+    name: "question_set_linter_support",
+    type: "list",
+    message: "Do you want to support a linter in you'r project ?",
+    choices: ["Yes", "No"],
+  });
+}
+
+async function isLinterType(response: questionResponse, type: linterChoose) {
+  return type === "Typescript" ? setUpTsLint() : setUpEslint(response);
+}
+
+async function setUpEslint(response: questionResponse) {
+  return response === "Yes"
+    ? {
+        context: await inquirer.prompt({
+          name: "question_is_context",
+          type: "input",
+          message:
+            "What is the root would be for eslint(example: ./src/utils)?",
+        }),
+        eslintPath: await inquirer.prompt({
+          name: "question_is_eslint_path",
+          type: "input",
+          message:
+            "What is the path to eslint instance that would be used for linting (default: eslint)?",
+          default: "eslint",
+        }),
+        extensions: await inquirer.prompt({
+          name: "question_eslint_extensions",
+          type: "input",
+          message:
+            "What is the specify files and/or directories to exclude(example: node_modules file.js file2.js)?",
+        }),
+        exclude: await inquirer.prompt({
+          name: "question_is_exclude",
+          type: "input",
+          message:
+            "What is the specify files and/or directories to exclude(example: node_modules file.js file2.js)?",
+        }),
+        files: await inquirer.prompt({
+          name: "question_is_files",
+          type: "input",
+          message:
+            "What is the specify directories, files, or globs would be (example: ./src/utils)?",
+        }),
+        fix: await inquirer.prompt({
+          name: "question_is_fix",
+          type: "list",
+          message: "Be careful: this option will change source files",
+          choices: ["Yes", "No"],
+        }),
+        linDirtyModulesOnly: await inquirer.prompt({
+          name: "question_is_lin_dirty_modules_only",
+          type: "list",
+          message:
+            "Do you want to lint only changed files, skip lint on start ?",
+          choices: ["Yes", "No"],
+        }),
+        threads: await inquirer.prompt({
+          name: "question_is_threads",
+          type: "input",
+          message:
+            "What is the pool size would be for run lint tasks across thread pool (example: 2) ?",
+        }),
+        emitError: await inquirer.prompt({
+          name: "question_is_emit_error",
+          type: "list",
+          message: "Do you want, that errors found will always be emitted ?",
+          choices: ["Yes", "No"],
+        }),
+        emitWarning: await inquirer.prompt({
+          name: "question_is_emit_warning",
+          type: "list",
+          message: "Do you want, that warnings found will always be emitted ?",
+          choices: ["Yes", "No"],
+        }),
+        failOnError: await inquirer.prompt({
+          name: "question_is_fail_on_error",
+          type: "list",
+          message:
+            "Do you want, that will cause the module build to fail if there are any errors ?",
+          choices: ["Yes", "No"],
+        }),
+        failOnWarning: await inquirer.prompt({
+          name: "question_is_fail_on_warning",
+          type: "list",
+          message:
+            "Do you want, that will cause the module build to fail if there are any warnings ?",
+          choices: ["Yes", "No"],
+        }),
+        quit: await inquirer.prompt({
+          name: "question_is_quit",
+          type: "list",
+          message:
+            "Do you want, that will process and report erros only and ignore warnings ?",
+          choices: ["Yes", "No"],
+        }),
+      }
+    : void 0;
+}
+
+async function isHashModulePath() {
+  return await inquirer.prompt({
+    name: "question_is_hash_module_path",
+    type: "list",
+    message:
+      "Do you want to cause hashes to be based on the relative path of the module, generating a four character string as the module id ?",
+    choices: ["Yes", "No"],
+  });
+}
+
+async function hashModuleIdsSupport(response: questionResponse) {
+  return response === "Yes"
+    ? {
+        context: await inquirer.prompt({
+          name: "question_is_context",
+          type: "input",
+          message:
+            "What is the context directory(absolute path) would be for creating names ?",
+        }),
+        hashFunction: await inquirer.prompt({
+          name: "question_is_hash_algorithm",
+          type: "input",
+          message:
+            "What is the hashing algorithm would be to use (defaut: md4) ?",
+          default: "md4",
+        }),
+        hashDigest: await inquirer.prompt({
+          name: "question_is_hash_digest",
+          type: "input",
+          message:
+            "What is the encoding to use when generating the hash (default: base64) ?",
+          default: "base64",
+        }),
+        hashDigestLength: await inquirer.prompt({
+          name: "question_is_hash_digest_list",
+          type: "input",
+          message:
+            "What is the prefix length of the hash digest to use (default: 4) ?",
+          default: "4",
+        }),
+      }
+    : void 0;
+}
+
+async function setUpTsLint() {}
+
 async function isLocalizeAnswer() {
   return await inquirer.prompt({
     name: "question_is_localize",
@@ -586,15 +735,19 @@ async function setGlobalVariable(response: questionResponse) {
     : void 0;
 }
 
-async function ChooseCacheOptions(response: questionResponse) {
-  let cacheType = await inquirer.prompt({
-    name: "question_cache_type",
-    type: "list",
-    message: "What is the cache type would be ?",
-    choices: ["memory", "filesystem"],
-  });
+async function cacheTypeOptions(response: questionResponse) {
+  return response === "Yes"
+    ? await inquirer.prompt({
+        name: "question_cache_type",
+        type: "list",
+        message: "What is the cache type would be ?",
+        choices: ["memory", "filesystem"],
+      })
+    : void 0;
+}
 
-  return response === "Yes" && cacheType.question_cache_type === "filesystem"
+async function ChooseCacheOptions(cacheType: cacheType) {
+  return cacheType === "filesystem"
     ? {
         cacheType: cacheType,
         name: await inquirer.prompt({
@@ -685,7 +838,7 @@ async function ChooseCacheOptions(response: questionResponse) {
             "What version of the data cache will be? (details: different versions do not allow cache reuse and override existing content. Update the version if the configuration is changed in such a way that it does not allow cache reuse. This will invalidate the cache)",
         }),
       }
-    : response === "Yes" && cacheType.question_cache_type === "memory"
+    : cacheType === "memory"
     ? {
         maxGenerations: await inquirer.prompt({
           name: "question_cache_max_generations",
@@ -778,7 +931,7 @@ async function staticLoader() {
   return await inquirer.prompt({
     name: "question_static_loader",
     type: "list",
-    message: "What is the loader for static files do you want to use ?",
+    message: "Do you want to use loader for static files ?",
     choices: ["Yes", "No"],
   });
 }
@@ -843,12 +996,21 @@ async function devServerPort() {
   });
 }
 
+async function isMinifyJSONFiles() {
+  return await inquirer.prompt({
+    name: "question_is_minify_json_files",
+    type: "list",
+    message: "If you have a .json files, than you want to minimize them ?",
+    choices: ["Yes", "No"],
+  });
+}
+
 async function chooseWatchFiles(port: any) {
   return await inquirer.prompt({
     name: "question_13",
     type: "input",
-    message: `What is the folder with files do you want to watch for changes with starting devServer (example: ${port.dev_server_port}/html) ?`,
-    default: `${port.dev_server_port}/html`,
+    message: `What is the folder with files do you want to watch for changes with starting devServer (example: ${port}/html) ?`,
+    default: `${port}/html`,
   });
 }
 
@@ -861,9 +1023,17 @@ export {
   entryPointsAnswer,
   isYamlExtension,
   imageExtensions,
+  isMinifyJSONFiles,
+  isLinter,
+  isLinterType,
+  setUpEslint,
+  isHashModulePath,
+  hashModuleIdsSupport,
+  setUpTsLint,
   isPwaSupport,
   basicChoose,
   isAvoidErrorStyles,
+  cacheTypeOptions,
   ChooseCacheOptions,
   chooseWatchFiles,
   devServerPort,

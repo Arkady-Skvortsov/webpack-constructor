@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setCopyWebpackPlugin = exports.setCompressionPlugin = exports.setHMRPlugin = exports.setIntegrationWebpack = exports.setIgnorePlugin = exports.setProfillingPlugin = exports.setI18nPlugin = exports.setCleanWebpackPlugin = exports.setAutomaticPrefechPlugin = exports.setDLLPlugin = exports.setEnvironmentPlugin = exports.setClosureLibrary = exports.isHtmlWebpackPlugin = exports.LinterChoose = exports.setWebpackNotifierPlugin = void 0;
+exports.setCopyWebpackPlugin = exports.setCompressionPlugin = exports.setHashModuleIds = exports.setHMRPlugin = exports.setIntegrationWebpack = exports.setIgnorePlugin = exports.setProfillingPlugin = exports.setI18nPlugin = exports.setCleanWebpackPlugin = exports.setAutomaticPrefechPlugin = exports.setDLLPlugin = exports.setEnvironmentPlugin = exports.setClosureLibrary = exports.isHtmlWebpackPlugin = exports.LinterChoose = exports.setWebpackNotifierPlugin = void 0;
 const fs = __importStar(require("fs"));
 const webpack_set_content_1 = require("../webpack-set.content");
 const text_1 = require("../text");
@@ -55,7 +55,7 @@ function LinterChoose(lang, options) {
 }
 exports.LinterChoose = LinterChoose;
 function isHtmlWebpackPlugin(presetType, options) {
-    return ["Typescript", "Javascript"].some((value) => value !== presetType)
+    return ["Typescript", "Javascript"].some((value) => value == presetType)
         ? (0, text_1.parseString)(`
     new HtmlWebpackPlugin({
       filename: "${(0, dev_mode_1.outputFileName)(options.devMode, "html")}",
@@ -75,11 +75,9 @@ function setClosureLibrary(response) {
 }
 exports.setClosureLibrary = setClosureLibrary;
 function setEnvironmentPlugin(response, variables) {
-    return response === "Yes"
-        ? `new DefinePlugin({
-
-    }),`
-        : (0, text_1.parseString)("");
+    `new webpack.DefinePlugin({
+    ${Object.keys(variables)}: ${Object.values(variables)}
+   })`;
 }
 exports.setEnvironmentPlugin = setEnvironmentPlugin;
 function setDLLPlugin(response, options) {
@@ -88,6 +86,17 @@ function setDLLPlugin(response, options) {
         : (0, text_1.parseString)("");
 }
 exports.setDLLPlugin = setDLLPlugin;
+function setHashModuleIds(response, hashModuleDetails) {
+    return response === "Yes"
+        ? `new webpack.ids.HashedModuleIdsPlugin({
+        context: ${hashModuleDetails.context},
+        hashFunction: ${hashModuleDetails.hashFunction},
+        hashDigest: ${hashModuleDetails.hashDigest},
+        hashDigestLength: ${hashModuleDetails.hashDigestLegnth}
+       })`
+        : (0, text_1.parseString)("");
+}
+exports.setHashModuleIds = setHashModuleIds;
 function setAutomaticPrefechPlugin(response) {
     return response === "Yes"
         ? `new AutomaticPrefetchPlugin(),`

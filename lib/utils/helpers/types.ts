@@ -15,6 +15,7 @@ type fontsExtensions = ".woff" | ".ttf" | ".eot" | ".svg" | ".otf";
 type cacheType = "memory" | "filesystem";
 type cacheCompression = compressionAlgorithm | "brotli" | false;
 type version = 4 | 5;
+type splitChunkType = "async" | "initial" | "all";
 
 export {
   webpackOption,
@@ -32,6 +33,7 @@ export {
   fontsExtensions,
   compressionAlgorithm,
   integrationWebpack,
+  splitChunkType,
   cacheType,
   cacheCompression,
 };

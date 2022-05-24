@@ -1,4 +1,4 @@
-import { outputDir } from "./answers";
+import { outputDir, setEnvironmentVariables } from "./answers";
 import {
   optimizeProductionCSS,
   optimizeProductionHTML,
@@ -36,8 +36,10 @@ import {
   setIgnorePlugin,
   setIntegrationWebpack,
   setProfillingPlugin,
+  setHashModuleIds,
 } from "./helpers/plugins";
 import { webpackMode } from "./helpers/types";
+import { parseString } from "./text";
 import { setAlias, setEntryPoint, setSourceMaps } from "./webpack-set.content";
 
 function addContentToCustom(
@@ -55,35 +57,71 @@ module.exports = {
   module: {
     rules: [
       ${langLoader(presetType)}
-      ${setCoffeeScript(options.isCoffeScriptSupport)}
-      ${setHtmlLoader(options.htmlPreprocessor, presetType)}
-      ${setCssPreprocessorLoader(options.cssPreprocessors, mode, presetType)}
-      ${setXmlLoader(options.isXmlSupport)}
-      ${setYamlLoader(options.isYamlSupport)}
-      ${setCsvLoader(options.isCsvSupport)}
-      ${setImageExtensions(
-        options.isImageSupport,
-        options.imageExtensionsSupport,
-        options.staticLoader
-      )}
-      ${setFontsExtensions(
-        options.fontsExtensionsSupport,
-        options.staticLoader,
-        options.fontsOutputDirectory
-      )}
+      ${
+        options.isCoffeScriptSupport
+          ? setCoffeeScript(options.isCoffeScriptSupport)
+          : parseString("")
+      }
+      ${
+        options.isHtmlPreprocessorSupport
+          ? setHtmlLoader(options.htmlPreprocessor, presetType)
+          : parseString("")
+      }
+      ${
+        options.isCssPreprocessorSupport
+          ? setCssPreprocessorLoader(options.cssPreprocessors, mode, presetType)
+          : parseString("")
+      }
+      ${
+        options.isXmlSupport
+          ? setXmlLoader(options.isXmlSupport)
+          : parseString("")
+      }
+      ${
+        options.isYamlSupport
+          ? setYamlLoader(options.isYamlSupport)
+          : parseString("")
+      }
+      ${
+        options.isCsvSupport
+          ? setCsvLoader(options.isCsvSupport)
+          : parseString("")
+      }
+      ${
+        options.isImageSupport
+          ? setImageExtensions(
+              options.isImageSupport,
+              options.imageExtensionsSupport,
+              options.staticLoader
+            )
+          : parseString("")
+      }
+      ${
+        options.isFontsSupport
+          ? setFontsExtensions(
+              options.fontsExtensionsSupport,
+              options.staticLoader,
+              options.fontsOutputDirectory
+            )
+          : parseString("")
+      }
     ]
   },
-  ${setCacheSupport(
-    options.isCacheWebpackSupport,
-    options.cacheOptionsSettings
-  )}
+  ${
+    options.isCacheWebpackSupport
+      ? setCacheSupport(
+          options.isCacheWebpackSupport,
+          options.cacheOptionsSettings
+        )
+      : parseString("")
+  }
   resolve: {
     alias: {
       ${setAlias(options.aliasPath)}
     },
     extensions: [
       ${setPackOfExtensions(
-        `${presetType}${options.htmlPreprocessor}${options.cssPreprocessors}${
+        `${options.htmlPreprocessor}${options.cssPreprocessors}${
           options.htmlPreprocessor
         }${options.fontsExtensionsSupport}${options.imageExtensionsSupport}${
           options.isCsvSupport ? ".csv" : void 0
@@ -97,24 +135,68 @@ module.exports = {
   plugins: [
     ${isHtmlWebpackPlugin(presetType, options)}
     ${LinterChoose(presetType, options)}
-    ${setClosureLibrary(options.isClosureSupport)}
-    ${setEnvironmentPlugin(
-      options.isEnvironmentalVariablesSupport,
-      options.environmentVariable
-    )}
-    ${setDLLPlugin(options.isSplitBundlesThroughDLLSupport, options.dllOptions)}
+    ${
+      options.isClosureSupport
+        ? setClosureLibrary(options.isClosureSupport)
+        : parseString("")
+    }
+    ${
+      options.isEnvironmentalVariablesSupport
+        ? setEnvironmentVariables(options.isEnvironmentalVariablesSupport)
+        : parseString("")
+    }
+    ${
+      options.isSplitBundlesThroughDLLSupport
+        ? setDLLPlugin(
+            options.isSplitBundlesThroughDLLSupport,
+            options.dllOptions
+          )
+        : parseString("")
+    }
     ${setCleanWebpackPlugin(options.isCleanPluginSUpport)}
     ${setI18nPlugin(options.isLocalizeSupport)}
-    ${setProfillingPlugin(options.isCreateChromeProfileFileSupport)}
-    ${setIgnorePlugin(options.isIgnoreSomeFilesSupport)}
+    ${
+      options.isCreateChromeProfileFileSupport
+        ? setProfillingPlugin(options.isCreateChromeProfileFileSupport)
+        : parseString("")
+    }
+    ${
+      options.isIgnoreSomeFilesSupport
+        ? setIgnorePlugin(options.isIgnoreSomeFilesSupport)
+        : parseString("")
+    }
     ${setIntegrationWebpack(options.integrationSupport)}
-    ${setHMRPlugin(options.isHMRSupport)}
-    ${setCompressionPlugin(
-      options.isCompressionSupport,
-      options.compressionOptions
-    )}
+    ${
+      options.isHMRSupport
+        ? setHMRPlugin(options.isHMRSupport)
+        : parseString("")
+    }
+    ${
+      options.isCompressionSupport
+        ? setCompressionPlugin(
+            options.isCompressionSupport,
+            options.compressionOptions
+          )
+        : parseString("")
+    }
     ${setCopyWebpackPlugin(options.isCopyPluginSupport)}
     ${setWebpackNotifierPlugin(mode)}
+    ${
+      options.isHashModuleSupport
+        ? setHashModuleIds(
+            options.isHashModuleSupport,
+            options.hashModuleIdsSupport
+          )
+        : parseString("")
+    }
+    ${
+      options.isEnvironmentalVariablesSupport
+        ? setEnvironmentPlugin(
+            options.isEnvironmentalVariablesSupport,
+            options.environmentVariable
+          )
+        : parseString("")
+    }
   ],
   optimization: {
     minimizer: [

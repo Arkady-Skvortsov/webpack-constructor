@@ -84,7 +84,7 @@ module.exports = {
       ${setAlias(options.aliasPath)}
     },
     extensions: [
-      "${generateExtensions(type)}",
+      "${generateExtensions(type, options.language!)}",
       ".html",
       ".sass",
       ".scss",
@@ -93,6 +93,9 @@ module.exports = {
       ".jpg",
       ".jpeg",
       ".webp",
+      ".ttf",
+      ".eot",
+      ".svg"
     ],
     symlinks: false,
     cacheWithContext: false,

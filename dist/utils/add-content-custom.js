@@ -8,6 +8,7 @@ const constants_1 = require("./helpers/constants");
 const extensions_1 = require("./helpers/extensions");
 const loaders_1 = require("./helpers/loaders");
 const plugins_1 = require("./helpers/plugins");
+const text_1 = require("./text");
 const webpack_set_content_1 = require("./webpack-set.content");
 function addContentToCustom(presetType, mode, options) {
     return `
@@ -20,41 +21,79 @@ module.exports = {
   module: {
     rules: [
       ${(0, loaders_1.langLoader)(presetType)}
-      ${(0, loaders_1.setCoffeeScript)(options.isCoffeScriptSupport)}
-      ${(0, loaders_1.setHtmlLoader)(options.htmlPreprocessor, presetType)}
-      ${(0, loaders_1.setCssPreprocessorLoader)(options.cssPreprocessors, mode, presetType)}
-      ${(0, loaders_1.setXmlLoader)(options.isXmlSupport)}
-      ${(0, loaders_1.setYamlLoader)(options.isYamlSupport)}
-      ${(0, loaders_1.setCsvLoader)(options.isCsvSupport)}
-      ${(0, loaders_1.setImageExtensions)(options.isImageSupport, options.imageExtensionsSupport, options.staticLoader)}
-      ${(0, loaders_1.setFontsExtensions)(options.fontsExtensionsSupport, options.staticLoader, options.fontsOutputDirectory)}
+      ${options.isCoffeScriptSupport
+        ? (0, loaders_1.setCoffeeScript)(options.isCoffeScriptSupport)
+        : (0, text_1.parseString)("")}
+      ${options.isHtmlPreprocessorSupport
+        ? (0, loaders_1.setHtmlLoader)(options.htmlPreprocessor, presetType)
+        : (0, text_1.parseString)("")}
+      ${options.isCssPreprocessorSupport
+        ? (0, loaders_1.setCssPreprocessorLoader)(options.cssPreprocessors, mode, presetType)
+        : (0, text_1.parseString)("")}
+      ${options.isXmlSupport
+        ? (0, loaders_1.setXmlLoader)(options.isXmlSupport)
+        : (0, text_1.parseString)("")}
+      ${options.isYamlSupport
+        ? (0, loaders_1.setYamlLoader)(options.isYamlSupport)
+        : (0, text_1.parseString)("")}
+      ${options.isCsvSupport
+        ? (0, loaders_1.setCsvLoader)(options.isCsvSupport)
+        : (0, text_1.parseString)("")}
+      ${options.isImageSupport
+        ? (0, loaders_1.setImageExtensions)(options.isImageSupport, options.imageExtensionsSupport, options.staticLoader)
+        : (0, text_1.parseString)("")}
+      ${options.isFontsSupport
+        ? (0, loaders_1.setFontsExtensions)(options.fontsExtensionsSupport, options.staticLoader, options.fontsOutputDirectory)
+        : (0, text_1.parseString)("")}
     ]
   },
-  ${(0, cache_1.setCacheSupport)(options.isCacheWebpackSupport, options.cacheOptionsSettings)}
+  ${options.isCacheWebpackSupport
+        ? (0, cache_1.setCacheSupport)(options.isCacheWebpackSupport, options.cacheOptionsSettings)
+        : (0, text_1.parseString)("")}
   resolve: {
     alias: {
       ${(0, webpack_set_content_1.setAlias)(options.aliasPath)}
     },
     extensions: [
-      ${(0, extensions_1.setPackOfExtensions)(`${presetType}${options.htmlPreprocessor}${options.cssPreprocessors}${options.htmlPreprocessor}${options.fontsExtensionsSupport}${options.imageExtensionsSupport}${options.isCsvSupport ? ".csv" : void 0}${options.isXmlSupport ? ".xml" : void 0}
+      ${(0, extensions_1.setPackOfExtensions)(`${options.htmlPreprocessor}${options.cssPreprocessors}${options.htmlPreprocessor}${options.fontsExtensionsSupport}${options.imageExtensionsSupport}${options.isCsvSupport ? ".csv" : void 0}${options.isXmlSupport ? ".xml" : void 0}
         ${options.isYamlSupport ? ".yaml" : void 0}${options.isCoffeScriptSupport ? ".coffee" : void 0}`)}
     ]
   },
   plugins: [
     ${(0, plugins_1.isHtmlWebpackPlugin)(presetType, options)}
     ${(0, plugins_1.LinterChoose)(presetType, options)}
-    ${(0, plugins_1.setClosureLibrary)(options.isClosureSupport)}
-    ${(0, plugins_1.setEnvironmentPlugin)(options.isEnvironmentalVariablesSupport, options.environmentVariable)}
-    ${(0, plugins_1.setDLLPlugin)(options.isSplitBundlesThroughDLLSupport, options.dllOptions)}
+    ${options.isClosureSupport
+        ? (0, plugins_1.setClosureLibrary)(options.isClosureSupport)
+        : (0, text_1.parseString)("")}
+    ${options.isEnvironmentalVariablesSupport
+        ? (0, answers_1.setEnvironmentVariables)(options.isEnvironmentalVariablesSupport)
+        : (0, text_1.parseString)("")}
+    ${options.isSplitBundlesThroughDLLSupport
+        ? (0, plugins_1.setDLLPlugin)(options.isSplitBundlesThroughDLLSupport, options.dllOptions)
+        : (0, text_1.parseString)("")}
     ${(0, plugins_1.setCleanWebpackPlugin)(options.isCleanPluginSUpport)}
     ${(0, plugins_1.setI18nPlugin)(options.isLocalizeSupport)}
-    ${(0, plugins_1.setProfillingPlugin)(options.isCreateChromeProfileFileSupport)}
-    ${(0, plugins_1.setIgnorePlugin)(options.isIgnoreSomeFilesSupport)}
+    ${options.isCreateChromeProfileFileSupport
+        ? (0, plugins_1.setProfillingPlugin)(options.isCreateChromeProfileFileSupport)
+        : (0, text_1.parseString)("")}
+    ${options.isIgnoreSomeFilesSupport
+        ? (0, plugins_1.setIgnorePlugin)(options.isIgnoreSomeFilesSupport)
+        : (0, text_1.parseString)("")}
     ${(0, plugins_1.setIntegrationWebpack)(options.integrationSupport)}
-    ${(0, plugins_1.setHMRPlugin)(options.isHMRSupport)}
-    ${(0, plugins_1.setCompressionPlugin)(options.isCompressionSupport, options.compressionOptions)}
+    ${options.isHMRSupport
+        ? (0, plugins_1.setHMRPlugin)(options.isHMRSupport)
+        : (0, text_1.parseString)("")}
+    ${options.isCompressionSupport
+        ? (0, plugins_1.setCompressionPlugin)(options.isCompressionSupport, options.compressionOptions)
+        : (0, text_1.parseString)("")}
     ${(0, plugins_1.setCopyWebpackPlugin)(options.isCopyPluginSupport)}
     ${(0, plugins_1.setWebpackNotifierPlugin)(mode)}
+    ${options.isHashModuleSupport
+        ? (0, plugins_1.setHashModuleIds)(options.isHashModuleSupport, options.hashModuleIdsSupport)
+        : (0, text_1.parseString)("")}
+    ${options.isEnvironmentalVariablesSupport
+        ? (0, plugins_1.setEnvironmentPlugin)(options.isEnvironmentalVariablesSupport, options.environmentVariable)
+        : (0, text_1.parseString)("")}
   ],
   optimization: {
     minimizer: [

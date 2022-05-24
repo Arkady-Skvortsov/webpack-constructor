@@ -3,7 +3,7 @@ import { preset } from "./enum";
 
 function generateExtensions(
   presetType: preset,
-  subType?: "Javascript" | "Typescript"
+  subType: "Javascript" | "Typescript"
 ) {
   return presetType === "Vue" && subType === "Typescript"
     ? ".vue .ts".split(", ").join(" ")

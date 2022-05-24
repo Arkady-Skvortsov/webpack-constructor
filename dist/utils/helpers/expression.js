@@ -6,4 +6,5 @@ function setInExpression(value) {
     return `/\.(${extensions})$/`;
 }
 exports.setInExpression = setInExpression;
+function setExtensionByType() { }
 //# sourceMappingURL=expression.js.map

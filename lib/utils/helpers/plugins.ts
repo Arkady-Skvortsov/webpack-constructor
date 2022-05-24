@@ -12,6 +12,8 @@ import {
   copyOptions,
   customWebpackConfig,
   dllOptions,
+  environmentVariable,
+  hashModuleIdsSupport,
   webpackConfig,
 } from "./interfaces";
 import { preset } from "./enum";
@@ -51,7 +53,7 @@ function isHtmlWebpackPlugin(
   presetType: preset,
   options: webpackConfig | customWebpackConfig
 ) {
-  return ["Typescript", "Javascript"].some((value) => value !== presetType)
+  return ["Typescript", "Javascript"].some((value) => value == presetType)
     ? parseString(`
     new HtmlWebpackPlugin({
       filename: "${outputFileName(options.devMode, "html")}",
@@ -70,17 +72,32 @@ function setClosureLibrary(response: questionResponse) {
   return response === "Yes" ? `new ClosurePlugin(),` : parseString("");
 }
 
-function setEnvironmentPlugin(response: questionResponse, variables: any) {
-  return response === "Yes"
-    ? `new DefinePlugin({
-
-    }),`
-    : parseString("");
+function setEnvironmentPlugin(
+  response: questionResponse,
+  variables: environmentVariable
+) {
+  `new webpack.DefinePlugin({
+    ${Object.keys(variables)}: ${Object.values(variables)}
+   })`;
 }
 
 function setDLLPlugin(response: questionResponse, options: dllOptions) {
   return response === "Yes"
     ? `new DllPlugin({ name: ${options.name}, path: path.resolve(__dirname, "${options.path}") }),`
+    : parseString("");
+}
+
+function setHashModuleIds(
+  response: questionResponse,
+  hashModuleDetails: hashModuleIdsSupport
+) {
+  return response === "Yes"
+    ? `new webpack.ids.HashedModuleIdsPlugin({
+        context: ${hashModuleDetails.context},
+        hashFunction: ${hashModuleDetails.hashFunction},
+        hashDigest: ${hashModuleDetails.hashDigest},
+        hashDigestLength: ${hashModuleDetails.hashDigestLegnth}
+       })`
     : parseString("");
 }
 
@@ -211,6 +228,7 @@ export {
   setIgnorePlugin,
   setIntegrationWebpack,
   setHMRPlugin,
+  setHashModuleIds,
   setCompressionPlugin,
   setCopyWebpackPlugin,
 };

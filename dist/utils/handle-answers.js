@@ -40,6 +40,11 @@ async function WebpackConfigCustom(presetType, mode) {
     const isFontsSupport = await (0, answers_1.isFontsAnswer)();
     const fontsExtensionsSupport = await (0, answers_1.fontsExtensions)(isFontsSupport.is_fonts);
     const fontsOutDirSupport = await (0, answers_1.fontsOutDir)(isFontsSupport.is_fonts);
+    const isLinterSupport = await (0, answers_1.isLinter)();
+    const isLinterTypeSupport = await (0, answers_1.isLinterType)(isLinterSupport.question_set_linter_support, checkLangPreset?.langForFramework.question_preset_framework_config);
+    const setUpEslintSupport = await (0, answers_1.setUpEslint)(isLinterSupport.question_set_linter_support);
+    const isHashModulePathSupport = await (0, answers_1.isHashModulePath)();
+    const detailsOfHashModule = await (0, answers_1.hashModuleIdsSupport)(isHashModulePathSupport.question_is_hash_module_path);
     const isXmlSupport = await (0, answers_1.isXmlExtension)();
     const isYamlSupport = await (0, answers_1.isYamlExtension)();
     const isCsvSupport = await (0, answers_1.isCsvExtension)();
@@ -52,7 +57,8 @@ async function WebpackConfigCustom(presetType, mode) {
     const isGlobalVariableSupport = await (0, answers_1.isGlobalVariableAnswer)();
     const SetGlobalVariableSupport = await (0, answers_1.setGlobalVariable)(isGlobalVariableSupport.question_is_global_variable_answer);
     const isCacheSupport = await (0, answers_1.isCacheWebpack)();
-    const cacheOptions = await (0, answers_1.ChooseCacheOptions)(isCacheSupport.cache_webpack);
+    const cacheTypeOptionsSupport = await (0, answers_1.cacheTypeOptions)(isCacheSupport.cache_webpack);
+    const cacheOptions = await (0, answers_1.ChooseCacheOptions)(cacheTypeOptionsSupport?.question_cache_type);
     const isSplitBundlesThroughDLLSupport = await (0, answers_1.isSplitBundlesThroughDLL)();
     const supportSplitBundlesDLL = await (0, answers_1.supportSplitBundlesThroughDLL)(isSplitBundlesThroughDLLSupport.question_is_split_bundles_dll);
     const isEnvironmentVariablesSupport = await (0, answers_1.isEnvironmentVariables)();
@@ -117,9 +123,10 @@ async function WebpackConfigCustom(presetType, mode) {
             manifest: supportSplitBundlesDLL?.manifest.question_path_to_manifest_dll,
         },
         isCacheWebpackSupport: isCacheSupport.cache_webpack,
+        cacheTypeOptionsSupport: cacheTypeOptionsSupport?.question_cache_type,
         cacheOptionsSettings: {
             name: cacheOptions?.name?.question_cache_name,
-            type: cacheOptions?.cacheType?.question_cache_type,
+            type: cacheTypeOptionsSupport?.question_cache_type,
             allowCollectingMemory: cacheOptions?.allowCollectingMemory?.question_allow_collecting_memory,
             cacheDirectory: cacheOptions?.cacheDirectory?.question_cache_directory,
             cacheLocation: cacheOptions?.cacheLocation?.question_cache_location,
@@ -151,6 +158,30 @@ async function WebpackConfigCustom(presetType, mode) {
         isIntegrationSupport: isIntegrationSupport.question_is_integration,
         integrationSupport: setIntegrationSupport?.question_integration_instrument,
         isHMRSupport: isHMRSupport.question_is_hmr,
+        isLinterSupport: isLinterSupport.question_set_linter_support,
+        esLintOptions: {
+            context: isLinterTypeSupport?.context.question_is_context,
+            eslintPath: isLinterTypeSupport?.eslintPath.question_is_eslint_path,
+            extensions: isLinterTypeSupport?.extensions.question_eslint_extensions,
+            exclude: isLinterTypeSupport?.exclude.question_is_exclude,
+            files: isLinterTypeSupport?.files.question_is_files,
+            fix: isLinterTypeSupport?.fix.question_is_fix,
+            lintDirtyModulesOnly: isLinterTypeSupport?.linDirtyModulesOnly
+                .question_is_lin_dirty_modules_only,
+            threads: isLinterTypeSupport?.threads.question_is_threads,
+            emitError: isLinterTypeSupport?.emitError.question_is_emit_error,
+            emitWarning: isLinterTypeSupport?.emitWarning.question_is_emit_warning,
+            failOnError: isLinterTypeSupport?.failOnError.question_is_fail_on_error,
+            failOnWarning: isLinterTypeSupport?.failOnWarning.question_is_fail_on_warning,
+            quiet: isLinterTypeSupport?.quit.question_is_quit,
+        },
+        isHashModuleSupport: isHashModulePathSupport.question_is_hash_module_path,
+        hashModuleIdsSupport: {
+            context: detailsOfHashModule?.context,
+            hashFunction: detailsOfHashModule?.hashFunction,
+            hashDigest: detailsOfHashModule?.hashDigest,
+            hashDigestLegnth: detailsOfHashModule?.hashDigestLength,
+        },
         isCompressionSupport: isCompressionSupport.question_is_compression_answer,
         compressionOptions: {
             level: setCompressionOptionsSupport?.compressionLevel
@@ -180,7 +211,7 @@ async function WebpackConfigOptions(presetType, mode) {
     const outputFolder = await (0, answers_1.outputDir)();
     const htmlPreset = await (0, answers_1.checkPresetHTML)(presetType, contextPointWrite.question_context);
     const checkTsConfigPreset = await (0, answers_1.checkPresetTsConfig)(checkLangPreset?.langForFramework.question_preset_framework_config);
-    const watchFilesPath = await (0, answers_1.chooseWatchFiles)(portWrite);
+    const watchFilesPath = await (0, answers_1.chooseWatchFiles)(contextPointWrite.question_context);
     return (0, add_content_preset_1.addContentToPreset)(presetType, {
         context: contextPointWrite.question_context,
         entryPoint: entryPointWrite.entry_point,

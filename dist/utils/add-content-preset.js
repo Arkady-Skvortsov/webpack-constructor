@@ -67,7 +67,7 @@ module.exports = {
       ${(0, webpack_set_content_1.setAlias)(options.aliasPath)}
     },
     extensions: [
-      "${(0, extensions_1.generateExtensions)(type)}",
+      "${(0, extensions_1.generateExtensions)(type, options.language)}",
       ".html",
       ".sass",
       ".scss",
@@ -76,6 +76,9 @@ module.exports = {
       ".jpg",
       ".jpeg",
       ".webp",
+      ".ttf",
+      ".eot",
+      ".svg"
     ],
     symlinks: false,
     cacheWithContext: false,

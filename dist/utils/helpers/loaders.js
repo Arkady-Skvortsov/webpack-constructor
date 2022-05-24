@@ -119,7 +119,7 @@ async function parseIntegration(integrationType) {
                 ? "karma-webpack"
                 : integration === "Mocha"
                     ? "mocha-webpack"
-                    : "");
+                    : (0, text_1.parseString)(""));
 }
 exports.parseIntegration = parseIntegration;
 function setImageExtensions(response, loaderType, staticLoader) {

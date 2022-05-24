@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setFilesCatalogesCopy = exports.isCopyStaticFiles = exports.isEnvironmentVariables = exports.chooseStaticFilesLoader = exports.isClosureLibrary = exports.addingBannerToChunk = exports.isCleanPlugin = exports.isCopyPlugin = exports.fontsOutDir = exports.isSplittingChunks = exports.isDiscoverPreviousCompilation = exports.supportSplitBundlesThroughDLL = exports.isSplitBundlesThroughDLL = exports.isFontsExtensionAnswer = exports.isImageExtensionAnswer = exports.isHtmlPreprocessorAnswer = exports.isCssPreprocessorsAnswer = exports.isCsvExtension = exports.cssPreprocessors = exports.contextAnswer = exports.imagesOutDir = exports.isCacheWebpack = exports.isXmlExtension = exports.htmlPreprocessorsAnswer = exports.fontsExtensions = exports.isLazyLoading = exports.isImagesAnswer = exports.isFontsAnswer = exports.isDevServerAnswer = exports.checkPresetFrameworkConfig = exports.checkPresetHTML = exports.chooseWebpackMode = exports.chooseWebpackVersion = exports.chooseBasicPreset = exports.checkPresetTsConfig = exports.fontsDir = exports.devServerPort = exports.chooseWatchFiles = exports.ChooseCacheOptions = exports.isAvoidErrorStyles = exports.basicChoose = exports.isPwaSupport = exports.imageExtensions = exports.isYamlExtension = exports.entryPointsAnswer = exports.supportFromCoffeScriptAnswer = exports.staticLoader = exports.splitChunksWebpack = exports.outputDir = exports.integrationInstruments = void 0;
-exports.isIgnoreSomeFilesWatchMode = exports.setFilesForIgnoreInWatchMode = exports.setFilesForIgnore = exports.setAliasAnswer = exports.setMinimumChunkSize = exports.setMaximumChunkSize = exports.isIntegrationInstrument = exports.isIgnoreSomeFiles = exports.isCreateChromeProfileFile = exports.setCompressionOptions = exports.setGlobalVariable = exports.isGlobalVariableAnswer = exports.isCompressionAnswer = exports.isMaximumChunkSize = exports.isMinimumChunkSize = exports.setLocalizeDetails = exports.isHMRAnswer = exports.isLocalizeAnswer = exports.setEnvironmentVariables = void 0;
+exports.isCopyPlugin = exports.fontsOutDir = exports.isSplittingChunks = exports.isDiscoverPreviousCompilation = exports.supportSplitBundlesThroughDLL = exports.isSplitBundlesThroughDLL = exports.isFontsExtensionAnswer = exports.isImageExtensionAnswer = exports.isHtmlPreprocessorAnswer = exports.isCssPreprocessorsAnswer = exports.isCsvExtension = exports.cssPreprocessors = exports.contextAnswer = exports.imagesOutDir = exports.isCacheWebpack = exports.isXmlExtension = exports.htmlPreprocessorsAnswer = exports.fontsExtensions = exports.isLazyLoading = exports.isImagesAnswer = exports.isFontsAnswer = exports.isDevServerAnswer = exports.checkPresetFrameworkConfig = exports.checkPresetHTML = exports.chooseWebpackMode = exports.chooseWebpackVersion = exports.chooseBasicPreset = exports.checkPresetTsConfig = exports.fontsDir = exports.devServerPort = exports.chooseWatchFiles = exports.ChooseCacheOptions = exports.cacheTypeOptions = exports.isAvoidErrorStyles = exports.basicChoose = exports.isPwaSupport = exports.setUpTsLint = exports.hashModuleIdsSupport = exports.isHashModulePath = exports.setUpEslint = exports.isLinterType = exports.isLinter = exports.imageExtensions = exports.isYamlExtension = exports.entryPointsAnswer = exports.supportFromCoffeScriptAnswer = exports.staticLoader = exports.splitChunksWebpack = exports.outputDir = exports.integrationInstruments = void 0;
+exports.isIgnoreSomeFilesWatchMode = exports.setFilesForIgnoreInWatchMode = exports.setFilesForIgnore = exports.setAliasAnswer = exports.setMinimumChunkSize = exports.setMaximumChunkSize = exports.isIntegrationInstrument = exports.isIgnoreSomeFiles = exports.isCreateChromeProfileFile = exports.setCompressionOptions = exports.setGlobalVariable = exports.isGlobalVariableAnswer = exports.isCompressionAnswer = exports.isMaximumChunkSize = exports.isMinimumChunkSize = exports.setLocalizeDetails = exports.isHMRAnswer = exports.isLocalizeAnswer = exports.setEnvironmentVariables = exports.setFilesCatalogesCopy = exports.isCopyStaticFiles = exports.isEnvironmentVariables = exports.chooseStaticFilesLoader = exports.isClosureLibrary = exports.addingBannerToChunk = exports.isCleanPlugin = void 0;
 const inquirer_1 = __importDefault(require("inquirer"));
 const extensions_1 = require("./helpers/extensions");
 async function basicChoose() {
@@ -480,6 +480,140 @@ async function setEnvironmentVariables(response) {
         : void 0;
 }
 exports.setEnvironmentVariables = setEnvironmentVariables;
+async function isLinter() {
+    return await inquirer_1.default.prompt({
+        name: "question_set_linter_support",
+        type: "list",
+        message: "Do you want to support a linter in you'r project ?",
+        choices: ["Yes", "No"],
+    });
+}
+exports.isLinter = isLinter;
+async function isLinterType(response, type) {
+    return type === "Typescript" ? setUpTsLint() : setUpEslint(response);
+}
+exports.isLinterType = isLinterType;
+async function setUpEslint(response) {
+    return response === "Yes"
+        ? {
+            context: await inquirer_1.default.prompt({
+                name: "question_is_context",
+                type: "input",
+                message: "What is the root would be for eslint(example: ./src/utils)?",
+            }),
+            eslintPath: await inquirer_1.default.prompt({
+                name: "question_is_eslint_path",
+                type: "input",
+                message: "What is the path to eslint instance that would be used for linting (default: eslint)?",
+                default: "eslint",
+            }),
+            extensions: await inquirer_1.default.prompt({
+                name: "question_eslint_extensions",
+                type: "input",
+                message: "What is the specify files and/or directories to exclude(example: node_modules file.js file2.js)?",
+            }),
+            exclude: await inquirer_1.default.prompt({
+                name: "question_is_exclude",
+                type: "input",
+                message: "What is the specify files and/or directories to exclude(example: node_modules file.js file2.js)?",
+            }),
+            files: await inquirer_1.default.prompt({
+                name: "question_is_files",
+                type: "input",
+                message: "What is the specify directories, files, or globs would be (example: ./src/utils)?",
+            }),
+            fix: await inquirer_1.default.prompt({
+                name: "question_is_fix",
+                type: "list",
+                message: "Be careful: this option will change source files",
+                choices: ["Yes", "No"],
+            }),
+            linDirtyModulesOnly: await inquirer_1.default.prompt({
+                name: "question_is_lin_dirty_modules_only",
+                type: "list",
+                message: "Do you want to lint only changed files, skip lint on start ?",
+                choices: ["Yes", "No"],
+            }),
+            threads: await inquirer_1.default.prompt({
+                name: "question_is_threads",
+                type: "input",
+                message: "What is the pool size would be for run lint tasks across thread pool (example: 2) ?",
+            }),
+            emitError: await inquirer_1.default.prompt({
+                name: "question_is_emit_error",
+                type: "list",
+                message: "Do you want, that errors found will always be emitted ?",
+                choices: ["Yes", "No"],
+            }),
+            emitWarning: await inquirer_1.default.prompt({
+                name: "question_is_emit_warning",
+                type: "list",
+                message: "Do you want, that warnings found will always be emitted ?",
+                choices: ["Yes", "No"],
+            }),
+            failOnError: await inquirer_1.default.prompt({
+                name: "question_is_fail_on_error",
+                type: "list",
+                message: "Do you want, that will cause the module build to fail if there are any errors ?",
+                choices: ["Yes", "No"],
+            }),
+            failOnWarning: await inquirer_1.default.prompt({
+                name: "question_is_fail_on_warning",
+                type: "list",
+                message: "Do you want, that will cause the module build to fail if there are any warnings ?",
+                choices: ["Yes", "No"],
+            }),
+            quit: await inquirer_1.default.prompt({
+                name: "question_is_quit",
+                type: "list",
+                message: "Do you want, that will process and report erros only and ignore warnings ?",
+                choices: ["Yes", "No"],
+            }),
+        }
+        : void 0;
+}
+exports.setUpEslint = setUpEslint;
+async function isHashModulePath() {
+    return await inquirer_1.default.prompt({
+        name: "question_is_hash_module_path",
+        type: "list",
+        message: "Do you want to cause hashes to be based on the relative path of the module, generating a four character string as the module id ?",
+        choices: ["Yes", "No"],
+    });
+}
+exports.isHashModulePath = isHashModulePath;
+async function hashModuleIdsSupport(response) {
+    return response === "Yes"
+        ? {
+            context: await inquirer_1.default.prompt({
+                name: "question_is_context",
+                type: "input",
+                message: "What is the context directory(absolute path) would be for creating names ?",
+            }),
+            hashFunction: await inquirer_1.default.prompt({
+                name: "question_is_hash_algorithm",
+                type: "input",
+                message: "What is the hashing algorithm would be to use (defaut: md4) ?",
+                default: "md4",
+            }),
+            hashDigest: await inquirer_1.default.prompt({
+                name: "question_is_hash_digest",
+                type: "input",
+                message: "What is the encoding to use when generating the hash (default: base64) ?",
+                default: "base64",
+            }),
+            hashDigestLength: await inquirer_1.default.prompt({
+                name: "question_is_hash_digest_list",
+                type: "input",
+                message: "What is the prefix length of the hash digest to use (default: 4) ?",
+                default: "4",
+            }),
+        }
+        : void 0;
+}
+exports.hashModuleIdsSupport = hashModuleIdsSupport;
+async function setUpTsLint() { }
+exports.setUpTsLint = setUpTsLint;
 async function isLocalizeAnswer() {
     return await inquirer_1.default.prompt({
         name: "question_is_localize",
@@ -565,14 +699,19 @@ async function setGlobalVariable(response) {
         : void 0;
 }
 exports.setGlobalVariable = setGlobalVariable;
-async function ChooseCacheOptions(response) {
-    let cacheType = await inquirer_1.default.prompt({
-        name: "question_cache_type",
-        type: "list",
-        message: "What is the cache type would be ?",
-        choices: ["memory", "filesystem"],
-    });
-    return response === "Yes" && cacheType.question_cache_type === "filesystem"
+async function cacheTypeOptions(response) {
+    return response === "Yes"
+        ? await inquirer_1.default.prompt({
+            name: "question_cache_type",
+            type: "list",
+            message: "What is the cache type would be ?",
+            choices: ["memory", "filesystem"],
+        })
+        : void 0;
+}
+exports.cacheTypeOptions = cacheTypeOptions;
+async function ChooseCacheOptions(cacheType) {
+    return cacheType === "filesystem"
         ? {
             cacheType: cacheType,
             name: await inquirer_1.default.prompt({
@@ -651,7 +790,7 @@ async function ChooseCacheOptions(response) {
                 message: "What version of the data cache will be? (details: different versions do not allow cache reuse and override existing content. Update the version if the configuration is changed in such a way that it does not allow cache reuse. This will invalidate the cache)",
             }),
         }
-        : response === "Yes" && cacheType.question_cache_type === "memory"
+        : cacheType === "memory"
             ? {
                 maxGenerations: await inquirer_1.default.prompt({
                     name: "question_cache_max_generations",
@@ -741,7 +880,7 @@ async function staticLoader() {
     return await inquirer_1.default.prompt({
         name: "question_static_loader",
         type: "list",
-        message: "What is the loader for static files do you want to use ?",
+        message: "Do you want to use loader for static files ?",
         choices: ["Yes", "No"],
     });
 }
@@ -809,8 +948,8 @@ async function chooseWatchFiles(port) {
     return await inquirer_1.default.prompt({
         name: "question_13",
         type: "input",
-        message: `What is the folder with files do you want to watch for changes with starting devServer (example: ${port.dev_server_port}/html) ?`,
-        default: `${port.dev_server_port}/html`,
+        message: `What is the folder with files do you want to watch for changes with starting devServer (example: ${port}/html) ?`,
+        default: `${port}/html`,
     });
 }
 exports.chooseWatchFiles = chooseWatchFiles;
