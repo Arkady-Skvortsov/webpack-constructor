@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isCopyPlugin = exports.fontsOutDir = exports.isSplittingChunks = exports.isDiscoverPreviousCompilation = exports.supportSplitBundlesThroughDLL = exports.isSplitBundlesThroughDLL = exports.isFontsExtensionAnswer = exports.isImageExtensionAnswer = exports.isHtmlPreprocessorAnswer = exports.isCssPreprocessorsAnswer = exports.isCsvExtension = exports.cssPreprocessors = exports.contextAnswer = exports.imagesOutDir = exports.isCacheWebpack = exports.isXmlExtension = exports.htmlPreprocessorsAnswer = exports.fontsExtensions = exports.isLazyLoading = exports.isImagesAnswer = exports.isFontsAnswer = exports.isDevServerAnswer = exports.checkPresetFrameworkConfig = exports.checkPresetHTML = exports.chooseWebpackMode = exports.chooseWebpackVersion = exports.chooseBasicPreset = exports.checkPresetTsConfig = exports.fontsDir = exports.devServerPort = exports.chooseWatchFiles = exports.ChooseCacheOptions = exports.cacheTypeOptions = exports.isAvoidErrorStyles = exports.basicChoose = exports.isPwaSupport = exports.setUpTsLint = exports.hashModuleIdsSupport = exports.isHashModulePath = exports.setUpEslint = exports.isLinterType = exports.isLinter = exports.imageExtensions = exports.isYamlExtension = exports.entryPointsAnswer = exports.supportFromCoffeScriptAnswer = exports.staticLoader = exports.splitChunksWebpack = exports.outputDir = exports.integrationInstruments = void 0;
-exports.isIgnoreSomeFilesWatchMode = exports.setFilesForIgnoreInWatchMode = exports.setFilesForIgnore = exports.setAliasAnswer = exports.setMinimumChunkSize = exports.setMaximumChunkSize = exports.isIntegrationInstrument = exports.isIgnoreSomeFiles = exports.isCreateChromeProfileFile = exports.setCompressionOptions = exports.setGlobalVariable = exports.isGlobalVariableAnswer = exports.isCompressionAnswer = exports.isMaximumChunkSize = exports.isMinimumChunkSize = exports.setLocalizeDetails = exports.isHMRAnswer = exports.isLocalizeAnswer = exports.setEnvironmentVariables = exports.setFilesCatalogesCopy = exports.isCopyStaticFiles = exports.isEnvironmentVariables = exports.chooseStaticFilesLoader = exports.isClosureLibrary = exports.addingBannerToChunk = exports.isCleanPlugin = void 0;
+exports.isDiscoverPreviousCompilation = exports.supportSplitBundlesThroughDLL = exports.isSplitBundlesThroughDLL = exports.isFontsExtensionAnswer = exports.isImageExtensionAnswer = exports.isHtmlPreprocessorAnswer = exports.isCssPreprocessorsAnswer = exports.isCsvExtension = exports.cssPreprocessors = exports.contextAnswer = exports.imagesOutDir = exports.isCacheWebpack = exports.isXmlExtension = exports.htmlPreprocessorsAnswer = exports.fontsExtensions = exports.isLazyLoading = exports.isImagesAnswer = exports.isFontsAnswer = exports.isDevServerAnswer = exports.checkPresetFrameworkConfig = exports.checkPresetHTML = exports.chooseWebpackMode = exports.chooseWebpackVersion = exports.chooseBasicPreset = exports.checkPresetTsConfig = exports.fontsDir = exports.devServerPort = exports.chooseWatchFiles = exports.ChooseCacheOptions = exports.cacheTypeOptions = exports.avoidErrorsOptions = exports.isAvoidErrorStyles = exports.basicChoose = exports.isPwaSupport = exports.setUpTsLint = exports.hashModuleIdsSupport = exports.isHashModulePath = exports.splitChunksWebpack = exports.minifyJSONOptions = exports.setUpEslint = exports.isLinterType = exports.isLinter = exports.isMinifyJSONFiles = exports.imageExtensions = exports.isYamlExtension = exports.entryPointsAnswer = exports.supportFromCoffeScriptAnswer = exports.staticLoader = exports.outputDir = exports.integrationInstruments = void 0;
+exports.isIgnoreSomeFilesWatchMode = exports.setFilesForIgnoreInWatchMode = exports.setFilesForIgnore = exports.setAliasAnswer = exports.setMinimumChunkSize = exports.setMaximumChunkSize = exports.isIntegrationInstrument = exports.isIgnoreSomeFiles = exports.isCreateChromeProfileFile = exports.setCompressionOptions = exports.setGlobalVariable = exports.isGlobalVariableAnswer = exports.isCompressionAnswer = exports.isMaximumChunkSize = exports.isMinimumChunkSize = exports.setLocalizeDetails = exports.isHMRAnswer = exports.isLocalizeAnswer = exports.setEnvironmentVariables = exports.setFilesCatalogesCopy = exports.isCopyStaticFiles = exports.isEnvironmentVariables = exports.chooseStaticFilesLoader = exports.isClosureLibrary = exports.addingBannerToChunk = exports.cleanPluginSetup = exports.isCleanPlugin = exports.isCopyPlugin = exports.fontsOutDir = exports.isSplittingChunks = void 0;
 const inquirer_1 = __importDefault(require("inquirer"));
 const extensions_1 = require("./helpers/extensions");
 async function basicChoose() {
@@ -158,6 +158,92 @@ async function isAvoidErrorStyles() {
     });
 }
 exports.isAvoidErrorStyles = isAvoidErrorStyles;
+async function avoidErrorsOptions(response) {
+    return response === "Yes"
+        ? {
+            context: await inquirer_1.default.prompt({
+                name: "is_avoid_context",
+                type: "input",
+                message: "What is the root dir for you'r files would be ?",
+            }),
+            exclude: await inquirer_1.default.prompt({
+                name: "is_avoid_exclude",
+                type: "input",
+                message: "What is the files/dirs you would be exclude (example: node_modules) ?",
+            }),
+            extensions: await inquirer_1.default.prompt({
+                name: "is_avoid_extensions",
+                type: "input",
+                message: "What is the extensions should be checked (example: css scss sass less) ?",
+            }),
+            files: await inquirer_1.default.prompt({
+                name: "is_avoid_files",
+                type: "input",
+                message: `What is the files/catalogs inside context would be traversed recursively looking for files matching ?`,
+            }),
+            fix: await inquirer_1.default.prompt({
+                name: "is_avoid_fix",
+                type: "list",
+                message: "Do you want to fix as many errors as possible. (All unfixed errors will be reported) ?",
+                choices: ["Yes", "No"],
+            }),
+            formatter: await inquirer_1.default.prompt({
+                name: "is_avoid_formatter",
+                type: "list",
+                message: "What is the formatter would be to use like a format for your results?",
+                choices: ["compact", "json", "string", "tap", "unix", "verbose"],
+            }),
+            lintDirtyModulesOnly: await inquirer_1.default.prompt({
+                name: "is_avoid_lint_dirty_modules_only",
+                type: "list",
+                message: "Do you want to lint only changed files, skip lint on start. ?",
+                choices: ["Yes", "No"],
+            }),
+            stylelintPath: await inquirer_1.default.prompt({
+                name: "is_avoid_style_lint_path",
+                type: "input",
+                message: "What is the path would be 'stylelint' instance used for linting (example: stylelint) ?",
+            }),
+            threads: await inquirer_1.default.prompt({
+                name: "is_avoid_threads",
+                type: "list",
+                message: "Do you want to auto-select pool size based number of cpus ?",
+                choices: ["Yes", "No"],
+            }),
+            emitError: await inquirer_1.default.prompt({
+                name: "is_avoid_emit_error",
+                type: "list",
+                message: "Do you want that erros found would be emitted ?",
+                choices: ["Yes", "No"],
+            }),
+            emitWarning: await inquirer_1.default.prompt({
+                name: "is_avoid_emit_warning",
+                type: "list",
+                message: "Do you want that warnings found would be emitted ?",
+                choices: ["Yes", "No"],
+            }),
+            failOnError: await inquirer_1.default.prompt({
+                name: "is_avoid_fail_on_error",
+                type: "list",
+                message: "Do you want to stop building process if there are any errors ?",
+                choices: ["Yes", "No"],
+            }),
+            failOnWarning: await inquirer_1.default.prompt({
+                name: "is_avoid_fail_on_warning",
+                type: "list",
+                message: "Do you want to stop building process if there are any warnings ?",
+                choices: ["Yes", "No"],
+            }),
+            quiet: await inquirer_1.default.prompt({
+                name: "is_avoid_quiet",
+                type: "list",
+                message: "Do you want that process and report errors only and ignore warnings ?",
+                choices: ["Yes", "No"],
+            }),
+        }
+        : void 0;
+}
+exports.avoidErrorsOptions = avoidErrorsOptions;
 async function isCacheWebpack() {
     return await inquirer_1.default.prompt({
         name: "cache_webpack",
@@ -167,12 +253,89 @@ async function isCacheWebpack() {
     });
 }
 exports.isCacheWebpack = isCacheWebpack;
-async function splitChunksWebpack() {
-    return await inquirer_1.default.prompt({
-        name: "split_chinks_webpack",
-        type: "list",
-        message: "",
-    });
+async function splitChunksWebpack(response) {
+    return response === "Yes"
+        ? {
+            chunks: await inquirer_1.default.prompt({
+                name: "split_chinks_chunks",
+                type: "list",
+                message: "What is the chunks would be selected for optimization ?",
+                choices: ["async", "initial", "all"],
+            }),
+            minSize: await inquirer_1.default.prompt({
+                name: "split_chinks_min_size",
+                type: "input",
+                message: "What is the minimun size in bytes would be for generated chunk ?",
+            }),
+            maxSize: await inquirer_1.default.prompt({
+                name: "split_chinks_max_size",
+                type: "input",
+                message: "What is the maximum size in bytes would be trying to split chunks bigger than maxSize bytes into smaller parts (So that it is usable when using long term caching and doesn't require records. maxSize is only a hint and could be violated when modules are bigger than maxSize or splitting would violate minSize.) ?",
+            }),
+            minRemainingSize: await inquirer_1.default.prompt({
+                name: "split_chinks_min_remaining_size",
+                type: "list",
+                message: "What is the maxx chunks would be selected for optimization ?",
+                choices: ["async", "initial", "all"],
+            }),
+            minChunks: await inquirer_1.default.prompt({
+                name: "split_chinks_min_chunks",
+                type: "input",
+                message: "What is the minimum time must a module be shared among chunks before splitting (example: 1) ?",
+            }),
+            maxAsyncRequests: await inquirer_1.default.prompt({
+                name: "split_chinks_max_async_requests",
+                type: "input",
+                message: "What is the maximum number of parallel requests would be on-demand loading (example: 20) ?",
+            }),
+            maxAsyncSize: await inquirer_1.default.prompt({
+                name: "split_chinks_min_size",
+                type: "input",
+                message: "What is the minimun size in bytes would be only affect on-demand loading chunks ?",
+            }),
+            maxInitialRequests: await inquirer_1.default.prompt({
+                name: "split_chinks_max_initial_requests",
+                type: "input",
+                message: "What is the maximum number of parallel requests would be at an entry point. (example: 30) ?",
+            }),
+            enforceSizeThreshold: await inquirer_1.default.prompt({
+                name: "split_chinks_enforce_size_threshold",
+                type: "input",
+                message: "What is the size threshold would be at splitting is enforced and other restrictions (minRemainingSize, maxAsyncRequests, maxInitialRequests) are ignored. ?",
+            }),
+            cacheGroups: {
+                defaultVendors: {
+                    filename: await inquirer_1.default.prompt({
+                        name: "split_chinks_filename",
+                        type: "input",
+                        message: "Allows to override the filename when and only when it's an initial chunk. (All placeholders available in output.filename are also available here) (example: [name].bundle.js) ?",
+                    }),
+                    test: await inquirer_1.default.prompt({
+                        name: "split_chinks_test",
+                        type: "list",
+                        message: "What is the chunks would be selected for optimization ?",
+                        choices: ["async", "initial", "all"],
+                    }),
+                    priority: await inquirer_1.default.prompt({
+                        name: "split_chinks_priority",
+                        type: "input",
+                        message: "What is the optimization would be prefer the cache group with a higher priority. The default groups have a negative priority to allow custom groups to take higher priority (example: -20) ?",
+                    }),
+                    reuseExistingChunk: await inquirer_1.default.prompt({
+                        name: "split_chinks_reuse_existing_chunk",
+                        type: "list",
+                        message: "Do you want that modules already split out from the main bundle will be reused instead of a new being generated. (This can affect the resulting file name of the chunk)?",
+                        choices: ["Yes", "No"],
+                    }),
+                    idHint: await inquirer_1.default.prompt({
+                        name: "split_chinks_id_hint",
+                        type: "input",
+                        message: "What is the hint for chunk id would be. (it will be added to chunk's filename); (examplel: vendors) ?",
+                    }),
+                },
+            },
+        }
+        : void 0;
 }
 exports.splitChunksWebpack = splitChunksWebpack;
 async function supportFromCoffeScriptAnswer() {
@@ -202,6 +365,53 @@ async function isCleanPlugin() {
     });
 }
 exports.isCleanPlugin = isCleanPlugin;
+async function cleanPluginSetup(response) {
+    return response === "Yes"
+        ? {
+            dry: await inquirer_1.default.prompt({
+                name: "question_is_copy_plugin",
+                type: "list",
+                message: "Do you want to simulate the removal of files ?",
+                choices: ["Yes", "No"],
+            }),
+            verbose: await inquirer_1.default.prompt({
+                name: "question_is_copy_plugin",
+                type: "list",
+                message: "Do you want to write logs in console ?",
+                choices: ["Yes", "No"],
+            }),
+            cleanStaleWebpackAssets: await inquirer_1.default.prompt({
+                name: "question_is_copy_plugin",
+                type: "list",
+                message: "Do you want to automatically remove all unused webpack assets on rebuild ?",
+                choices: ["Yes", "No"],
+            }),
+            protectWebpackAssets: await inquirer_1.default.prompt({
+                name: "question_is_copy_plugin",
+                type: "list",
+                message: "Do you want to not allow removal of current webpack assets ?",
+                choices: ["Yes", "No"],
+            }),
+            cleanOnceBeforeBuildPlugin: await inquirer_1.default.prompt({
+                name: "question_clean_once_before_build_plugin",
+                type: "input",
+                message: "What is the files would be to remove after every build (including watch mode) that match this pattern(Used for files that are not created directly by Webpack) ?",
+            }),
+            cleanAfterEveryBuildPatterns: await inquirer_1.default.prompt({
+                name: "question_clean_after_every_build_patterns",
+                type: "input",
+                message: "What is the files would be to Removes files once prior to Webpack compilation. Not included in rebuilds (watch mode)?",
+            }),
+            dangerouslyAllowCleanPatternsOutsideProject: await inquirer_1.default.prompt({
+                name: "question_dangerously_allow_clean_patterns_outside_project",
+                type: "list",
+                message: "Do you want to allow clean patterns outside of process.cwd() (requires dry option to be explicitly set) ?",
+                choices: ["Yes", "No"],
+            }),
+        }
+        : void 0;
+}
+exports.cleanPluginSetup = cleanPluginSetup;
 async function isCopyStaticFiles() {
     return await inquirer_1.default.prompt({
         name: "is_copy_static_files",
@@ -429,7 +639,7 @@ async function isSplittingChunks() {
     return await inquirer_1.default.prompt({
         name: "question_is_splitting_chunks",
         type: "list",
-        message: "Do you want to split chunk ?",
+        message: "Do you want to split project to chunks ?",
         choices: ["Yes", "No"],
     });
 }
@@ -463,21 +673,19 @@ async function isEnvironmentVariables() {
     });
 }
 exports.isEnvironmentVariables = isEnvironmentVariables;
-async function setEnvironmentVariables(response) {
-    return response === "Yes"
-        ? {
-            name: await inquirer_1.default.prompt({
-                name: "set_environment_names",
-                type: "input",
-                message: "What is name would be for environment variable (example: PG_DB PG_PORT) ?",
-            }),
-            value: await inquirer_1.default.prompt({
-                name: "set_environment_values",
-                type: "input",
-                message: "What is value would be for environment variable (example: mydatabase 5423)",
-            }),
-        }
-        : void 0;
+async function setEnvironmentVariables() {
+    return {
+        name: await inquirer_1.default.prompt({
+            name: "set_environment_names",
+            type: "input",
+            message: "What is name would be for environment variable (example: PG_DB PG_PORT) ?",
+        }),
+        value: await inquirer_1.default.prompt({
+            name: "set_environment_values",
+            type: "input",
+            message: "What is value would be for environment variable (example: mydatabase 5423)",
+        }),
+    };
 }
 exports.setEnvironmentVariables = setEnvironmentVariables;
 async function isLinter() {
@@ -510,7 +718,7 @@ async function setUpEslint(response) {
             extensions: await inquirer_1.default.prompt({
                 name: "question_eslint_extensions",
                 type: "input",
-                message: "What is the specify files and/or directories to exclude(example: node_modules file.js file2.js)?",
+                message: "What is the specify extensions that would be checked (example: .js .ts .tsx)?",
             }),
             exclude: await inquirer_1.default.prompt({
                 name: "question_is_exclude",
@@ -563,8 +771,8 @@ async function setUpEslint(response) {
                 message: "Do you want, that will cause the module build to fail if there are any warnings ?",
                 choices: ["Yes", "No"],
             }),
-            quit: await inquirer_1.default.prompt({
-                name: "question_is_quit",
+            quiet: await inquirer_1.default.prompt({
+                name: "question_is_quiet",
                 type: "list",
                 message: "Do you want, that will process and report erros only and ignore warnings ?",
                 choices: ["Yes", "No"],
@@ -944,6 +1152,45 @@ async function devServerPort() {
     });
 }
 exports.devServerPort = devServerPort;
+async function isMinifyJSONFiles() {
+    return await inquirer_1.default.prompt({
+        name: "question_is_minify_json_files",
+        type: "list",
+        message: "If you have a .json files, than you want to minimize them ?",
+        choices: ["Yes", "No"],
+    });
+}
+exports.isMinifyJSONFiles = isMinifyJSONFiles;
+async function minifyJSONOptions(response) {
+    return response === "Yes"
+        ? {
+            test: await inquirer_1.default.prompt({
+                name: "question_is_test_regexp",
+                type: "input",
+                message: "What is the test regular expression would be (default: /.json(?.*)?$/i) ?",
+                default: "/.json(?.*)?$/i",
+            }),
+            include: await inquirer_1.default.prompt({
+                name: "question_is_include_files",
+                type: "input",
+                message: "What is the files would be include like a regular expression (example: /includes/) ?",
+            }),
+            exclude: await inquirer_1.default.prompt({
+                name: "question_is_exclude_files",
+                type: "input",
+                message: "What is the files would be exclude like a regular expression (example: /excludes/) ?",
+            }),
+            minimizerOptions: {
+                space: await inquirer_1.default.prompt({
+                    name: "question_is_space",
+                    type: "input",
+                    message: "What is the space would be for json minimizer (example: \t) ?",
+                }),
+            },
+        }
+        : void 0;
+}
+exports.minifyJSONOptions = minifyJSONOptions;
 async function chooseWatchFiles(port) {
     return await inquirer_1.default.prompt({
         name: "question_13",

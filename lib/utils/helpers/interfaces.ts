@@ -1,15 +1,15 @@
 import {
+  bundleAnalyzerDefaultSizes,
+  bundleAnalyzerLogLevel,
+  bundleAnalyzerMode,
   cacheCompression,
   cacheType,
   cssLoader,
   fontsExtensions,
   htmlLoader,
   integrationWebpack,
-  linterChoose,
   questionResponse,
-  splitChunkType,
   staticLoader,
-  version,
   webpackMode,
 } from "./types";
 
@@ -54,16 +54,26 @@ interface customWebpackConfig {
   fileLoaderSupport: string;
   isLazyLoadingSupport: questionResponse;
   isAvoidErrorStyleSupport: questionResponse;
+  avoidErrorStyleSupport: avoidErrorsOptions;
+  isBundleAnalyzer: questionResponse;
+  bundleAnalyzerOptions: bundleAnalyzerOptions;
   isCacheWebpackSupport: questionResponse;
   cacheTypeOptionsSupport: cacheType;
   cacheOptionsSettings: cacheOptions;
   isSplittingChunksSupport: questionResponse;
+  splittingChunks: splitChunksOptions;
   minimumChunkSizeSupport: string;
   maximumChunkSizeSupport: string;
   isPwaAnswer: questionResponse;
   isBannerSupport: questionResponse;
+  bannerOptionsSupport: bannerOptions;
+  isPrefetchSupport: questionResponse;
+  prefetchOptionsSupport: prefetchOptions;
+  isAutomaticPrefetchSupport: questionResponse;
   isClosureSupport: questionResponse;
   isGlobalVariableSupport: questionResponse;
+  isMinifyJsonFiles?: questionResponse;
+  optimizeJsonFiles: minifyJSONOptions;
   globalVariable: globalVariable;
   isSplitBundlesThroughDLLSupport: questionResponse;
   dllOptions: dllOptions;
@@ -73,6 +83,7 @@ interface customWebpackConfig {
   isLocalizeSupport: questionResponse;
   localizeDetailsSupport: string;
   isCleanPluginSUpport: questionResponse;
+  cleanPluginSupport: cleanBuildOptions;
   isCreateChromeProfileFileSupport: questionResponse;
   isIgnoreSomeFilesSupport: questionResponse;
   isIntegrationSupport: questionResponse;
@@ -84,7 +95,7 @@ interface customWebpackConfig {
   compressionOptions: compressionOptions;
   isCopyPluginSupport: questionResponse;
   isCopyStaticFilesSupport: questionResponse;
-  copyOptions?: copyOptions;
+  copyOptions?: copyPluginOptions;
   filesCatalogesCopySupport: string;
   fontsOutputDirectory: string;
   imagesOutputDirectory: string;
@@ -100,25 +111,20 @@ interface compressionOptions {
   ratio: number;
 }
 
-interface copyOptions {
-  from: string;
-  to: string;
-}
-
 interface esLintOptions {
-  context: string;
-  eslintPath: string;
-  extensions: string;
-  exclude: string;
-  files: string;
-  fix: questionResponse;
-  lintDirtyModulesOnly: questionResponse;
-  threads: questionResponse;
-  emitError: questionResponse;
-  emitWarning: questionResponse;
-  failOnError: questionResponse;
-  failOnWarning: questionResponse;
-  quiet: questionResponse;
+  context: any;
+  eslintPath: any;
+  extensions: any;
+  exclude: any;
+  files: any;
+  fix: any;
+  lintDirtyModulesOnly: any;
+  threads: any;
+  emitError: any;
+  emitWarning: any;
+  failOnError: any;
+  failOnWarning: any;
+  quiet: any;
 }
 
 interface tsLintOptions {
@@ -153,26 +159,194 @@ interface environmentVariable {
   value: any;
 }
 
-interface splitChunksOpotions {
-  chunks: splitChunkType;
-  minSize: number;
-  minRemainingSize: number;
-  minChunks: number;
-  maxAsyncRequests: number;
-  maxInitialRequests: number;
-  enforceSizeThreshold: number;
+interface splitChunksOptions {
+  chunks: any;
+  minSize: any;
+  maxSize: any;
+  minRemainingSize: any;
+  minChunks: any;
+  maxAsyncRequests: any;
+  maxAsyncSize: any;
+  maxInitialRequests: any;
+  enforceSizeThreshold: any;
   cacheGroups: {
     defaultVendors: {
-      test: string;
-      priority: number;
-      reuseExistingChunk: boolean;
-    };
-    default: {
-      minChunks: number;
-      priority: number;
-      reuseExistingChunk: boolean;
+      filename: any;
+      test: any;
+      priority: any;
+      reuseExistingChunk: any;
+      idHint: any;
     };
   };
+}
+
+interface bannerOptions {
+  banner: any;
+  raw: any;
+  entryOnly: any;
+  test: any;
+  include: any;
+  exclude: any;
+  footer: any;
+}
+
+interface prefetchOptions {
+  context: any;
+  request: any;
+}
+
+interface closureOptions {
+  mode: string;
+  test: any;
+  formatting: any;
+  debug: any;
+  renaming: any;
+  output: any;
+  extraCommandArgs: any;
+}
+
+interface bundleAnalyzerOptions {
+  analyzerMode: bundleAnalyzerMode;
+  analyzerHost: string;
+  analyzerPort: number;
+  reportFilename: string;
+  reportTitle: string;
+  defaultSizes: bundleAnalyzerDefaultSizes;
+  openAnalyzer: boolean;
+  generateStatsFile: boolean;
+  statsFilename: string;
+  statsOptions: {
+    all: any;
+    assets: boolean;
+    assetsSort: string;
+    builtAt: boolean;
+    moduleAssets: boolean;
+    assetsSpace: any;
+    modulesSpace: any;
+    chunkModulesSpace: any;
+    nestedModules: any;
+    nestedModulesSpace: any;
+    cached: boolean;
+    runtimeModules: boolean;
+    dependentModules: any;
+    groupAssetsByChunk: boolean;
+    groupAssetsByEmitStatus: boolean;
+    groupAssetsByExtension: boolean;
+    groupAssetsByInfo: boolean;
+    groupAssetsByPath: boolean;
+    groupModulesByAttributes: boolean;
+    groupModulesByCacheStatus: boolean;
+    groupModulesByExtesion: boolean;
+    groupModulesByLayer: boolean;
+    groupModulesByPath: boolean;
+    groupModulesByType: boolean;
+    groupReasonsByOrigin: boolean;
+    cachedAssets: boolean;
+    children: boolean;
+    chunks: boolean;
+    chunkGroups: boolean;
+    chunkModules: boolean;
+    chunkOrigins: boolean;
+    chunksSort: string;
+    context: string;
+    colors: boolean;
+    depth: boolean;
+    entrypoints: boolean;
+    env: boolean;
+    orphanModules: boolean;
+    errors: boolean;
+    errorDetails: boolean;
+    errorStack: boolean;
+    excludeAssets: string[];
+    excludeModules: string[];
+    hash: boolean;
+    logging: "none" | "info" | "error" | "warn" | "log" | "verbose";
+    loggingDebug: string[];
+    loggingTrace: boolean;
+    modules: boolean;
+    modulesSort: string;
+    moduleTrace: boolean;
+    optimizationBailout: boolean;
+    outputPath: boolean;
+    performance: boolean;
+    preset: string | false;
+    providedExports: boolean;
+    errorsCount: boolean;
+    warningsCount: boolean;
+    publicPath: boolean;
+    reasons: boolean;
+    reasonsSpace: number;
+    relatedAssets: boolean;
+    source: boolean;
+    timings: boolean;
+    ids: boolean;
+    usedExports: boolean;
+    version: boolean;
+    chunkGroupAuxiliary: boolean;
+    chunkGroupChildren: boolean;
+    chunkGroupMaxAssets: number;
+    warnings: boolean;
+  };
+  excludeAssets: any;
+  logLevel: bundleAnalyzerLogLevel;
+}
+
+interface copyPluginOptions {
+  patterns: [
+    {
+      from: string;
+      to: string;
+      context: string;
+      globOptions: {
+        ignore: any[];
+      };
+      filter: any;
+      toType: any;
+      force: any;
+      priority: any;
+      cache: boolean;
+      noErrorOnMissing: boolean;
+    }
+  ];
+  options: {
+    concurrency: number;
+  };
+}
+
+interface cleanBuildOptions {
+  dry: any;
+  verbose: any;
+  cleanStaleWebpackAssets: any;
+  protectWebpackAssets: any;
+  cleanOnceBeforeBuildPatterns: any;
+  cleanAfterEveryBuildPatterns: any;
+  dangerouslyAllowCleanPatternsOutsideProject: any;
+}
+
+interface minifyJSONOptions {
+  test: any;
+  include: any;
+  exclude: any;
+  minimizerOptions: {
+    space: any;
+  };
+}
+
+interface avoidErrorsOptions {
+  context: any;
+  exclude: any;
+  extensions: any;
+  files: any;
+  fix: any;
+  formatter: any;
+  lintDirtyModulesOnly: any;
+  stylelintPath: any;
+  threads: any;
+  emitError: any;
+  emitWarning: any;
+  failOnError: any;
+  failOnWarning: any;
+  quiet: any;
 }
 
 interface cacheOptions {
@@ -199,10 +373,17 @@ export {
   webpackConfig,
   customWebpackConfig,
   compressionOptions,
-  copyOptions,
+  copyPluginOptions,
   dllOptions,
+  avoidErrorsOptions,
   esLintOptions,
+  cleanBuildOptions,
+  bannerOptions,
+  splitChunksOptions,
   tsLintOptions,
+  prefetchOptions,
+  minifyJSONOptions,
+  bundleAnalyzerOptions,
   hashModuleIdsSupport,
   environmentVariable,
   globalVariable,

@@ -4,6 +4,7 @@ import inquirer from "inquirer";
 import { preset } from "./helpers/enum";
 import { generateExtensions } from "./helpers/extensions";
 import { cacheType, linterChoose, questionResponse } from "./helpers/types";
+import { parseString } from "./text";
 
 async function basicChoose() {
   return await inquirer.prompt({
@@ -166,6 +167,102 @@ async function isAvoidErrorStyles() {
   });
 }
 
+async function avoidErrorsOptions(response: questionResponse) {
+  return response === "Yes"
+    ? {
+        context: await inquirer.prompt({
+          name: "is_avoid_context",
+          type: "input",
+          message: "What is the root dir for you'r files would be ?",
+        }),
+        exclude: await inquirer.prompt({
+          name: "is_avoid_exclude",
+          type: "input",
+          message:
+            "What is the files/dirs you would be exclude (example: node_modules) ?",
+        }),
+        extensions: await inquirer.prompt({
+          name: "is_avoid_extensions",
+          type: "input",
+          message:
+            "What is the extensions should be checked (example: css scss sass less) ?",
+        }),
+        files: await inquirer.prompt({
+          name: "is_avoid_files",
+          type: "input",
+          message: `What is the files/catalogs inside context would be traversed recursively looking for files matching ?`,
+        }),
+        fix: await inquirer.prompt({
+          name: "is_avoid_fix",
+          type: "list",
+          message:
+            "Do you want to fix as many errors as possible. (All unfixed errors will be reported) ?",
+          choices: ["Yes", "No"],
+        }),
+        formatter: await inquirer.prompt({
+          name: "is_avoid_formatter",
+          type: "list",
+          message:
+            "What is the formatter would be to use like a format for your results?",
+          choices: ["compact", "json", "string", "tap", "unix", "verbose"],
+        }),
+        lintDirtyModulesOnly: await inquirer.prompt({
+          name: "is_avoid_lint_dirty_modules_only",
+          type: "list",
+          message:
+            "Do you want to lint only changed files, skip lint on start. ?",
+          choices: ["Yes", "No"],
+        }),
+        stylelintPath: await inquirer.prompt({
+          name: "is_avoid_style_lint_path",
+          type: "input",
+          message:
+            "What is the path would be 'stylelint' instance used for linting (example: stylelint) ?",
+        }),
+        threads: await inquirer.prompt({
+          name: "is_avoid_threads",
+          type: "list",
+          message:
+            "Do you want to auto-select pool size based number of cpus ?",
+          choices: ["Yes", "No"],
+        }),
+        emitError: await inquirer.prompt({
+          name: "is_avoid_emit_error",
+          type: "list",
+          message: "Do you want that erros found would be emitted ?",
+          choices: ["Yes", "No"],
+        }),
+        emitWarning: await inquirer.prompt({
+          name: "is_avoid_emit_warning",
+          type: "list",
+          message: "Do you want that warnings found would be emitted ?",
+          choices: ["Yes", "No"],
+        }),
+        failOnError: await inquirer.prompt({
+          name: "is_avoid_fail_on_error",
+          type: "list",
+          message:
+            "Do you want to stop building process if there are any errors ?",
+          choices: ["Yes", "No"],
+        }),
+        failOnWarning: await inquirer.prompt({
+          name: "is_avoid_fail_on_warning",
+          type: "list",
+          message:
+            "Do you want to stop building process if there are any warnings ?",
+          choices: ["Yes", "No"],
+        }),
+        quiet: await inquirer.prompt({
+          name: "is_avoid_quiet",
+          type: "list",
+          message:
+            "Do you want that process and report errors only and ignore warnings ?",
+          choices: ["Yes", "No"],
+        }),
+      }
+    : void 0;
+}
+
 async function isCacheWebpack() {
   return await inquirer.prompt({
     name: "cache_webpack",
@@ -175,12 +272,102 @@ async function isCacheWebpack() {
   });
 }
 
-async function splitChunksWebpack() {
-  return await inquirer.prompt({
-    name: "split_chinks_webpack",
-    type: "list",
-    message: "",
-  });
+async function splitChunksWebpack(response: questionResponse) {
+  return response === "Yes"
+    ? {
+        chunks: await inquirer.prompt({
+          name: "split_chinks_chunks",
+          type: "list",
+          message: "What is the chunks would be selected for optimization ?",
+          choices: ["async", "initial", "all"],
+        }),
+        minSize: await inquirer.prompt({
+          name: "split_chinks_min_size",
+          type: "input",
+          message:
+            "What is the minimun size in bytes would be for generated chunk ?",
+        }),
+        maxSize: await inquirer.prompt({
+          name: "split_chinks_max_size",
+          type: "input",
+          message:
+            "What is the maximum size in bytes would be trying to split chunks bigger than maxSize bytes into smaller parts (So that it is usable when using long term caching and doesn't require records. maxSize is only a hint and could be violated when modules are bigger than maxSize or splitting would violate minSize.) ?",
+        }),
+        minRemainingSize: await inquirer.prompt({
+          name: "split_chinks_min_remaining_size",
+          type: "list",
+          message:
+            "What is the maxx chunks would be selected for optimization ?",
+          choices: ["async", "initial", "all"],
+        }),
+        minChunks: await inquirer.prompt({
+          name: "split_chinks_min_chunks",
+          type: "input",
+          message:
+            "What is the minimum time must a module be shared among chunks before splitting (example: 1) ?",
+        }),
+        maxAsyncRequests: await inquirer.prompt({
+          name: "split_chinks_max_async_requests",
+          type: "input",
+          message:
+            "What is the maximum number of parallel requests would be on-demand loading (example: 20) ?",
+        }),
+        maxAsyncSize: await inquirer.prompt({
+          name: "split_chinks_min_size",
+          type: "input",
+          message:
+            "What is the minimun size in bytes would be only affect on-demand loading chunks ?",
+        }),
+        maxInitialRequests: await inquirer.prompt({
+          name: "split_chinks_max_initial_requests",
+          type: "input",
+          message:
+            "What is the maximum number of parallel requests would be at an entry point. (example: 30) ?",
+        }),
+        enforceSizeThreshold: await inquirer.prompt({
+          name: "split_chinks_enforce_size_threshold",
+          type: "input",
+          message:
+            "What is the size threshold would be at splitting is enforced and other restrictions (minRemainingSize, maxAsyncRequests, maxInitialRequests) are ignored. ?",
+        }),
+        cacheGroups: {
+          defaultVendors: {
+            filename: await inquirer.prompt({
+              name: "split_chinks_filename",
+              type: "input",
+              message:
+                "Allows to override the filename when and only when it's an initial chunk. (All placeholders available in output.filename are also available here) (example: [name].bundle.js) ?",
+            }),
+            test: await inquirer.prompt({
+              name: "split_chinks_test",
+              type: "list",
+              message:
+                "What is the chunks would be selected for optimization ?",
+              choices: ["async", "initial", "all"],
+            }),
+            priority: await inquirer.prompt({
+              name: "split_chinks_priority",
+              type: "input",
+              message:
+                "What is the optimization would be prefer the cache group with a higher priority. The default groups have a negative priority to allow custom groups to take higher priority (example: -20) ?",
+            }),
+            reuseExistingChunk: await inquirer.prompt({
+              name: "split_chinks_reuse_existing_chunk",
+              type: "list",
+              message:
+                "Do you want that modules already split out from the main bundle will be reused instead of a new being generated. (This can affect the resulting file name of the chunk)?",
+              choices: ["Yes", "No"],
+            }),
+            idHint: await inquirer.prompt({
+              name: "split_chinks_id_hint",
+              type: "input",
+              message:
+                "What is the hint for chunk id would be. (it will be added to chunk's filename); (examplel: vendors) ?",
+            }),
+          },
+        },
+      }
+    : void 0;
 }
 
 async function supportFromCoffeScriptAnswer() {
@@ -210,6 +397,58 @@ async function isCleanPlugin() {
       "Do you want that all files inside webpack's output.path directory, as well as all unused webpack assets after every successful rebuild would be removed ?",
     choices: ["Yes", "No"],
   });
+}
+
+async function cleanPluginSetup(response: questionResponse) {
+  return response === "Yes"
+    ? {
+        dry: await inquirer.prompt({
+          name: "question_is_copy_plugin",
+          type: "list",
+          message: "Do you want to simulate the removal of files ?",
+          choices: ["Yes", "No"],
+        }),
+        verbose: await inquirer.prompt({
+          name: "question_is_copy_plugin",
+          type: "list",
+          message: "Do you want to write logs in console ?",
+          choices: ["Yes", "No"],
+        }),
+        cleanStaleWebpackAssets: await inquirer.prompt({
+          name: "question_is_copy_plugin",
+          type: "list",
+          message:
+            "Do you want to automatically remove all unused webpack assets on rebuild ?",
+          choices: ["Yes", "No"],
+        }),
+        protectWebpackAssets: await inquirer.prompt({
+          name: "question_is_copy_plugin",
+          type: "list",
+          message:
+            "Do you want to not allow removal of current webpack assets ?",
+          choices: ["Yes", "No"],
+        }),
+        cleanOnceBeforeBuildPlugin: await inquirer.prompt({
+          name: "question_clean_once_before_build_plugin",
+          type: "input",
+          message:
+            "What is the files would be to remove after every build (including watch mode) that match this pattern(Used for files that are not created directly by Webpack) ?",
+        }),
+        cleanAfterEveryBuildPatterns: await inquirer.prompt({
+          name: "question_clean_after_every_build_patterns",
+          type: "input",
+          message:
+            "What is the files would be to Removes files once prior to Webpack compilation. Not included in rebuilds (watch mode)?",
+        }),
+        dangerouslyAllowCleanPatternsOutsideProject: await inquirer.prompt({
+          name: "question_dangerously_allow_clean_patterns_outside_project",
+          type: "list",
+          message:
+            "Do you want to allow clean patterns outside of process.cwd() (requires dry option to be explicitly set) ?",
+          choices: ["Yes", "No"],
+        }),
+      }
+    : void 0;
 }
 
 async function isCopyStaticFiles() {
@@ -445,19 +684,105 @@ async function isSplittingChunks() {
   return await inquirer.prompt({
     name: "question_is_splitting_chunks",
     type: "list",
-    message: "Do you want to split chunk ?",
+    message: "Do you want to split project to chunks ?",
     choices: ["Yes", "No"],
   });
 }
 
-async function addingBannerToChunk(response: questionResponse) {
+async function isPrefetch() {
+  return await inquirer.prompt({
+    name: "question_is_prefetch_plugin",
+    type: "list",
+    message:
+      "Do you want to realise prefetch normal module requests, causing them to be resolved and built before the first import or require of that module occurs. (Using this plugin can boost performance. Try to profile the build first to determine clever prefetching points) ?",
+    choices: ["Yes", "No"],
+  });
+}
+
+async function prefetchOptionsSupport(response: questionResponse) {
   return response === "Yes"
-    ? await inquirer.prompt({
-        name: "question_adding_banner_to_chunk",
-        type: "list",
-        message: "Do you want to adding banner to chunk ?",
-        choices: ["Yes", "No"],
-      })
+    ? {
+        context: await inquirer.prompt({
+          name: "question_context",
+          type: "input",
+          message: "What is the absolute path would be to directory ?",
+        }),
+        request: await inquirer.prompt({
+          name: "question_request",
+          type: "input",
+          message: "What is the request string for a normal module ?",
+        }),
+      }
+    : void 0;
+}
+
+async function isAutomaticPrefetch() {
+  return await inquirer.prompt({
+    name: "question_automatic_prefetch",
+    type: "list",
+    message:
+      "Do you want to discover all modules from the previous compilation upfront while watching for changes, trying to improve the incremental build times ?",
+    choices: ["Yes", "No"],
+  });
+}
+
+async function isBannerPlugin() {
+  return await inquirer.prompt({
+    name: "question_adding_banner_to_chunk",
+    type: "list",
+    message: "Do you want to adding banner to chunk ?",
+    choices: ["Yes", "No"],
+  });
+}
+
+async function bannerOptionsSupport(response: questionResponse) {
+  return response === "Yes"
+    ? {
+        banner: await inquirer.prompt({
+          name: "question_copy_concurrency",
+          type: "input",
+          message: "What is the name of you'r banner would be ?",
+        }),
+        raw: await inquirer.prompt({
+          name: "question_copy_concurrency",
+          type: "list",
+          message:
+            "Do you want that you'r banner would be wrapped in a comment ?",
+          choices: ["Yes", "No"],
+        }),
+        entryOnly: await inquirer.prompt({
+          name: "question_copy_concurrency",
+          type: "list",
+          message:
+            "Do you want that you'r banner would be only added to the entry chunks ?",
+          choices: ["Yes", "No"],
+        }),
+        test: await inquirer.prompt({
+          name: "question_copy_concurrency",
+          type: "input",
+          message:
+            "How many limits the number of simultaneous requests would be to fs ?",
+        }),
+        include: await inquirer.prompt({
+          name: "question_copy_concurrency",
+          type: "input",
+          message:
+            "How many limits the number of simultaneous requests would be to fs ?",
+        }),
+        exclude: await inquirer.prompt({
+          name: "question_copy_concurrency",
+          type: "input",
+          message:
+            "How many limits the number of simultaneous requests would be to fs ?",
+        }),
+        footer: await inquirer.prompt({
+          name: "question_copy_concurrency",
+          type: "list",
+          message:
+            "Do you want that you'r banner would be placed at the end of the compilation ?",
+          choices: ["Yes", "No"],
+        }),
+      }
     : void 0;
 }
 
@@ -470,6 +795,124 @@ async function isClosureLibrary() {
   });
 }
 
+async function isBundleAnalyzer() {
+  return await inquirer.prompt({
+    name: "question_is_bundle_analyzer",
+    type: "list",
+    message: "Do you want to analyze you'r bundle ?",
+    choices: ["Yes", "No"],
+  });
+}
+
+async function bundleAnalyzerSupport(response: questionResponse) {
+  return response === "Yes"
+    ? {
+        analyzerMode: await inquirer.prompt({
+          name: "question_analyzer_mode",
+          type: "list",
+          message: "What is the mode for analyzer would be ?",
+          choices: ["server", "static", "json", "disabled"],
+          default: "server",
+        }),
+        analyzerHost: await inquirer.prompt({
+          name: "question_analyzer_host",
+          type: "input",
+          message:
+            "What is the host for analyzer would be (example: 127.0.0.1) ?",
+        }),
+        analyzerPort: await inquirer.prompt({
+          name: "question_analyzer_port",
+          type: "input",
+          message:
+            "What is the port would be using in server mode(example: 8888) ?",
+        }),
+        reportFilename: await inquirer.prompt({}),
+        reportTitle: await inquirer.prompt({}),
+        defaultSizes: await inquirer.prompt({}),
+        openAnalyzer: await inquirer.prompt({}),
+        generateStatsFile: await inquirer.prompt({}),
+        statsFilename: await inquirer.prompt({}),
+        statsOptions: {
+          all: await inquirer.prompt({}),
+          assets: await inquirer.prompt({}),
+          assetsSort: await inquirer.prompt({}),
+          buildAt: await inquirer.prompt({}),
+          moduleAssets: await inquirer.prompt({}),
+          assetsSpace: await inquirer.prompt({}),
+          moduluesSpace: await inquirer.prompt({}),
+          nestedModules: await inquirer.prompt({}),
+          nestedModulesSpace: await inquirer.prompt({}),
+          cached: await inquirer.prompt({}),
+          runtimeModules: await inquirer.prompt({}),
+          dependentModules: await inquirer.prompt({}),
+          groupAssetsByChunk: await inquirer.prompt({}),
+          groupAssetsByEmitStatus: await inquirer.prompt({}),
+          groupAssetsByExtension: await inquirer.prompt({}),
+          groupAssetsByInfo: await inquirer.prompt({}),
+          groupAssetsByPath: await inquirer.prompt({}),
+          groupModulesByAttributes: await inquirer.prompt({}),
+          groupModulesByCacheStatus: await inquirer.prompt({}),
+          groupModulesByExtension: await inquirer.prompt({}),
+          groupModulesByLayer: await inquirer.prompt({}),
+          groupModulesByPath: await inquirer.prompt({}),
+          groupModulesByType: await inquirer.prompt({}),
+          groupReasonsByOrigin: await inquirer.prompt({}),
+          cachedAssets: await inquirer.prompt({}),
+          children: await inquirer.prompt({}),
+          chunks: await inquirer.prompt({}),
+          chunkGroups: await inquirer.prompt({}),
+          chunkModules: await inquirer.prompt({}),
+          chunkOrigins: await inquirer.prompt({}),
+          chunkSort: await inquirer.prompt({}),
+          context: await inquirer.prompt({}),
+          colors: await inquirer.prompt({}),
+          depth: await inquirer.prompt({}),
+          entrypoints: await inquirer.prompt({}),
+          env: await inquirer.prompt({}),
+          orphanModules: await inquirer.prompt({}),
+          errors: await inquirer.prompt({}),
+          errorDetails: await inquirer.prompt({}),
+          errorStack: await inquirer.prompt({}),
+          excludeAssets: await inquirer.prompt({}),
+          excludeModules: await inquirer.prompt({}),
+          hash: await inquirer.prompt({}),
+          logging: await inquirer.prompt({}),
+          loggingDebug: await inquirer.prompt({}),
+          loggingTrace: await inquirer.prompt({}),
+          modules: await inquirer.prompt({}),
+          modulesSort: await inquirer.prompt({}),
+          moduleTrace: await inquirer.prompt({}),
+          optimizationBailout: await inquirer.prompt({}),
+          outputPath: await inquirer.prompt({}),
+          performance: await inquirer.prompt({}),
+          preset: await inquirer.prompt({}),
+          providedExports: await inquirer.prompt({}),
+          errorsCount: await inquirer.prompt({}),
+          warningsCount: await inquirer.prompt({}),
+          publicPath: await inquirer.prompt({}),
+          reasons: await inquirer.prompt({}),
+          reasonsSpace: await inquirer.prompt({}),
+          relatedAssets: await inquirer.prompt({}),
+          source: await inquirer.prompt({}),
+          timings: await inquirer.prompt({}),
+          ids: await inquirer.prompt({}),
+          usedExports: await inquirer.prompt({}),
+          version: await inquirer.prompt({}),
+          chunkGroupAuxiliary: await inquirer.prompt({}),
+          chunkGroupChildren: await inquirer.prompt({}),
+          chunkGroupMaxAssets: await inquirer.prompt({}),
+          warnings: await inquirer.prompt({}),
+        },
+        excludeAssets: await inquirer.prompt({}),
+        logLevel: await inquirer.prompt({}),
+      }
+    : void 0;
+}
+
+async function closureLibrarySupport(response: questionResponse) {
+  return response === "Yes" ? {} : void 0;
+}
+
 async function isEnvironmentVariables() {
   return await inquirer.prompt({
     name: "question_environment_variables",
@@ -479,23 +922,21 @@ async function isEnvironmentVariables() {
   });
 }
 
-async function setEnvironmentVariables(response: questionResponse) {
-  return response === "Yes"
-    ? {
-        name: await inquirer.prompt({
-          name: "set_environment_names",
-          type: "input",
-          message:
-            "What is name would be for environment variable (example: PG_DB PG_PORT) ?",
-        }),
-        value: await inquirer.prompt({
-          name: "set_environment_values",
-          type: "input",
-          message:
-            "What is value would be for environment variable (example: mydatabase 5423)",
-        }),
-      }
-    : void 0;
+async function setEnvironmentVariables() {
+  return {
+    name: await inquirer.prompt({
+      name: "set_environment_names",
+      type: "input",
+      message:
+        "What is name would be for environment variable (example: PG_DB PG_PORT) ?",
+    }),
+    value: await inquirer.prompt({
+      name: "set_environment_values",
+      type: "input",
+      message:
+        "What is value would be for environment variable (example: mydatabase 5423)",
+    }),
+  };
 }
 
 async function isLinter() {
@@ -508,7 +949,7 @@ async function isLinter() {
 }
 
 async function isLinterType(response: questionResponse, type: linterChoose) {
-  return type === "Typescript" ? setUpTsLint() : setUpEslint(response);
+  return setUpEslint(response);
 }
 
 async function setUpEslint(response: questionResponse) {
@@ -531,7 +972,7 @@ async function setUpEslint(response: questionResponse) {
           name: "question_eslint_extensions",
           type: "input",
           message:
-            "What is the specify files and/or directories to exclude(example: node_modules file.js file2.js)?",
+            "What is the specify extensions that would be checked (example: .js .ts .tsx)?",
         }),
         exclude: await inquirer.prompt({
           name: "question_is_exclude",
@@ -590,8 +1031,8 @@ async function setUpEslint(response: questionResponse) {
             "Do you want, that will cause the module build to fail if there are any warnings ?",
           choices: ["Yes", "No"],
         }),
-        quit: await inquirer.prompt({
-          name: "question_is_quit",
+        quiet: await inquirer.prompt({
+          name: "question_is_quiet",
           type: "list",
           message:
             "Do you want, that will process and report erros only and ignore warnings ?",
@@ -644,8 +1085,6 @@ async function hashModuleIdsSupport(response: questionResponse) {
       }
     : void 0;
 }
-
-async function setUpTsLint() {}
 
 async function isLocalizeAnswer() {
   return await inquirer.prompt({
@@ -908,6 +1347,83 @@ async function chooseStaticFilesLoader(response: questionResponse) {
     : void 0;
 }
 
+async function copyPluginSetup() {
+  return {
+    patterns: {
+      from: await inquirer.prompt({
+        name: "question_copy_concurrency",
+        type: "input",
+        message:
+          "How many limits the number of simultaneous requests would be to fs ?",
+      }),
+      to: await inquirer.prompt({
+        name: "question_copy_concurrency",
+        type: "input",
+        message:
+          "How many limits the number of simultaneous requests would be to fs ?",
+      }),
+      context: await inquirer.prompt({
+        name: "question_copy_concurrency",
+        type: "input",
+        message:
+          "How many limits the number of simultaneous requests would be to fs ?",
+      }),
+      globOptions: {
+        ignore: await inquirer.prompt({
+          name: "question_copy_concurrency",
+          type: "input",
+          message:
+            "How many limits the number of simultaneous requests would be to fs ?",
+        }),
+      },
+      filter: await inquirer.prompt({
+        name: "question_copy_concurrency",
+        type: "input",
+        message:
+          "How many limits the number of simultaneous requests would be to fs ?",
+      }),
+      toType: await inquirer.prompt({
+        name: "question_copy_concurrency",
+        type: "input",
+        message:
+          "How many limits the number of simultaneous requests would be to fs ?",
+      }),
+      force: await inquirer.prompt({
+        name: "question_copy_concurrency",
+        type: "input",
+        message:
+          "How many limits the number of simultaneous requests would be to fs ?",
+      }),
+      priority: await inquirer.prompt({
+        name: "question_copy_concurrency",
+        type: "input",
+        message:
+          "How many limits the number of simultaneous requests would be to fs ?",
+      }),
+      cache: await inquirer.prompt({
+        name: "question_copy_concurrency",
+        type: "input",
+        message:
+          "How many limits the number of simultaneous requests would be to fs ?",
+      }),
+      noErrorOnMissing: await inquirer.prompt({
+        name: "question_copy_concurrency",
+        type: "input",
+        message:
+          "How many limits the number of simultaneous requests would be to fs ?",
+      }),
+    },
+    options: {
+      concurrency: await inquirer.prompt({
+        name: "question_copy_concurrency",
+        type: "input",
+        message:
+          "How many limits the number of simultaneous requests would be to fs ?",
+      }),
+    },
+  };
+}
+
 async function isIgnoreSomeFiles() {
   return await inquirer.prompt({
     name: "question_is_ignore_some_files",
@@ -1005,6 +1521,40 @@ async function isMinifyJSONFiles() {
   });
 }
 
+async function minifyJSONOptions(response: questionResponse) {
+  return response === "Yes"
+    ? {
+        test: await inquirer.prompt({
+          name: "question_is_test_regexp",
+          type: "input",
+          message:
+            "What is the test regular expression would be (default: /.json(?.*)?$/i) ?",
+          default: "/.json(?.*)?$/i",
+        }),
+        include: await inquirer.prompt({
+          name: "question_is_include_files",
+          type: "input",
+          message:
+            "What is the files would be include like a regular expression (example: /includes/) ?",
+        }),
+        exclude: await inquirer.prompt({
+          name: "question_is_exclude_files",
+          type: "input",
+          message:
+            "What is the files would be exclude like a regular expression (example: /excludes/) ?",
+        }),
+        minimizerOptions: {
+          space: await inquirer.prompt({
+            name: "question_is_space",
+            type: "input",
+            message:
+              "What is the space would be for json minimizer (example: \t) ?",
+          }),
+        },
+      }
+    : void 0;
+}
+
 async function chooseWatchFiles(port: any) {
   return await inquirer.prompt({
     name: "question_13",
@@ -1017,7 +1567,6 @@ async function chooseWatchFiles(port: any) {
 export {
   integrationInstruments,
   outputDir,
-  splitChunksWebpack,
   staticLoader,
   supportFromCoffeScriptAnswer,
   entryPointsAnswer,
@@ -1027,13 +1576,20 @@ export {
   isLinter,
   isLinterType,
   setUpEslint,
+  minifyJSONOptions,
+  splitChunksWebpack,
   isHashModulePath,
   hashModuleIdsSupport,
-  setUpTsLint,
+  bannerOptionsSupport,
+  isPrefetch,
+  isAutomaticPrefetch,
+  prefetchOptionsSupport,
   isPwaSupport,
   basicChoose,
   isAvoidErrorStyles,
+  avoidErrorsOptions,
   cacheTypeOptions,
+  copyPluginSetup,
   ChooseCacheOptions,
   chooseWatchFiles,
   devServerPort,
@@ -1067,7 +1623,10 @@ export {
   fontsOutDir,
   isCopyPlugin,
   isCleanPlugin,
-  addingBannerToChunk,
+  cleanPluginSetup,
+  isBannerPlugin,
+  bundleAnalyzerSupport,
+  isBundleAnalyzer,
   isClosureLibrary,
   chooseStaticFilesLoader,
   isEnvironmentVariables,

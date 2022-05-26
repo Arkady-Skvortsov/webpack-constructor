@@ -122,22 +122,21 @@ async function parseIntegration(integrationType) {
                     : (0, text_1.parseString)(""));
 }
 exports.parseIntegration = parseIntegration;
-function setImageExtensions(response, loaderType, staticLoader) {
-    if (response === "Yes") {
-        const type = loaderType === ".gif"
-            ? { extension: "gif", option: `gifsicle: { interlaced: false }` }
-            : loaderType === ".jpeg"
-                ? { extension: "jpeg", option: `mozjpeg: { progressive: true }` }
-                : loaderType === ".jpg"
-                    ? { extension: "jpg" }
-                    : loaderType === ".png"
-                        ? { extension: "png", option: `optipng: { enabled: false }` }
-                        : loaderType === ".webp"
-                            ? { extension: "webp", option: `webp: { quality: 85 }` }
-                            : loaderType === ".svg"
-                                ? { extension: "svg", option: `svgo: {  }` }
-                                : {};
-        return `{
+function setImageExtensions(loaderType, staticLoader) {
+    const type = loaderType === ".gif"
+        ? { extension: "gif", option: `gifsicle: { interlaced: false }` }
+        : loaderType === ".jpeg"
+            ? { extension: "jpeg", option: `mozjpeg: { progressive: true }` }
+            : loaderType === ".jpg"
+                ? { extension: "jpg" }
+                : loaderType === ".png"
+                    ? { extension: "png", option: `optipng: { enabled: false }` }
+                    : loaderType === ".webp"
+                        ? { extension: "webp", option: `webp: { quality: 85 }` }
+                        : loaderType === ".svg"
+                            ? { extension: "svg", option: `svgo: {  }` }
+                            : {};
+    return `{
       test: ${(0, expression_1.setInExpression)(type.extension)},
       use: [
         ${setStaticLoader(staticLoader)},
@@ -149,7 +148,6 @@ function setImageExtensions(response, loaderType, staticLoader) {
         }
       ]
     }`;
-    }
 }
 exports.setImageExtensions = setImageExtensions;
 function setFontsExtensions(loaderType, staticLoader, fontsDir) {
@@ -178,36 +176,33 @@ function setFontsExtensions(loaderType, staticLoader, fontsDir) {
   `;
 }
 exports.setFontsExtensions = setFontsExtensions;
-function setCoffeeScript(response) {
-    return response === "Yes"
-        ? `{
+function setCoffeeScript() {
+    return `
+      {
         test: /\.coffee$/,
         loader: "coffee-loader",
-       },`
-        : (0, text_1.parseString)("");
+      },`;
 }
 exports.setCoffeeScript = setCoffeeScript;
-function setXmlLoader(response) {
-    return response === "Yes"
-        ? `{ 
+function setXmlLoader() {
+    return `
+      { 
         test: /\.xml$/, 
         loader: 'xml-loader' 
-       },`
-        : (0, text_1.parseString)("");
+      },`;
 }
 exports.setXmlLoader = setXmlLoader;
-function setYamlLoader(response) {
-    return response === "Yes"
-        ? `{
+function setYamlLoader() {
+    return `
+      {
         test: /\.ya?ml$/,
         use: 'yaml-loader'
-      }`
-        : (0, text_1.parseString)("");
+      }`;
 }
 exports.setYamlLoader = setYamlLoader;
-function setCsvLoader(response) {
-    return response === "Yes"
-        ? `{
+function setCsvLoader() {
+    return `
+      {
         test: /\.csv$/,
         loader: 'csv-loader',
         options: {
@@ -215,8 +210,7 @@ function setCsvLoader(response) {
           header: true,
           skipEmptyLines: true
         }
-      }`
-        : (0, text_1.parseString)("");
+      }`;
 }
 exports.setCsvLoader = setCsvLoader;
 function setStaticLoader(loader) {

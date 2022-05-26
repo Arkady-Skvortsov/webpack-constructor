@@ -20,6 +20,7 @@ import {
   LinterChoose,
   setWebpackNotifierPlugin,
 } from "./helpers/plugins";
+import { parseString } from "./text";
 
 function addContentToPreset(type: preset, options: webpackConfig) {
   return `
@@ -106,7 +107,11 @@ module.exports = {
     ${LinterChoose(type, options)}
     new CleanWebpackPlugin(),
     ${setVueLoader(type)}
-    ${setWebpackNotifierPlugin(options.devMode)}
+    ${
+      options.devMode === "development"
+        ? setWebpackNotifierPlugin()
+        : parseString("")
+    }
   ],
   optimization: {
     splitChunks: {

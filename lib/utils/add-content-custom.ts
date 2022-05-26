@@ -1,5 +1,10 @@
-import { outputDir, setEnvironmentVariables } from "./answers";
 import {
+  bannerOptionsSupport,
+  outputDir,
+  setEnvironmentVariables,
+} from "./answers";
+import {
+  optimizeJSONFiles,
   optimizeProductionCSS,
   optimizeProductionHTML,
   setTerserPlugin,
@@ -25,7 +30,7 @@ import {
   setWebpackNotifierPlugin,
   LinterChoose,
   isHtmlWebpackPlugin,
-  setAutomaticPrefechPlugin,
+  setAutomaticPrefetchPlugin,
   setCleanWebpackPlugin,
   setClosureLibrary,
   setCompressionPlugin,
@@ -37,6 +42,9 @@ import {
   setIntegrationWebpack,
   setProfillingPlugin,
   setHashModuleIds,
+  setAvoidStyleErrorPlugin,
+  setBannerPlugin,
+  setPrefetchPlugin,
 } from "./helpers/plugins";
 import { webpackMode } from "./helpers/types";
 import { parseString } from "./text";
@@ -57,11 +65,7 @@ module.exports = {
   module: {
     rules: [
       ${langLoader(presetType)}
-      ${
-        options.isCoffeScriptSupport
-          ? setCoffeeScript(options.isCoffeScriptSupport)
-          : parseString("")
-      }
+      ${options.isCoffeScriptSupport ? setCoffeeScript() : parseString("")}
       ${
         options.isHtmlPreprocessorSupport
           ? setHtmlLoader(options.htmlPreprocessor, presetType)
@@ -72,25 +76,12 @@ module.exports = {
           ? setCssPreprocessorLoader(options.cssPreprocessors, mode, presetType)
           : parseString("")
       }
-      ${
-        options.isXmlSupport
-          ? setXmlLoader(options.isXmlSupport)
-          : parseString("")
-      }
-      ${
-        options.isYamlSupport
-          ? setYamlLoader(options.isYamlSupport)
-          : parseString("")
-      }
-      ${
-        options.isCsvSupport
-          ? setCsvLoader(options.isCsvSupport)
-          : parseString("")
-      }
+      ${options.isXmlSupport ? setXmlLoader() : parseString("")}
+      ${options.isYamlSupport ? setYamlLoader() : parseString("")}
+      ${options.isCsvSupport ? setCsvLoader() : parseString("")}
       ${
         options.isImageSupport
           ? setImageExtensions(
-              options.isImageSupport,
               options.imageExtensionsSupport,
               options.staticLoader
             )
@@ -109,11 +100,8 @@ module.exports = {
   },
   ${
     options.isCacheWebpackSupport
-      ? setCacheSupport(
-          options.isCacheWebpackSupport,
-          options.cacheOptionsSettings
-        )
-      : parseString("")
+      ? setCacheSupport(options.cacheOptionsSettings)
+      : parseString("cache: false,")
   }
   resolve: {
     alias: {
@@ -135,66 +123,79 @@ module.exports = {
   plugins: [
     ${isHtmlWebpackPlugin(presetType, options)}
     ${LinterChoose(presetType, options)}
-    ${
-      options.isClosureSupport
-        ? setClosureLibrary(options.isClosureSupport)
-        : parseString("")
-    }
+    ${options.isClosureSupport ? setClosureLibrary() : parseString("")}
     ${
       options.isEnvironmentalVariablesSupport
-        ? setEnvironmentVariables(options.isEnvironmentalVariablesSupport)
+        ? setEnvironmentVariables()
         : parseString("")
     }
     ${
       options.isSplitBundlesThroughDLLSupport
-        ? setDLLPlugin(
-            options.isSplitBundlesThroughDLLSupport,
-            options.dllOptions
-          )
+        ? setDLLPlugin(options.dllOptions)
         : parseString("")
     }
-    ${setCleanWebpackPlugin(options.isCleanPluginSUpport)}
     ${setI18nPlugin(options.isLocalizeSupport)}
     ${
       options.isCreateChromeProfileFileSupport
-        ? setProfillingPlugin(options.isCreateChromeProfileFileSupport)
+        ? setProfillingPlugin()
         : parseString("")
     }
+    ${options.isIgnoreSomeFilesSupport ? setIgnorePlugin() : parseString("")}
     ${
-      options.isIgnoreSomeFilesSupport
-        ? setIgnorePlugin(options.isIgnoreSomeFilesSupport)
+      options.isIntegrationSupport
+        ? setIntegrationWebpack(options.integrationSupport)
         : parseString("")
     }
-    ${setIntegrationWebpack(options.integrationSupport)}
-    ${
-      options.isHMRSupport
-        ? setHMRPlugin(options.isHMRSupport)
-        : parseString("")
-    }
+    ${options.isHMRSupport ? setHMRPlugin() : parseString("")}
     ${
       options.isCompressionSupport
-        ? setCompressionPlugin(
-            options.isCompressionSupport,
-            options.compressionOptions
-          )
+        ? setCompressionPlugin(options.compressionOptions)
         : parseString("")
     }
-    ${setCopyWebpackPlugin(options.isCopyPluginSupport)}
-    ${setWebpackNotifierPlugin(mode)}
+    ${
+      options.devMode === "development"
+        ? setWebpackNotifierPlugin()
+        : parseString("")
+    }
+    ${
+      options.isAutomaticPrefetchSupport
+        ? setAutomaticPrefetchPlugin()
+        : parseString("")
+    }
     ${
       options.isHashModuleSupport
-        ? setHashModuleIds(
-            options.isHashModuleSupport,
-            options.hashModuleIdsSupport
-          )
+        ? setHashModuleIds(options.hashModuleIdsSupport)
+        : parseString("")
+    }
+    ${
+      options.isPrefetchSupport
+        ? setPrefetchPlugin(options.prefetchOptionsSupport)
+        : parseString("")
+    }
+    ${
+      options.isAutomaticPrefetchSupport
+        ? setAutomaticPrefetchPlugin()
         : parseString("")
     }
     ${
       options.isEnvironmentalVariablesSupport
-        ? setEnvironmentPlugin(
-            options.isEnvironmentalVariablesSupport,
-            options.environmentVariable
-          )
+        ? setEnvironmentPlugin(options.environmentVariable)
+        : parseString("")
+    }
+    ${
+      options.isAvoidErrorStyleSupport
+        ? setAvoidStyleErrorPlugin(options.avoidErrorStyleSupport)
+        : parseString("")
+    }
+    ${
+      options.isCleanPluginSUpport
+        ? setCleanWebpackPlugin(options.cleanPluginSupport)
+        : parseString("")
+    }
+    ${options.isCopyPluginSupport ? setCopyWebpackPlugin() : parseString("")}
+    ${
+      options.isBannerSupport
+        ? setBannerPlugin(options.bannerOptionsSupport)
         : parseString("")
     }
   ],
@@ -203,6 +204,7 @@ module.exports = {
       ${optimizeProductionCSS(options.devMode)}
       ${optimizeProductionHTML(options.devMode)}
       ${setTerserPlugin(options.devMode)}
+      ${optimizeJSONFiles(options.devMode, options.optimizeJsonFiles)}
     ]
   },
   output: {

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.transformQuestionToBoolean = exports.transformCssPreProcessorToExtension = void 0;
+exports.transformQuestionToBoolean = exports.transfromHtmlPreprocessorToExtension = exports.transformCssPreProcessorToExtension = void 0;
 const text_1 = require("../text");
 const transformQuestionToBoolean = (value) => value === "Yes" ? true : false;
 exports.transformQuestionToBoolean = transformQuestionToBoolean;
@@ -13,6 +13,7 @@ const transfromHtmlPreprocessorToExtension = (type) => type === "EJS"
             : type === "Jade"
                 ? ".jade"
                 : (0, text_1.parseString)("");
+exports.transfromHtmlPreprocessorToExtension = transfromHtmlPreprocessorToExtension;
 const transformCssPreProcessorToExtension = (type) => type === "(Sass/Scss)"
     ? ".sass .scss".split(", ").join(" ")
     : type === "Less"

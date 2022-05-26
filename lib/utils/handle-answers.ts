@@ -4,7 +4,6 @@ import { preset } from "./helpers/enum";
 import { generateWebpackConfig } from "./webpack-set.content";
 import { addContentToPreset } from "./add-content-preset";
 import {
-  addingBannerToChunk,
   setCompressionOptions,
   contextAnswer,
   cssPreprocessors,
@@ -70,10 +69,21 @@ import {
   hashModuleIdsSupport,
   isLinterType,
   cacheTypeOptions,
+  isMinifyJSONFiles,
+  minifyJSONOptions,
+  splitChunksWebpack,
+  avoidErrorsOptions,
+  cleanPluginSetup,
+  isBannerPlugin,
+  bannerOptionsSupport,
+  isPrefetch,
+  prefetchOptionsSupport,
+  isAutomaticPrefetch,
 } from "./answers";
 import { addContentToCustom } from "./add-content-custom";
 import { customWebpackConfig } from "./helpers/interfaces";
 import { setHashModuleIds } from "./helpers/plugins";
+import { optimizeJSONFiles } from "./dev-mode";
 
 async function firstChoose() {
   await start();
@@ -157,13 +167,29 @@ async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
   const isXmlSupport = await isXmlExtension();
   const isYamlSupport = await isYamlExtension();
   const isCsvSupport = await isCsvExtension();
+  const isJsonMinifySupport = await isMinifyJSONFiles();
+  const minimizeJsonFilesSupport = await minifyJSONOptions(
+    isJsonMinifySupport.question_is_minify_json_files
+  );
   const isLazyLoadingSupport = await isLazyLoading();
   const isAvoidErrorStylesSupport = await isAvoidErrorStyles();
+  const avoidErrorStylesSupport = await avoidErrorsOptions(
+    isAvoidErrorStylesSupport.is_avoid_error_styles
+  );
   const isSplittingChunksSupport = await isSplittingChunks();
-  const isPwaAnswer = await isPwaSupport();
-  const isBannerSupport = await addingBannerToChunk(
+  const splittingChunksOptions = await splitChunksWebpack(
     isSplittingChunksSupport.question_is_splitting_chunks
   );
+  const isPwaAnswer = await isPwaSupport();
+  const isBannerSupport = await isBannerPlugin();
+  const bannerPluginSupport = await bannerOptionsSupport(
+    isBannerSupport.question_adding_banner_to_chunk
+  );
+  const isPrefetchSupport = await isPrefetch();
+  const prefetchPluginSupport = await prefetchOptionsSupport(
+    isPrefetchSupport.question_is_prefetch_plugin
+  );
+  const isAutomaticPrefetchSupport = await isAutomaticPrefetch();
   const isClosureLibrarySupport = await isClosureLibrary();
   const isGlobalVariableSupport = await isGlobalVariableAnswer();
   const SetGlobalVariableSupport = await setGlobalVariable(
@@ -182,9 +208,7 @@ async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
   );
   const isEnvironmentVariablesSupport = await isEnvironmentVariables();
   const setEnvironmentVariableNameAndValueSupport =
-    await setEnvironmentVariables(
-      isEnvironmentVariablesSupport.question_environment_variables
-    );
+    await setEnvironmentVariables();
   const isDiscoverPreviousCompilationSupport =
     await isDiscoverPreviousCompilation();
   const isLocalizeSupport = await isLocalizeAnswer();
@@ -210,6 +234,9 @@ async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
   );
   const isCopyPluginSupport = await isCopyPlugin();
   const isCleanPluginSupport = await isCleanPlugin();
+  const cleanPluginSupport = await cleanPluginSetup(
+    isCleanPluginSupport.question_is_clean_plugin
+  );
   const isCopyStaticFilesSupport = await isCopyStaticFiles();
   const setFilesCatalogesCopySupport = await setFilesCatalogesCopy(
     isCopyStaticFilesSupport.is_copy_static_files
@@ -244,14 +271,77 @@ async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
       chooseStaticFilesLoaderSupport?.question_is_choose_static_loader,
     isLazyLoadingSupport: isLazyLoadingSupport.is_lazy_loading,
     isAvoidErrorStyleSupport: isAvoidErrorStylesSupport.is_avoid_error_styles,
+    avoidErrorStyleSupport: {
+      context: avoidErrorStylesSupport?.context,
+      exclude: avoidErrorStylesSupport?.exclude,
+      extensions: avoidErrorStylesSupport?.extensions,
+      files: avoidErrorStylesSupport?.files,
+      fix: avoidErrorStylesSupport?.fix,
+      formatter: avoidErrorStylesSupport?.formatter,
+      lintDirtyModulesOnly: avoidErrorStylesSupport?.lintDirtyModulesOnly,
+      stylelintPath: avoidErrorStylesSupport?.stylelintPath,
+      threads: avoidErrorStylesSupport?.threads,
+      emitError: avoidErrorStylesSupport?.emitError,
+      emitWarning: avoidErrorStylesSupport?.emitWarning,
+      failOnError: avoidErrorStylesSupport?.failOnError,
+      failOnWarning: avoidErrorStylesSupport?.failOnWarning,
+      quiet: avoidErrorStylesSupport?.quiet,
+    },
     isSplittingChunksSupport:
       isSplittingChunksSupport.question_is_splitting_chunks,
+    splittingChunks: {
+      chunks: splittingChunksOptions?.chunks,
+      minSize: splittingChunksOptions?.minSize,
+      maxSize: splittingChunksOptions?.maxSize,
+      minRemainingSize: splittingChunksOptions?.minRemainingSize,
+      minChunks: splittingChunksOptions?.minChunks,
+      maxAsyncRequests: splittingChunksOptions?.maxAsyncRequests,
+      maxAsyncSize: splittingChunksOptions?.maxAsyncSize,
+      maxInitialRequests: splittingChunksOptions?.maxInitialRequests,
+      enforceSizeThreshold: splittingChunksOptions?.enforceSizeThreshold,
+      cacheGroups: {
+        defaultVendors: {
+          filename: splittingChunksOptions?.cacheGroups.defaultVendors.filename,
+          test: splittingChunksOptions?.cacheGroups.defaultVendors.test,
+          priority: splittingChunksOptions?.cacheGroups.defaultVendors.priority,
+          reuseExistingChunk:
+            splittingChunksOptions?.cacheGroups.defaultVendors
+              .reuseExistingChunk,
+          idHint: splittingChunksOptions?.cacheGroups.defaultVendors.idHint,
+        },
+      },
+    },
     minimumChunkSizeSupport:
       setMinimumChunkSizeSupport?.question_minimum_chunk_size,
     maximumChunkSizeSupport:
       setMaximumChunkSizeSupport?.question_maximum_chunk_size,
+    isMinifyJsonFiles: isJsonMinifySupport.question_is_minify_json_files,
+    optimizeJsonFiles: {
+      test: minimizeJsonFilesSupport?.test,
+      include: minimizeJsonFilesSupport?.include,
+      exclude: minimizeJsonFilesSupport?.exclude,
+      minimizerOptions: {
+        space: minimizeJsonFilesSupport?.minimizerOptions.space,
+      },
+    },
     isPwaAnswer: isPwaAnswer.question_build_pwa,
     isBannerSupport: isBannerSupport?.question_adding_banner_to_chunk,
+    bannerOptionsSupport: {
+      banner: bannerPluginSupport?.banner,
+      raw: bannerPluginSupport?.raw,
+      entryOnly: bannerPluginSupport?.entryOnly,
+      test: bannerPluginSupport?.test,
+      include: bannerPluginSupport?.include,
+      exclude: bannerPluginSupport?.exclude,
+      footer: bannerPluginSupport?.footer,
+    },
+    isPrefetchSupport: isPrefetchSupport.question_is_prefetch_plugin,
+    prefetchOptionsSupport: {
+      context: prefetchPluginSupport?.context,
+      request: prefetchPluginSupport?.request,
+    },
+    isAutomaticPrefetchSupport:
+      isAutomaticPrefetchSupport.question_automatic_prefetch,
     isClosureSupport: isClosureLibrarySupport.question_closure_library,
     isGlobalVariableSupport:
       isGlobalVariableSupport.question_is_global_variable_answer,
@@ -330,7 +420,7 @@ async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
       failOnError: isLinterTypeSupport?.failOnError.question_is_fail_on_error,
       failOnWarning:
         isLinterTypeSupport?.failOnWarning.question_is_fail_on_warning,
-      quiet: isLinterTypeSupport?.quit.question_is_quit,
+      quiet: isLinterTypeSupport?.quiet.question_is_quiet,
     },
     isHashModuleSupport: isHashModulePathSupport.question_is_hash_module_path,
     hashModuleIdsSupport: {
@@ -352,6 +442,18 @@ async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
     },
     isCopyPluginSupport: isCopyPluginSupport.question_is_copy_plugin,
     isCleanPluginSUpport: isCleanPluginSupport.question_is_clean_plugin,
+    cleanPluginSupport: {
+      dry: cleanPluginSupport?.dry,
+      verbose: cleanPluginSupport?.verbose,
+      cleanStaleWebpackAssets: cleanPluginSupport?.cleanStaleWebpackAssets,
+      protectWebpackAssets: cleanPluginSupport?.protectWebpackAssets,
+      cleanOnceBeforeBuildPatterns:
+        cleanPluginSupport?.cleanOnceBeforeBuildPlugin,
+      cleanAfterEveryBuildPatterns:
+        cleanPluginSupport?.cleanAfterEveryBuildPatterns,
+      dangerouslyAllowCleanPatternsOutsideProject:
+        cleanPluginSupport?.dangerouslyAllowCleanPatternsOutsideProject,
+    },
     isCopyStaticFilesSupport: isCopyStaticFilesSupport.is_copy_static_files,
     filesCatalogesCopySupport:
       setFilesCatalogesCopySupport?.set_files_cataloges_copy,

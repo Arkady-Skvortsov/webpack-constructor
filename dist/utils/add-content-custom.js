@@ -21,26 +21,18 @@ module.exports = {
   module: {
     rules: [
       ${(0, loaders_1.langLoader)(presetType)}
-      ${options.isCoffeScriptSupport
-        ? (0, loaders_1.setCoffeeScript)(options.isCoffeScriptSupport)
-        : (0, text_1.parseString)("")}
+      ${options.isCoffeScriptSupport ? (0, loaders_1.setCoffeeScript)() : (0, text_1.parseString)("")}
       ${options.isHtmlPreprocessorSupport
         ? (0, loaders_1.setHtmlLoader)(options.htmlPreprocessor, presetType)
         : (0, text_1.parseString)("")}
       ${options.isCssPreprocessorSupport
         ? (0, loaders_1.setCssPreprocessorLoader)(options.cssPreprocessors, mode, presetType)
         : (0, text_1.parseString)("")}
-      ${options.isXmlSupport
-        ? (0, loaders_1.setXmlLoader)(options.isXmlSupport)
-        : (0, text_1.parseString)("")}
-      ${options.isYamlSupport
-        ? (0, loaders_1.setYamlLoader)(options.isYamlSupport)
-        : (0, text_1.parseString)("")}
-      ${options.isCsvSupport
-        ? (0, loaders_1.setCsvLoader)(options.isCsvSupport)
-        : (0, text_1.parseString)("")}
+      ${options.isXmlSupport ? (0, loaders_1.setXmlLoader)() : (0, text_1.parseString)("")}
+      ${options.isYamlSupport ? (0, loaders_1.setYamlLoader)() : (0, text_1.parseString)("")}
+      ${options.isCsvSupport ? (0, loaders_1.setCsvLoader)() : (0, text_1.parseString)("")}
       ${options.isImageSupport
-        ? (0, loaders_1.setImageExtensions)(options.isImageSupport, options.imageExtensionsSupport, options.staticLoader)
+        ? (0, loaders_1.setImageExtensions)(options.imageExtensionsSupport, options.staticLoader)
         : (0, text_1.parseString)("")}
       ${options.isFontsSupport
         ? (0, loaders_1.setFontsExtensions)(options.fontsExtensionsSupport, options.staticLoader, options.fontsOutputDirectory)
@@ -48,8 +40,8 @@ module.exports = {
     ]
   },
   ${options.isCacheWebpackSupport
-        ? (0, cache_1.setCacheSupport)(options.isCacheWebpackSupport, options.cacheOptionsSettings)
-        : (0, text_1.parseString)("")}
+        ? (0, cache_1.setCacheSupport)(options.cacheOptionsSettings)
+        : (0, text_1.parseString)("cache: false,")}
   resolve: {
     alias: {
       ${(0, webpack_set_content_1.setAlias)(options.aliasPath)}
@@ -62,44 +54,48 @@ module.exports = {
   plugins: [
     ${(0, plugins_1.isHtmlWebpackPlugin)(presetType, options)}
     ${(0, plugins_1.LinterChoose)(presetType, options)}
-    ${options.isClosureSupport
-        ? (0, plugins_1.setClosureLibrary)(options.isClosureSupport)
-        : (0, text_1.parseString)("")}
+    ${options.isClosureSupport ? (0, plugins_1.setClosureLibrary)() : (0, text_1.parseString)("")}
     ${options.isEnvironmentalVariablesSupport
-        ? (0, answers_1.setEnvironmentVariables)(options.isEnvironmentalVariablesSupport)
+        ? (0, answers_1.setEnvironmentVariables)()
         : (0, text_1.parseString)("")}
     ${options.isSplitBundlesThroughDLLSupport
-        ? (0, plugins_1.setDLLPlugin)(options.isSplitBundlesThroughDLLSupport, options.dllOptions)
+        ? (0, plugins_1.setDLLPlugin)(options.dllOptions)
         : (0, text_1.parseString)("")}
-    ${(0, plugins_1.setCleanWebpackPlugin)(options.isCleanPluginSUpport)}
     ${(0, plugins_1.setI18nPlugin)(options.isLocalizeSupport)}
     ${options.isCreateChromeProfileFileSupport
-        ? (0, plugins_1.setProfillingPlugin)(options.isCreateChromeProfileFileSupport)
+        ? (0, plugins_1.setProfillingPlugin)()
         : (0, text_1.parseString)("")}
-    ${options.isIgnoreSomeFilesSupport
-        ? (0, plugins_1.setIgnorePlugin)(options.isIgnoreSomeFilesSupport)
+    ${options.isIgnoreSomeFilesSupport ? (0, plugins_1.setIgnorePlugin)() : (0, text_1.parseString)("")}
+    ${options.isIntegrationSupport
+        ? (0, plugins_1.setIntegrationWebpack)(options.integrationSupport)
         : (0, text_1.parseString)("")}
-    ${(0, plugins_1.setIntegrationWebpack)(options.integrationSupport)}
-    ${options.isHMRSupport
-        ? (0, plugins_1.setHMRPlugin)(options.isHMRSupport)
-        : (0, text_1.parseString)("")}
+    ${options.isHMRSupport ? (0, plugins_1.setHMRPlugin)() : (0, text_1.parseString)("")}
     ${options.isCompressionSupport
-        ? (0, plugins_1.setCompressionPlugin)(options.isCompressionSupport, options.compressionOptions)
+        ? (0, plugins_1.setCompressionPlugin)(options.compressionOptions)
         : (0, text_1.parseString)("")}
-    ${(0, plugins_1.setCopyWebpackPlugin)(options.isCopyPluginSupport)}
-    ${(0, plugins_1.setWebpackNotifierPlugin)(mode)}
+    ${options.devMode === "development"
+        ? (0, plugins_1.setWebpackNotifierPlugin)()
+        : (0, text_1.parseString)("")}
     ${options.isHashModuleSupport
-        ? (0, plugins_1.setHashModuleIds)(options.isHashModuleSupport, options.hashModuleIdsSupport)
+        ? (0, plugins_1.setHashModuleIds)(options.hashModuleIdsSupport)
         : (0, text_1.parseString)("")}
     ${options.isEnvironmentalVariablesSupport
-        ? (0, plugins_1.setEnvironmentPlugin)(options.isEnvironmentalVariablesSupport, options.environmentVariable)
+        ? (0, plugins_1.setEnvironmentPlugin)(options.environmentVariable)
         : (0, text_1.parseString)("")}
+    ${options.isAvoidErrorStyleSupport
+        ? (0, plugins_1.setAvoidStyleErrorPlugin)(options.avoidErrorStyleSupport)
+        : (0, text_1.parseString)("")}
+    ${options.isCleanPluginSUpport
+        ? (0, plugins_1.setCleanWebpackPlugin)(options.cleanPluginSupport)
+        : (0, text_1.parseString)("")}
+    ${options.isCopyPluginSupport ? (0, plugins_1.setCopyWebpackPlugin)() : (0, text_1.parseString)("")}
   ],
   optimization: {
     minimizer: [
       ${(0, dev_mode_1.optimizeProductionCSS)(options.devMode)}
       ${(0, dev_mode_1.optimizeProductionHTML)(options.devMode)}
       ${(0, dev_mode_1.setTerserPlugin)(options.devMode)}
+      ${(0, dev_mode_1.optimizeJSONFiles)(options.devMode, options.optimizeJsonFiles)}
     ]
   },
   output: {

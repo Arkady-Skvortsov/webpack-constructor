@@ -23,15 +23,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setCopyWebpackPlugin = exports.setCompressionPlugin = exports.setHashModuleIds = exports.setHMRPlugin = exports.setIntegrationWebpack = exports.setIgnorePlugin = exports.setProfillingPlugin = exports.setI18nPlugin = exports.setCleanWebpackPlugin = exports.setAutomaticPrefechPlugin = exports.setDLLPlugin = exports.setEnvironmentPlugin = exports.setClosureLibrary = exports.isHtmlWebpackPlugin = exports.LinterChoose = exports.setWebpackNotifierPlugin = void 0;
+exports.setCopyWebpackPlugin = exports.setCompressionPlugin = exports.setHashModuleIds = exports.setHMRPlugin = exports.setIntegrationWebpack = exports.setIgnorePlugin = exports.setProfillingPlugin = exports.setI18nPlugin = exports.setCleanWebpackPlugin = exports.setAvoidStyleErrorPlugin = exports.setAutomaticPrefechPlugin = exports.setDLLPlugin = exports.setEnvironmentPlugin = exports.setClosureLibrary = exports.isHtmlWebpackPlugin = exports.LinterChoose = exports.setWebpackNotifierPlugin = void 0;
 const fs = __importStar(require("fs"));
 const webpack_set_content_1 = require("../webpack-set.content");
 const text_1 = require("../text");
 const dev_mode_1 = require("../dev-mode");
-function setWebpackNotifierPlugin(mode) {
-    return mode === "production"
-        ? (0, text_1.parseString)("")
-        : `
+function setWebpackNotifierPlugin() {
+    return `
 new WebpackNotifierPlugin({
   title: 'Webpack', 
   emoji: true, 
@@ -70,31 +68,31 @@ function isHtmlWebpackPlugin(presetType, options) {
         : (0, text_1.parseString)("");
 }
 exports.isHtmlWebpackPlugin = isHtmlWebpackPlugin;
-function setClosureLibrary(response) {
-    return response === "Yes" ? `new ClosurePlugin(),` : (0, text_1.parseString)("");
+function setClosureLibrary() {
+    return `new ClosurePlugin(),`;
 }
 exports.setClosureLibrary = setClosureLibrary;
-function setEnvironmentPlugin(response, variables) {
-    `new webpack.DefinePlugin({
-    ${Object.keys(variables)}: ${Object.values(variables)}
+function setEnvironmentPlugin(variables) {
+    return `new webpack.DefinePlugin({
+    ${Object.keys(variables).forEach((variable) => {
+        variable;
+    })}
    })`;
 }
 exports.setEnvironmentPlugin = setEnvironmentPlugin;
-function setDLLPlugin(response, options) {
-    return response === "Yes"
-        ? `new DllPlugin({ name: ${options.name}, path: path.resolve(__dirname, "${options.path}") }),`
-        : (0, text_1.parseString)("");
+function setDLLPlugin(options) {
+    return `new DllPlugin({ name: ${options.name}, path: path.resolve(__dirname, "${options.path}") }),`;
 }
 exports.setDLLPlugin = setDLLPlugin;
-function setHashModuleIds(response, hashModuleDetails) {
-    return response === "Yes"
-        ? `new webpack.ids.HashedModuleIdsPlugin({
+function setHashModuleIds(hashModuleDetails) {
+    return `
+      new webpack.ids.HashedModuleIdsPlugin({
         context: ${hashModuleDetails.context},
         hashFunction: ${hashModuleDetails.hashFunction},
         hashDigest: ${hashModuleDetails.hashDigest},
         hashDigestLength: ${hashModuleDetails.hashDigestLegnth}
-       })`
-        : (0, text_1.parseString)("");
+      })
+  `;
 }
 exports.setHashModuleIds = setHashModuleIds;
 function setAutomaticPrefechPlugin(response) {
@@ -109,21 +107,20 @@ function setI18nPlugin(response) {
         : (0, text_1.parseString)("");
 }
 exports.setI18nPlugin = setI18nPlugin;
-function setProfillingPlugin(response) {
-    return response === "Yes"
-        ? `new ProfilingPlugin({
+function setProfillingPlugin() {
+    return `new ProfilingPlugin({
         outputPath: 'profiling/profileEvents.json'
-       });`
-        : (0, text_1.parseString)("");
+       });`;
 }
 exports.setProfillingPlugin = setProfillingPlugin;
-function setIgnorePlugin(response) {
-    return response === "Yes"
-        ? `new webpack.IgnorePlugin({
+function setMinifyJSON(response) {
+    return response === "Yes" ? `new new JsonMinimizerPlugin()` : (0, text_1.parseString)("");
+}
+function setIgnorePlugin() {
+    `new webpack.IgnorePlugin({
         resourceRegExp: /^\.\/locale$/,
         contextRegExp: /moment$/
-       });`
-        : (0, text_1.parseString)("");
+       });`;
 }
 exports.setIgnorePlugin = setIgnorePlugin;
 function setIntegrationWebpack(integration) {
@@ -185,24 +182,52 @@ module.exports = function (config) {
     fs.writeFileSync(`integration.${integration}.js`, integrationInstrument);
 }
 exports.setIntegrationWebpack = setIntegrationWebpack;
-function setHMRPlugin(response) {
-    return response === "Yes"
-        ? `new webpack.HotModuleReplacementPlugin(),`
-        : (0, text_1.parseString)("");
+function setHMRPlugin() {
+    return `new webpack.HotModuleReplacementPlugin(),`;
 }
 exports.setHMRPlugin = setHMRPlugin;
-function setCompressionPlugin(response, options) {
-    return response === "Yes"
-        ? `new CompressionPlugin({compressionOptions: {level: ${options.level}}, threshold: ${options.threshold}, minRatio: ${options.ratio}}),`
-        : (0, text_1.parseString)("");
+function setAvoidStyleErrorPlugin(options) {
+    return `
+    new StylelintPlugin({
+      context: ${options.context},
+      exclude: ${options.exclude},
+      extensions: ${options.extensions},
+      files: ${options.files},
+      fix: ${options.fix},
+      formatter: ${options.formatter},
+      lintDirtyModulesOnly: ${options.lintDirtyModulesOnly},
+      stylelintPath: ${options.stylelintPath},
+      threads: ${options.threads},
+      emitError: ${options.emitError},
+      emitWarning: ${options.emitWarning},
+      failOnError: ${options.failOnError},
+      failOnWarning: ${options.failOnWarning},
+      quiet: ${options.quiet}
+    }),
+  `;
+}
+exports.setAvoidStyleErrorPlugin = setAvoidStyleErrorPlugin;
+function setCompressionPlugin(options) {
+    return `new CompressionPlugin({compressionOptions: {level: ${options.level}}, threshold: ${options.threshold}, minRatio: ${options.ratio}}),`;
 }
 exports.setCompressionPlugin = setCompressionPlugin;
-function setCopyWebpackPlugin(response) {
-    return response === "Yes" ? `new CopyWebpackPlugin(),` : (0, text_1.parseString)("");
+function setCopyWebpackPlugin() {
+    return `new CopyWebpackPlugin(
+
+  ),`;
 }
 exports.setCopyWebpackPlugin = setCopyWebpackPlugin;
-function setCleanWebpackPlugin(response) {
-    return response === "Yes" ? `new CleanWebpackPlugin(),` : (0, text_1.parseString)("");
+function setCleanWebpackPlugin(options) {
+    return `
+    new CleanWebpackPlugin(
+      dry: ${options.dry},
+      verbose: ${options.verbose},
+      cleanStaleWebpackAssets: ${options.cleanStaleWebpackAssets},
+      protectWebpackAssets: ${options.protectWebpackAssets},
+      cleanOnceBeforeBuildPatterns: ${options.cleanOnceBeforeBuildPatterns},
+      cleanAfterEveryBuildPatterns: ${options.cleanAfterEveryBuildPatterns},
+      dangerouslyAllowCleanPatternsOutsideProject: ${options.dangerouslyAllowCleanPatternsOutsideProject}
+    ),`;
 }
 exports.setCleanWebpackPlugin = setCleanWebpackPlugin;
 //# sourceMappingURL=plugins.js.map

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setHTMLPreset = exports.setWatchFiles = exports.setVueLoader = exports.isSourceMaps = exports.optimizeProductionHTML = exports.optimizeProductionCSS = exports.outputFileName = exports.setTerserPlugin = exports.setCssPlugin = exports.setCSSRuleUse = void 0;
+exports.setHTMLPreset = exports.setWatchFiles = exports.setVueLoader = exports.isSourceMaps = exports.optimizeProductionHTML = exports.optimizeJSONFiles = exports.optimizeProductionCSS = exports.outputFileName = exports.setTerserPlugin = exports.setCssPlugin = exports.setCSSRuleUse = void 0;
 const constants_1 = require("./helpers/constants");
 const text_1 = require("./text");
 function setCSSRuleUse(mode, presetType) {
@@ -41,6 +41,17 @@ function optimizeProductionHTML(mode) {
         : (0, text_1.parseString)("");
 }
 exports.optimizeProductionHTML = optimizeProductionHTML;
+function optimizeJSONFiles(mode, options) {
+    return (0, text_1.parseString)(`new JsonMinimizerPlugin({
+    test: ${options.test},
+    include: ${options.include},
+    exclude: ${options.exclude},
+    minimizerOptions: {
+      space: ${options.minimizerOptions.space}
+    }
+  })`);
+}
+exports.optimizeJSONFiles = optimizeJSONFiles;
 function isSourceMaps(mode) {
     return mode === "production" ? true : false;
 }
@@ -82,7 +93,7 @@ function setHTMLPreset(presetType) {
         : (0, text_1.parseString)(`      
       {
         test: /\.html$/,
-        loader: "html-loader",
+        loader: ""html-loader"",
       },`);
 }
 exports.setHTMLPreset = setHTMLPreset;

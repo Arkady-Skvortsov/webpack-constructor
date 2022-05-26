@@ -48,9 +48,13 @@ async function WebpackConfigCustom(presetType, mode) {
     const isXmlSupport = await (0, answers_1.isXmlExtension)();
     const isYamlSupport = await (0, answers_1.isYamlExtension)();
     const isCsvSupport = await (0, answers_1.isCsvExtension)();
+    const isJsonMinifySupport = await (0, answers_1.isMinifyJSONFiles)();
+    const minimizeJsonFilesSupport = await (0, answers_1.minifyJSONOptions)(isJsonMinifySupport.question_is_minify_json_files);
     const isLazyLoadingSupport = await (0, answers_1.isLazyLoading)();
     const isAvoidErrorStylesSupport = await (0, answers_1.isAvoidErrorStyles)();
+    const avoidErrorStylesSupport = await (0, answers_1.avoidErrorsOptions)(isAvoidErrorStylesSupport.is_avoid_error_styles);
     const isSplittingChunksSupport = await (0, answers_1.isSplittingChunks)();
+    const splittingChunksOptions = await (0, answers_1.splitChunksWebpack)(isSplittingChunksSupport.question_is_splitting_chunks);
     const isPwaAnswer = await (0, answers_1.isPwaSupport)();
     const isBannerSupport = await (0, answers_1.addingBannerToChunk)(isSplittingChunksSupport.question_is_splitting_chunks);
     const isClosureLibrarySupport = await (0, answers_1.isClosureLibrary)();
@@ -62,7 +66,7 @@ async function WebpackConfigCustom(presetType, mode) {
     const isSplitBundlesThroughDLLSupport = await (0, answers_1.isSplitBundlesThroughDLL)();
     const supportSplitBundlesDLL = await (0, answers_1.supportSplitBundlesThroughDLL)(isSplitBundlesThroughDLLSupport.question_is_split_bundles_dll);
     const isEnvironmentVariablesSupport = await (0, answers_1.isEnvironmentVariables)();
-    const setEnvironmentVariableNameAndValueSupport = await (0, answers_1.setEnvironmentVariables)(isEnvironmentVariablesSupport.question_environment_variables);
+    const setEnvironmentVariableNameAndValueSupport = await (0, answers_1.setEnvironmentVariables)();
     const isDiscoverPreviousCompilationSupport = await (0, answers_1.isDiscoverPreviousCompilation)();
     const isLocalizeSupport = await (0, answers_1.isLocalizeAnswer)();
     const setLocalizeDetailsSupport = await (0, answers_1.setLocalizeDetails)(isLocalizeSupport.question_is_localize);
@@ -77,6 +81,7 @@ async function WebpackConfigCustom(presetType, mode) {
     const setCompressionOptionsSupport = await (0, answers_1.setCompressionOptions)(isCompressionSupport.question_is_compression_answer);
     const isCopyPluginSupport = await (0, answers_1.isCopyPlugin)();
     const isCleanPluginSupport = await (0, answers_1.isCleanPlugin)();
+    const cleanPluginSupport = await (0, answers_1.cleanPluginSetup)(isCleanPluginSupport.question_is_clean_plugin);
     const isCopyStaticFilesSupport = await (0, answers_1.isCopyStaticFiles)();
     const setFilesCatalogesCopySupport = await (0, answers_1.setFilesCatalogesCopy)(isCopyStaticFilesSupport.is_copy_static_files);
     const setOutputDirectory = await (0, answers_1.outputDir)();
@@ -105,9 +110,55 @@ async function WebpackConfigCustom(presetType, mode) {
         fileLoaderSupport: chooseStaticFilesLoaderSupport?.question_is_choose_static_loader,
         isLazyLoadingSupport: isLazyLoadingSupport.is_lazy_loading,
         isAvoidErrorStyleSupport: isAvoidErrorStylesSupport.is_avoid_error_styles,
+        avoidErrorStyleSupport: {
+            context: avoidErrorStylesSupport?.context,
+            exclude: avoidErrorStylesSupport?.exclude,
+            extensions: avoidErrorStylesSupport?.extensions,
+            files: avoidErrorStylesSupport?.files,
+            fix: avoidErrorStylesSupport?.fix,
+            formatter: avoidErrorStylesSupport?.formatter,
+            lintDirtyModulesOnly: avoidErrorStylesSupport?.lintDirtyModulesOnly,
+            stylelintPath: avoidErrorStylesSupport?.stylelintPath,
+            threads: avoidErrorStylesSupport?.threads,
+            emitError: avoidErrorStylesSupport?.emitError,
+            emitWarning: avoidErrorStylesSupport?.emitWarning,
+            failOnError: avoidErrorStylesSupport?.failOnError,
+            failOnWarning: avoidErrorStylesSupport?.failOnWarning,
+            quiet: avoidErrorStylesSupport?.quiet,
+        },
         isSplittingChunksSupport: isSplittingChunksSupport.question_is_splitting_chunks,
+        splittingChunks: {
+            chunks: splittingChunksOptions?.chunks,
+            minSize: splittingChunksOptions?.minSize,
+            maxSize: splittingChunksOptions?.maxSize,
+            minRemainingSize: splittingChunksOptions?.minRemainingSize,
+            minChunks: splittingChunksOptions?.minChunks,
+            maxAsyncRequests: splittingChunksOptions?.maxAsyncRequests,
+            maxAsyncSize: splittingChunksOptions?.maxAsyncSize,
+            maxInitialRequests: splittingChunksOptions?.maxInitialRequests,
+            enforceSizeThreshold: splittingChunksOptions?.enforceSizeThreshold,
+            cacheGroups: {
+                defaultVendors: {
+                    filename: splittingChunksOptions?.cacheGroups.defaultVendors.filename,
+                    test: splittingChunksOptions?.cacheGroups.defaultVendors.test,
+                    priority: splittingChunksOptions?.cacheGroups.defaultVendors.priority,
+                    reuseExistingChunk: splittingChunksOptions?.cacheGroups.defaultVendors
+                        .reuseExistingChunk,
+                    idHint: splittingChunksOptions?.cacheGroups.defaultVendors.idHint,
+                },
+            },
+        },
         minimumChunkSizeSupport: setMinimumChunkSizeSupport?.question_minimum_chunk_size,
         maximumChunkSizeSupport: setMaximumChunkSizeSupport?.question_maximum_chunk_size,
+        isMinifyJsonFiles: isJsonMinifySupport.question_is_minify_json_files,
+        optimizeJsonFiles: {
+            test: minimizeJsonFilesSupport?.test,
+            include: minimizeJsonFilesSupport?.include,
+            exclude: minimizeJsonFilesSupport?.exclude,
+            minimizerOptions: {
+                space: minimizeJsonFilesSupport?.minimizerOptions.space,
+            },
+        },
         isPwaAnswer: isPwaAnswer.question_build_pwa,
         isBannerSupport: isBannerSupport?.question_adding_banner_to_chunk,
         isClosureSupport: isClosureLibrarySupport.question_closure_library,
@@ -173,7 +224,7 @@ async function WebpackConfigCustom(presetType, mode) {
             emitWarning: isLinterTypeSupport?.emitWarning.question_is_emit_warning,
             failOnError: isLinterTypeSupport?.failOnError.question_is_fail_on_error,
             failOnWarning: isLinterTypeSupport?.failOnWarning.question_is_fail_on_warning,
-            quiet: isLinterTypeSupport?.quit.question_is_quit,
+            quiet: isLinterTypeSupport?.quiet.question_is_quiet,
         },
         isHashModuleSupport: isHashModulePathSupport.question_is_hash_module_path,
         hashModuleIdsSupport: {
@@ -192,6 +243,15 @@ async function WebpackConfigCustom(presetType, mode) {
         },
         isCopyPluginSupport: isCopyPluginSupport.question_is_copy_plugin,
         isCleanPluginSUpport: isCleanPluginSupport.question_is_clean_plugin,
+        cleanPluginSupport: {
+            dry: cleanPluginSupport?.dry,
+            verbose: cleanPluginSupport?.verbose,
+            cleanStaleWebpackAssets: cleanPluginSupport?.cleanStaleWebpackAssets,
+            protectWebpackAssets: cleanPluginSupport?.protectWebpackAssets,
+            cleanOnceBeforeBuildPatterns: cleanPluginSupport?.cleanOnceBeforeBuildPlugin,
+            cleanAfterEveryBuildPatterns: cleanPluginSupport?.cleanAfterEveryBuildPatterns,
+            dangerouslyAllowCleanPatternsOutsideProject: cleanPluginSupport?.dangerouslyAllowCleanPatternsOutsideProject,
+        },
         isCopyStaticFilesSupport: isCopyStaticFilesSupport.is_copy_static_files,
         filesCatalogesCopySupport: setFilesCatalogesCopySupport?.set_files_cataloges_copy,
         outputDirectory: setOutputDirectory.question_output_dir,

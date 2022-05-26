@@ -1,5 +1,6 @@
 import { whitespace } from "./helpers/constants";
 import { preset } from "./helpers/enum";
+import { minifyJSONOptions } from "./helpers/interfaces";
 import { webpackMode } from "./helpers/types";
 import { parseString } from "./text";
 
@@ -45,6 +46,17 @@ function optimizeProductionHTML(mode: webpackMode) {
     : parseString("");
 }
 
+function optimizeJSONFiles(mode: webpackMode, options: minifyJSONOptions) {
+  return parseString(`new JsonMinimizerPlugin({
+    test: ${options.test},
+    include: ${options.include},
+    exclude: ${options.exclude},
+    minimizerOptions: {
+      space: ${options.minimizerOptions.space}
+    }
+  })`);
+}
+
 function isSourceMaps(mode: webpackMode) {
   return mode === "production" ? true : false;
 }
@@ -86,7 +98,7 @@ function setHTMLPreset(presetType: preset) {
     : parseString(`      
       {
         test: /\.html$/,
-        loader: "html-loader",
+        loader: ""html-loader"",
       },`);
 }
 
@@ -96,6 +108,7 @@ export {
   setTerserPlugin,
   outputFileName,
   optimizeProductionCSS,
+  optimizeJSONFiles,
   optimizeProductionHTML,
   isSourceMaps,
   setVueLoader,

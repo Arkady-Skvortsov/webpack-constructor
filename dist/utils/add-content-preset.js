@@ -7,6 +7,7 @@ const loaders_1 = require("./helpers/loaders");
 const dev_mode_1 = require("./dev-mode");
 const extensions_1 = require("./helpers/extensions");
 const plugins_1 = require("./helpers/plugins");
+const text_1 = require("./text");
 function addContentToPreset(type, options) {
     return `
 ${(0, constants_1.generateConstants)(type, options.devMode)}
@@ -89,7 +90,9 @@ module.exports = {
     ${(0, plugins_1.LinterChoose)(type, options)}
     new CleanWebpackPlugin(),
     ${(0, dev_mode_1.setVueLoader)(type)}
-    ${(0, plugins_1.setWebpackNotifierPlugin)(options.devMode)}
+    ${options.devMode === "development"
+        ? (0, plugins_1.setWebpackNotifierPlugin)()
+        : (0, text_1.parseString)("")}
   ],
   optimization: {
     splitChunks: {

@@ -4,6 +4,8 @@ import { cssLoader, htmlLoader, questionResponse } from "./types";
 const transformQuestionToBoolean = (value: questionResponse) =>
   value === "Yes" ? true : false;
 
+const transformStringToNumber = (value: string) => +value;
+
 const transfromHtmlPreprocessorToExtension = (type: htmlLoader) =>
   type === "EJS"
     ? ".ejs"
@@ -17,17 +19,18 @@ const transfromHtmlPreprocessorToExtension = (type: htmlLoader) =>
 
 const transformCssPreProcessorToExtension = (type: cssLoader) =>
   type === "(Sass/Scss)"
-    ? ".sass .scss".split(", ").join(" ")
+    ? ".sass .scss".split("\n").join(" ")
     : type === "Less"
     ? ".less"
     : type === "PostCss"
     ? ""
     : type === "Stylus"
-    ? ""
+    ? ".styl"
     : parseString("");
 
 export {
   transformCssPreProcessorToExtension,
   transfromHtmlPreprocessorToExtension,
   transformQuestionToBoolean,
+  transformStringToNumber,
 };

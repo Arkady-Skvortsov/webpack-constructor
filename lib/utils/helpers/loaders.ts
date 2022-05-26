@@ -145,28 +145,23 @@ async function parseIntegration(integrationType: string) {
     );
 }
 
-function setImageExtensions(
-  response: questionResponse,
-  loaderType: string,
-  staticLoader: staticLoader
-) {
-  if (response === "Yes") {
-    const type =
-      loaderType === ".gif"
-        ? { extension: "gif", option: `gifsicle: { interlaced: false }` }
-        : loaderType === ".jpeg"
-        ? { extension: "jpeg", option: `mozjpeg: { progressive: true }` }
-        : loaderType === ".jpg"
-        ? { extension: "jpg" }
-        : loaderType === ".png"
-        ? { extension: "png", option: `optipng: { enabled: false }` }
-        : loaderType === ".webp"
-        ? { extension: "webp", option: `webp: { quality: 85 }` }
-        : loaderType === ".svg"
-        ? { extension: "svg", option: `svgo: {  }` }
-        : {};
+function setImageExtensions(loaderType: string, staticLoader: staticLoader) {
+  const type =
+    loaderType === ".gif"
+      ? { extension: "gif", option: `gifsicle: { interlaced: false }` }
+      : loaderType === ".jpeg"
+      ? { extension: "jpeg", option: `mozjpeg: { progressive: true }` }
+      : loaderType === ".jpg"
+      ? { extension: "jpg" }
+      : loaderType === ".png"
+      ? { extension: "png", option: `optipng: { enabled: false }` }
+      : loaderType === ".webp"
+      ? { extension: "webp", option: `webp: { quality: 85 }` }
+      : loaderType === ".svg"
+      ? { extension: "svg", option: `svgo: {  }` }
+      : {};
 
-    return `{
+  return `{
       test: ${setInExpression(type.extension)},
       use: [
         ${setStaticLoader(staticLoader)},
@@ -178,7 +173,6 @@ function setImageExtensions(
         }
       ]
     }`;
-  }
 }
 
 function setFontsExtensions(
@@ -213,36 +207,33 @@ function setFontsExtensions(
   `;
 }
 
-function setCoffeeScript(response: questionResponse) {
-  return response === "Yes"
-    ? `{
+function setCoffeeScript() {
+  return `
+      {
         test: /\.coffee$/,
         loader: "coffee-loader",
-       },`
-    : parseString("");
+      },`;
 }
 
-function setXmlLoader(response: questionResponse) {
-  return response === "Yes"
-    ? `{ 
+function setXmlLoader() {
+  return `
+      { 
         test: /\.xml$/, 
         loader: 'xml-loader' 
-       },`
-    : parseString("");
+      },`;
 }
 
-function setYamlLoader(response: questionResponse) {
-  return response === "Yes"
-    ? `{
+function setYamlLoader() {
+  return `
+      {
         test: /\.ya?ml$/,
         use: 'yaml-loader'
-      }`
-    : parseString("");
+      }`;
 }
 
-function setCsvLoader(response: questionResponse) {
-  return response === "Yes"
-    ? `{
+function setCsvLoader() {
+  return `
+      {
         test: /\.csv$/,
         loader: 'csv-loader',
         options: {
@@ -250,8 +241,7 @@ function setCsvLoader(response: questionResponse) {
           header: true,
           skipEmptyLines: true
         }
-      }`
-    : parseString("");
+      }`;
 }
 
 function setStaticLoader(loader: staticLoader) {

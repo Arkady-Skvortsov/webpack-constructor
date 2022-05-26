@@ -1,34 +1,29 @@
 import * as fs from "fs";
-import {
-  integrationWebpack,
-  questionResponse,
-  webpackConfigType,
-  webpackMode,
-  webpackOption,
-} from "./types";
+import { integrationWebpack, questionResponse } from "./types";
 import { setScriptFiles } from "../webpack-set.content";
 import {
+  avoidErrorsOptions,
+  bannerOptions,
+  cleanBuildOptions,
   compressionOptions,
-  copyOptions,
   customWebpackConfig,
   dllOptions,
   environmentVariable,
   hashModuleIdsSupport,
+  prefetchOptions,
   webpackConfig,
 } from "./interfaces";
 import { preset } from "./enum";
 import { parseString } from "../text";
 import { outputFileName } from "../dev-mode";
 
-function setWebpackNotifierPlugin(mode: webpackMode) {
-  return mode === "production"
-    ? parseString("")
-    : `
-new WebpackNotifierPlugin({
-  title: 'Webpack', 
-  emoji: true, 
-  alwaysNotify: true
-})`;
+function setWebpackNotifierPlugin() {
+  return `
+    new WebpackNotifierPlugin({
+      title: 'Webpack', 
+      emoji: true, 
+      alwaysNotify: true
+    })`;
 }
 
 function LinterChoose(
@@ -68,43 +63,44 @@ function isHtmlWebpackPlugin(
     : parseString("");
 }
 
-function setClosureLibrary(response: questionResponse) {
-  return response === "Yes" ? `new ClosurePlugin(),` : parseString("");
+function setClosureLibrary() {
+  return `new ClosurePlugin(),`;
 }
 
-function setEnvironmentPlugin(
-  response: questionResponse,
-  variables: environmentVariable
-) {
-  `new webpack.DefinePlugin({
-    ${Object.keys(variables)}: ${Object.values(variables)}
+function setEnvironmentPlugin(variables: environmentVariable) {
+  return `new webpack.DefinePlugin({
+    ${Object.keys(variables).forEach((variable: any) => {
+      variable;
+    })}
    })`;
 }
 
-function setDLLPlugin(response: questionResponse, options: dllOptions) {
-  return response === "Yes"
-    ? `new DllPlugin({ name: ${options.name}, path: path.resolve(__dirname, "${options.path}") }),`
-    : parseString("");
+function setDLLPlugin(options: dllOptions) {
+  return `new DllPlugin({ name: ${options.name}, path: path.resolve(__dirname, "${options.path}") }),`;
 }
 
-function setHashModuleIds(
-  response: questionResponse,
-  hashModuleDetails: hashModuleIdsSupport
-) {
-  return response === "Yes"
-    ? `new webpack.ids.HashedModuleIdsPlugin({
+function setHashModuleIds(hashModuleDetails: hashModuleIdsSupport) {
+  return `
+      new webpack.ids.HashedModuleIdsPlugin({
         context: ${hashModuleDetails.context},
         hashFunction: ${hashModuleDetails.hashFunction},
         hashDigest: ${hashModuleDetails.hashDigest},
         hashDigestLength: ${hashModuleDetails.hashDigestLegnth}
-       })`
-    : parseString("");
+      })
+  `;
 }
 
-function setAutomaticPrefechPlugin(response: questionResponse) {
-  return response === "Yes"
-    ? `new AutomaticPrefetchPlugin(),`
-    : parseString("");
+function setAutomaticPrefetchPlugin() {
+  return `new webpack.AutomaticPrefetchPlugin(),`;
+}
+
+function setPrefetchPlugin(options: prefetchOptions) {
+  return `
+    new PrefetchPlugin({
+      context: ${options.context},
+      request: ${options.request}
+    }),
+  `;
 }
 
 function setI18nPlugin(response: questionResponse) {
@@ -113,21 +109,17 @@ function setI18nPlugin(response: questionResponse) {
     : parseString("");
 }
 
-function setProfillingPlugin(response: questionResponse) {
-  return response === "Yes"
-    ? `new ProfilingPlugin({
+function setProfillingPlugin() {
+  return `new ProfilingPlugin({
         outputPath: 'profiling/profileEvents.json'
-       });`
-    : parseString("");
+       });`;
 }
 
-function setIgnorePlugin(response: questionResponse) {
-  return response === "Yes"
-    ? `new webpack.IgnorePlugin({
+function setIgnorePlugin() {
+  `new webpack.IgnorePlugin({
         resourceRegExp: /^\.\/locale$/,
         contextRegExp: /moment$/
-       });`
-    : parseString("");
+       });`;
 }
 
 function setIntegrationWebpack(integration: integrationWebpack) {
@@ -191,27 +183,66 @@ module.exports = function (config) {
   fs.writeFileSync(`integration.${integration}.js`, integrationInstrument);
 }
 
-function setHMRPlugin(response: questionResponse) {
-  return response === "Yes"
-    ? `new webpack.HotModuleReplacementPlugin(),`
-    : parseString("");
+function setHMRPlugin() {
+  return `new webpack.HotModuleReplacementPlugin(),`;
 }
 
-function setCompressionPlugin(
-  response: questionResponse,
-  options: compressionOptions
-) {
-  return response === "Yes"
-    ? `new CompressionPlugin({compressionOptions: {level: ${options.level}}, threshold: ${options.threshold}, minRatio: ${options.ratio}}),`
-    : parseString("");
+function setAvoidStyleErrorPlugin(options: avoidErrorsOptions) {
+  return `
+    new StylelintPlugin({
+      context: ${options.context},
+      exclude: ${options.exclude},
+      extensions: ${options.extensions},
+      files: ${options.files},
+      fix: ${options.fix},
+      formatter: ${options.formatter},
+      lintDirtyModulesOnly: ${options.lintDirtyModulesOnly},
+      stylelintPath: ${options.stylelintPath},
+      threads: ${options.threads},
+      emitError: ${options.emitError},
+      emitWarning: ${options.emitWarning},
+      failOnError: ${options.failOnError},
+      failOnWarning: ${options.failOnWarning},
+      quiet: ${options.quiet}
+    }),
+  `;
 }
 
-function setCopyWebpackPlugin(response: questionResponse) {
-  return response === "Yes" ? `new CopyWebpackPlugin(),` : parseString("");
+function setCompressionPlugin(options: compressionOptions) {
+  return `new CompressionPlugin({compressionOptions: {level: ${options.level}}, threshold: ${options.threshold}, minRatio: ${options.ratio}}),`;
 }
 
-function setCleanWebpackPlugin(response: questionResponse) {
-  return response === "Yes" ? `new CleanWebpackPlugin(),` : parseString("");
+function setCopyWebpackPlugin() {
+  return `new CopyWebpackPlugin(
+
+  ),`;
+}
+
+function setBannerPlugin(options: bannerOptions) {
+  return `
+    new webpack.BannerPlugin({
+      banner: ${options.banner},
+      raw: ${options.raw},
+      entryOnly: ${options.entryOnly},
+      test: ${options.test},
+      include: ${options.include},
+      exclude: ${options.exclude},
+      footer: ${options.footer}
+    })
+  `;
+}
+
+function setCleanWebpackPlugin(options: cleanBuildOptions) {
+  return `
+    new CleanWebpackPlugin(
+      dry: ${options.dry},
+      verbose: ${options.verbose},
+      cleanStaleWebpackAssets: ${options.cleanStaleWebpackAssets},
+      protectWebpackAssets: ${options.protectWebpackAssets},
+      cleanOnceBeforeBuildPatterns: ${options.cleanOnceBeforeBuildPatterns},
+      cleanAfterEveryBuildPatterns: ${options.cleanAfterEveryBuildPatterns},
+      dangerouslyAllowCleanPatternsOutsideProject: ${options.dangerouslyAllowCleanPatternsOutsideProject}
+    ),`;
 }
 
 export {
@@ -221,11 +252,14 @@ export {
   setClosureLibrary,
   setEnvironmentPlugin,
   setDLLPlugin,
-  setAutomaticPrefechPlugin,
+  setAutomaticPrefetchPlugin,
+  setAvoidStyleErrorPlugin,
+  setBannerPlugin,
   setCleanWebpackPlugin,
   setI18nPlugin,
   setProfillingPlugin,
   setIgnorePlugin,
+  setPrefetchPlugin,
   setIntegrationWebpack,
   setHMRPlugin,
   setHashModuleIds,

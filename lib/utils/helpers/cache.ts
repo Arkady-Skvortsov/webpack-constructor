@@ -1,13 +1,9 @@
 import { parseString } from "../text";
 import { cacheOptions } from "./interfaces";
-import { questionResponse } from "./types";
 
-function setCacheSupport(
-  isCache: questionResponse,
-  cacheOptions?: cacheOptions
-) {
-  return isCache === "Yes"
-    ? `cache: {
+function setCacheSupport(cacheOptions?: cacheOptions) {
+  return `
+      cache: {
          type: ${cacheOptions?.type},
          ${
            cacheOptions?.type === "filesystem"
@@ -85,8 +81,7 @@ function setCacheSupport(
              ? `version: ${cacheOptions?.version}`
              : parseString("")
          }
-      }`
-    : `cache: false,`;
+      }`;
 }
 
 function setCachingSupport() {}

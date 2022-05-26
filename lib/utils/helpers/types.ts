@@ -10,10 +10,13 @@ type integrationWebpack = "Grunt" | "Gulp" | "Mocha" | "Karma";
 type staticLoader = "file-loader" | "url-loader" | "raw-loader";
 type cssLoader = "(Sass/Scss)" | "Less" | "Stylus" | "PostCss";
 type htmlLoader = "Pug" | "Jade" | "EJS" | "HandleBars";
-type imageExtensions = ".png" & ".jpeg" & ".jpg" & ".svg" & ".gif" & ".webp";
+type imageExtensions = ".png" | ".jpeg" | ".jpg" | ".svg" | ".gif" | ".webp";
 type fontsExtensions = ".woff" | ".ttf" | ".eot" | ".svg" | ".otf";
 type cacheType = "memory" | "filesystem";
 type cacheCompression = compressionAlgorithm | "brotli" | false;
+type bundleAnalyzerMode = "server" | "static" | "json" | "disabled";
+type bundleAnalyzerDefaultSizes = "stat" | "parsed" | "gzip";
+type bundleAnalyzerLogLevel = "info" | "warn" | "error" | "silent";
 type version = 4 | 5;
 type splitChunkType = "async" | "initial" | "all";
 
@@ -30,6 +33,9 @@ export {
   basicTypes,
   questionResponse,
   imageExtensions,
+  bundleAnalyzerDefaultSizes,
+  bundleAnalyzerLogLevel,
+  bundleAnalyzerMode,
   fontsExtensions,
   compressionAlgorithm,
   integrationWebpack,
