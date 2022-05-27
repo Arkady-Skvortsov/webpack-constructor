@@ -33,6 +33,7 @@ interface customWebpackConfig {
   entryPoint: string;
   aliasPath: string;
   isCoffeScriptSupport: questionResponse;
+  isHtmlSupport: questionResponse;
   isHtmlPreprocessorSupport: questionResponse;
   htmlPreprocessor: htmlLoader;
   htmlTemplate?: string;
@@ -41,6 +42,7 @@ interface customWebpackConfig {
   esLintOptions: esLintOptions;
   LintTypescriptFilesPath?: string;
   tslintFilePath?: string;
+  isCssSupport: questionResponse;
   isCssPreprocessorSupport: questionResponse;
   cssPreprocessors: cssLoader;
   staticLoader: staticLoader;
@@ -215,77 +217,77 @@ interface bundleAnalyzerOptions {
   openAnalyzer: boolean;
   generateStatsFile: boolean;
   statsFilename: string;
-  statsOptions: {
+  stats: {
     all: any;
-    assets: boolean;
-    assetsSort: string;
-    builtAt: boolean;
-    moduleAssets: boolean;
+    assets: any;
+    assetsSort: any;
+    builtAt: any;
+    moduleAssets: any;
     assetsSpace: any;
     modulesSpace: any;
     chunkModulesSpace: any;
     nestedModules: any;
     nestedModulesSpace: any;
-    cached: boolean;
-    runtimeModules: boolean;
+    cachedModules: any;
+    runtimeModules: any;
     dependentModules: any;
-    groupAssetsByChunk: boolean;
-    groupAssetsByEmitStatus: boolean;
-    groupAssetsByExtension: boolean;
-    groupAssetsByInfo: boolean;
-    groupAssetsByPath: boolean;
-    groupModulesByAttributes: boolean;
-    groupModulesByCacheStatus: boolean;
-    groupModulesByExtesion: boolean;
-    groupModulesByLayer: boolean;
-    groupModulesByPath: boolean;
-    groupModulesByType: boolean;
-    groupReasonsByOrigin: boolean;
-    cachedAssets: boolean;
-    children: boolean;
-    chunks: boolean;
-    chunkGroups: boolean;
-    chunkModules: boolean;
-    chunkOrigins: boolean;
-    chunksSort: string;
-    context: string;
-    colors: boolean;
-    depth: boolean;
-    entrypoints: boolean;
-    env: boolean;
-    orphanModules: boolean;
-    errors: boolean;
-    errorDetails: boolean;
-    errorStack: boolean;
-    excludeAssets: string[];
-    excludeModules: string[];
-    hash: boolean;
-    logging: "none" | "info" | "error" | "warn" | "log" | "verbose";
-    loggingDebug: string[];
-    loggingTrace: boolean;
-    modules: boolean;
-    modulesSort: string;
-    moduleTrace: boolean;
-    optimizationBailout: boolean;
-    outputPath: boolean;
-    performance: boolean;
-    preset: string | false;
-    providedExports: boolean;
-    errorsCount: boolean;
-    warningsCount: boolean;
-    publicPath: boolean;
-    reasons: boolean;
-    reasonsSpace: number;
-    relatedAssets: boolean;
-    source: boolean;
-    timings: boolean;
-    ids: boolean;
-    usedExports: boolean;
-    version: boolean;
-    chunkGroupAuxiliary: boolean;
-    chunkGroupChildren: boolean;
-    chunkGroupMaxAssets: number;
-    warnings: boolean;
+    groupAssetsByChunk: any;
+    groupAssetsByEmitStatus: any;
+    groupAssetsByExtension: any;
+    groupAssetsByInfo: any;
+    groupAssetsByPath: any;
+    groupModulesByAttributes: any;
+    groupModulesByCacheStatus: any;
+    groupModulesByExtension: any;
+    groupModulesByLayer: any;
+    groupModulesByPath: any;
+    groupModulesByType: any;
+    groupReasonsByOrigin: any;
+    cachedAssets: any;
+    children: any;
+    chunks: any;
+    chunkGroups: any;
+    chunkModules: any;
+    chunkOrigins: any;
+    chunksSort: any;
+    context: any;
+    colors: any;
+    depth: any;
+    entrypoints: any;
+    env: any;
+    orphanModules: any;
+    errors: any;
+    errorDetails: any;
+    errorStack: any;
+    excludeAssets: any;
+    excludeModules: any;
+    hash: any;
+    logging: any;
+    loggingDebug: any;
+    loggingTrace: any;
+    modules: any;
+    modulesSort: any;
+    moduleTrace: any;
+    optimizationBailout: any;
+    outputPath: any;
+    performance: any;
+    preset: any;
+    providedExports: any;
+    errorsCount: any;
+    warningsCount: any;
+    publicPath: any;
+    reasons: any;
+    reasonsSpace: any;
+    relatedAssets: any;
+    source: any;
+    timings: any;
+    ids: any;
+    usedExports: any;
+    version: any;
+    chunkGroupAuxiliary: any;
+    chunkGroupChildren: any;
+    chunkGroupMaxAssets: any;
+    warnings: any;
   };
   excludeAssets: any;
   logLevel: bundleAnalyzerLogLevel;
@@ -332,6 +334,40 @@ interface minifyJSONOptions {
   };
 }
 
+interface copyOptions {
+  patterns: [
+    {
+      from: string;
+      to: string;
+      context: string;
+      globOptions: {
+        dot: boolean;
+        gitignore: boolean;
+        ignore: string[];
+      };
+      filter: (filepath: string) => boolean;
+      toType: "dir" | "file" | "template";
+      force: boolean;
+      priority: number;
+      transform: (input: string, absoluteFilename: string) => string;
+      transformAll: (
+        data: {
+          data: Buffer;
+          sourceFilename: string;
+          absoluteFilename: string;
+        }[]
+      ) => any;
+      noErrorOnMissing: boolean;
+      info: {
+        minimized: boolean;
+      };
+    }
+  ];
+  options: {
+    concurrency: number;
+  };
+}
+
 interface avoidErrorsOptions {
   context: any;
   exclude: any;
@@ -353,7 +389,7 @@ interface cacheOptions {
   type: cacheType;
   name?: string;
   allowCollectingMemory?: boolean;
-  cacheDirectory?: string;
+  cacheDirectory?: boolean;
   cacheLocation: string;
   compression: cacheCompression;
   hashAlgorithm?: string;
@@ -377,13 +413,13 @@ export {
   dllOptions,
   avoidErrorsOptions,
   esLintOptions,
+  bundleAnalyzerOptions,
   cleanBuildOptions,
   bannerOptions,
   splitChunksOptions,
   tsLintOptions,
   prefetchOptions,
   minifyJSONOptions,
-  bundleAnalyzerOptions,
   hashModuleIdsSupport,
   environmentVariable,
   globalVariable,

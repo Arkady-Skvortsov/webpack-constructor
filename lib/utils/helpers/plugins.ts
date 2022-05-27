@@ -4,6 +4,7 @@ import { setScriptFiles } from "../webpack-set.content";
 import {
   avoidErrorsOptions,
   bannerOptions,
+  bundleAnalyzerOptions,
   cleanBuildOptions,
   compressionOptions,
   customWebpackConfig,
@@ -16,6 +17,7 @@ import {
 import { preset } from "./enum";
 import { parseString } from "../text";
 import { outputFileName } from "../dev-mode";
+import { transformQuestionToBoolean } from "./converter";
 
 function setWebpackNotifierPlugin() {
   return `
@@ -61,6 +63,94 @@ function isHtmlWebpackPlugin(
       },
     }),`)
     : parseString("");
+}
+
+function setBundleAnalyzerSupport(options: bundleAnalyzerOptions) {
+  return `
+    new BundleAnalyzer({
+      analyzerMode: ${options.analyzerMode},
+      analyzerHost: ${options.analyzerHost},
+      analyzerPort: ${options.analyzerPort},
+      reportFilename: ${options.reportFilename},
+      defaultSizes: ${options.defaultSizes},
+      openAnalyzer: ${options.openAnalyzer},
+      generateStatsFile: ${options.generateStatsFile},
+      statsFilename: ${options.statsFilename},
+      stats: {
+        all: ${options.stats.all},
+        assets: ${options.stats.assets},
+        assetsSort: ${options.stats.assetsSort},
+        builtAt: ${options.stats.builtAt},
+        moduleAssets: ${options.stats.moduleAssets},
+        chunkModulesSpace: ${options.stats.chunkModulesSpace},
+        nestedModules: ${options.stats.nestedModules},
+        cachedModules: ${options.stats.cachedModules},
+        runtimeModules: ${options.stats.runtimeModules},
+        dependentModules: ${options.stats.dependentModules},
+        groupAssetsByChunk: ${options.stats.groupAssetsByChunk},
+        groupAssetsByEmitStatus: ${options.stats.groupAssetsByEmitStatus},
+        groupAssetsByExtension: ${options.stats.groupAssetsByExtension},
+        groupAssetsByInfo: ${options.stats.groupAssetsByInfo},
+        groupAssetsByPath: ${options.stats.groupAssetsByPath},
+        groupModulesByAttributes: ${options.stats.groupModulesByAttributes},
+        groupModulesByCacheStatus: ${options.stats.groupModulesByCacheStatus},
+        groupModulesByExtension: ${options.stats.groupModulesByExtension},
+        groupModulesByLayer: ${options.stats.groupModulesByLayer},
+        groupModulesByPath: ${options.stats.groupModulesByPath},
+        groupModulesByType: ${options.stats.groupModulesByType},
+        groupReasonsByOrigin: ${options.stats.groupReasonsByOrigin},
+        cachedAssets: ${options.stats.cachedAssets},
+        children: ${options.stats.children},
+        chunks: ${options.stats.chunks},
+        chunkGroups: ${options.stats.chunkGroups},
+        chunkModules: ${options.stats.chunkModules},
+        chunkOrigins: ${options.stats.chunkOrigins},
+        chunkModules: ${options.stats.chunkModules},
+        chunkOrigins: ${options.stats.chunkOrigins},
+        chunksSort: ${options.stats.chunksSort},
+        context: ${options.stats.context},
+        colors: ${options.stats.colors},
+        depth: ${options.stats.depth},
+        entrypoints: ${options.stats.entrypoints},
+        env: ${options.stats.env},
+        orphanModules: ${options.stats.orphanModules},
+        errors: ${options.stats.errors},
+        errorDetails: ${options.stats.errorDetails},
+        errorStack: ${options.stats.excludeAssets},
+        excludeAssets: ${options.stats.excludeAssets}
+        excludeModules: ${options.stats.excludeModules},
+        hash: ${options.stats.hash},
+        logging: ${options.stats.logging},
+        loggingDebug: ${options.stats.loggingDebug},
+        loggingTrace: ${options.stats.loggingTrace},
+        modules: ${options.stats.modules},
+        modulesSort: ${options.stats.modulesSort},
+        moduleTrace: ${options.stats.moduleTrace},
+        optimizationBailout: ${options.stats.optimizationBailout},
+        outputPath: ${options.stats.outputPath},
+        performance: ${options.stats.performance},
+        preset: ${options.stats.preset},
+        providedExports: ${options.stats.providedExports},
+        errorsCount: ${options.stats.errorsCount},
+        warningsCount: ${options.stats.warningsCount},
+        publicPath: ${options.stats.publicPath},
+        reasons: ${options.stats.reasons},
+        reasonsSpace: ${options.stats.reasonsSpace},
+        relatedAassets: ${options.stats.relatedAssets},
+        source: ${options.stats.source},
+        timings: ${options.stats.timings},
+        ids: ${options.stats.ids},
+        usedExports: ${options.stats.usedExports},
+        version: ${options.stats.version},
+        chunkGroupAuxiliary: ${options.stats.chunkGroupAuxiliary},
+        chunkGroupChildren: ${options.stats.chunkGroupChildren},
+        chunkGroupMaxAssets: ${options.stats.chunkGroupMaxAssets},
+        warnings: ${options.stats.warnings}
+      },
+      excludeAssets: ${options.excludeAssets},
+      logLevel: ${options.logLevel}
+    })
+  `;
 }
 
 function setClosureLibrary() {
@@ -253,6 +343,7 @@ export {
   setEnvironmentPlugin,
   setDLLPlugin,
   setAutomaticPrefetchPlugin,
+  setBundleAnalyzerSupport,
   setAvoidStyleErrorPlugin,
   setBannerPlugin,
   setCleanWebpackPlugin,

@@ -79,6 +79,10 @@ import {
   isPrefetch,
   prefetchOptionsSupport,
   isAutomaticPrefetch,
+  isHtml,
+  isCss,
+  isBundleAnalyzer,
+  bundleAnalyzerSupport,
 } from "./answers";
 import { addContentToCustom } from "./add-content-custom";
 import { customWebpackConfig } from "./helpers/interfaces";
@@ -130,13 +134,19 @@ async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
     contextPrintWrite.question_context
   );
   const isCoffescriptSupport = await supportFromCoffeScriptAnswer();
-  const isHtmlPreprocessorSupport = await isHtmlPreprocessorAnswer();
-  const htmlPreprocessors = await htmlPreprocessorsAnswer(
-    isHtmlPreprocessorSupport.question_is_html_preprocessor
+  const isHtmlSupport = await isHtml();
+  const isHtmlPreprocessorSupport = await isHtmlPreprocessorAnswer(
+    isHtmlSupport.question_is_html
   );
-  const isCssPreprocessor = await isCssPreprocessorsAnswer();
+  const htmlPreprocessors = await htmlPreprocessorsAnswer(
+    isHtmlPreprocessorSupport?.question_is_html_preprocessor
+  );
+  const isCssSupport = await isCss();
+  const isCssPreprocessor = await isCssPreprocessorsAnswer(
+    isCssSupport.question_is_css
+  );
   const cssPreprocessorsSupport = await cssPreprocessors(
-    isCssPreprocessor.question_is_css_preprocessor
+    isCssPreprocessor?.question_is_css_preprocessor
   );
   const isStaticLoaderSupport = await staticLoader();
   const chooseStaticFilesLoaderSupport = await chooseStaticFilesLoader(
@@ -159,6 +169,10 @@ async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
   );
   const setUpEslintSupport = await setUpEslint(
     isLinterSupport.question_set_linter_support
+  );
+  const isBundleSupport = await isBundleAnalyzer();
+  const bundleAnalyzer = await bundleAnalyzerSupport(
+    isBundleSupport.question_is_bundle_analyzer
   );
   const isHashModulePathSupport = await isHashModulePath();
   const detailsOfHashModule = await hashModuleIdsSupport(
@@ -250,12 +264,14 @@ async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
     entryPoint: entryPointWrite.entry_point,
     aliasPath: setAliasPathes.set_alias,
     isCoffeScriptSupport: isCoffescriptSupport.question_coffe_script,
+    isHtmlSupport: isHtmlSupport.question_is_html,
     isHtmlPreprocessorSupport:
-      isHtmlPreprocessorSupport.question_is_html_preprocessor,
+      isHtmlPreprocessorSupport?.question_is_html_preprocessor,
     htmlPreprocessor: htmlPreprocessors?.question_html_preprocessor,
     tslintFilePath:
       checkLangPreset?.langForFramework.question_preset_framework_config,
-    isCssPreprocessorSupport: isCssPreprocessor.question_is_css_preprocessor,
+    isCssSupport: isCssSupport.question_is_css,
+    isCssPreprocessorSupport: isCssPreprocessor?.question_is_css_preprocessor,
     cssPreprocessors: cssPreprocessorsSupport?.question_css_preprocessor,
     staticLoader: setFilesCatalogesCopySupport?.set_files_cataloges_copy,
     isImageSupport: isImageExtension.question_is_image_extensions,
@@ -453,6 +469,212 @@ async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
         cleanPluginSupport?.cleanAfterEveryBuildPatterns,
       dangerouslyAllowCleanPatternsOutsideProject:
         cleanPluginSupport?.dangerouslyAllowCleanPatternsOutsideProject,
+    },
+    isBundleAnalyzer: isBundleSupport.question_is_bundle_analyzer,
+    bundleAnalyzerOptions: {
+      analyzerMode: bundleAnalyzer?.analyzerMode.question_analyzer_mode,
+      analyzerHost: bundleAnalyzer?.analyzerHost.question_analyzer_host,
+      analyzerPort: bundleAnalyzer?.analyzerPort.question_analyzer_port,
+      reportFilename:
+        bundleAnalyzer?.reportFilename.question_analyzer_report_filename,
+      reportTitle: bundleAnalyzer?.reportTitle.question_analyzer_report_title,
+      defaultSizes:
+        bundleAnalyzer?.defaultSizes.question_analyzer_default_sizes,
+      openAnalyzer: bundleAnalyzer?.openAnalyzer.question_analyzer_open,
+      generateStatsFile:
+        bundleAnalyzer?.generateStatsFile.question_analyzer_generate_stats_file,
+      statsFilename:
+        bundleAnalyzer?.statsFilename.question_analyzer_stats_filename,
+      stats: {
+        all: bundleAnalyzer?.stats.all.question_analyzer_statsoptions_all,
+        assets:
+          bundleAnalyzer?.stats.assets.question_analyzer_statsoptions_assets,
+        assetsSort:
+          bundleAnalyzer?.stats.assetsSort
+            .question_analyzer_statsoptions_assets_sort,
+        builtAt:
+          bundleAnalyzer?.stats.buildAt.question_analyzer_statsoptions_build_at,
+        moduleAssets:
+          bundleAnalyzer?.stats.moduleAssets
+            .question_analyzer_statsoptions_module_assets,
+        assetsSpace:
+          bundleAnalyzer?.stats.assetsSpace
+            .question_analyzer_statsoptions_assets_space,
+        modulesSpace:
+          bundleAnalyzer?.stats.modulesSpace
+            .question_analyzer_statsoptions_modules_space,
+        chunkModulesSpace:
+          bundleAnalyzer?.stats.chunkModulesSpace.question_chunk_modules_space,
+        nestedModules:
+          bundleAnalyzer?.stats.nestedModules
+            .question_analyzer_statsoptions_nested_modules,
+        nestedModulesSpace:
+          bundleAnalyzer?.stats.nestedModulesSpace
+            .question_analyzer_statsoptions_nested_modules_space,
+        cachedModules:
+          bundleAnalyzer?.stats.cachedModules
+            .question_analyzer_statsoptions_cached_modules,
+        runtimeModules:
+          bundleAnalyzer?.stats.runtimeModules
+            .question_analyzer_statsoptions_runtime_modules,
+        dependentModules:
+          bundleAnalyzer?.stats.dependentModules
+            .question_analyzer_statsoptions_dependent_modules,
+        groupAssetsByChunk:
+          bundleAnalyzer?.stats.groupAssetsByChunk
+            .question_analyzer_statsoptions_group_assets_by_chunk,
+        groupAssetsByEmitStatus:
+          bundleAnalyzer?.stats.groupAssetsByEmitStatus
+            .question_analyzer_statsoptions_all,
+        groupAssetsByExtension:
+          bundleAnalyzer?.stats.groupAssetsByExtension
+            .question_analyzer_statsoptions_all,
+        groupAssetsByInfo:
+          bundleAnalyzer?.stats.groupAssetsByInfo
+            .question_analyzer_statsoptions_group_assets_by_info,
+        groupAssetsByPath:
+          bundleAnalyzer?.stats.groupAssetsByPath
+            .question_analyzer_statsoptions_group_assets_by_path,
+        groupModulesByAttributes:
+          bundleAnalyzer?.stats.groupModulesByAttributes
+            .question_analyzer_statsoptions_group_modules_by_attributes,
+        groupModulesByCacheStatus:
+          bundleAnalyzer?.stats.groupModulesByCacheStatus
+            .question_analyzer_statsoptions_group_modules_by_cache_status,
+        groupModulesByExtension:
+          bundleAnalyzer?.stats.groupModulesByExtension
+            .question_analyzer_statsoptions_group_modules_by_extension,
+        groupModulesByLayer:
+          bundleAnalyzer?.stats.groupModulesByLayer
+            .question_analyzer_statsoptions_group_modules_by_layer,
+        groupModulesByPath:
+          bundleAnalyzer?.stats.groupModulesByPath
+            .question_analyzer_statsoptions_group_modules_by_path,
+        groupModulesByType:
+          bundleAnalyzer?.stats.groupModulesByType
+            .question_analyzer_statsoptions_group_modules_by_type,
+        groupReasonsByOrigin:
+          bundleAnalyzer?.stats.groupReasonsByOrigin
+            .question_analyzer_statsoptions_group_reasons_by_origin,
+        cachedAssets:
+          bundleAnalyzer?.stats.cachedAssets
+            .question_analyzer_statsoptions_cached_assets,
+        children:
+          bundleAnalyzer?.stats.children
+            .question_analyzer_statsoptions_children,
+        chunks:
+          bundleAnalyzer?.stats.chunks.question_analyzer_statsoptions_chunks,
+        chunkGroups:
+          bundleAnalyzer?.stats.chunkGroups
+            .question_analyzer_statsoptions_chunk_groups,
+        chunkModules:
+          bundleAnalyzer?.stats.chunkModules
+            .question_analyzer_statsoptions_chunk_modules,
+        chunkOrigins:
+          bundleAnalyzer?.stats.chunkOrigins
+            .question_analyzer_statsoptions_chunk_origins,
+        chunksSort:
+          bundleAnalyzer?.stats.chunkSort
+            .question_analyzer_statsoptions_chunk_sort,
+        context:
+          bundleAnalyzer?.stats.context.question_analyzer_statsoptions_context,
+        colors:
+          bundleAnalyzer?.stats.colors.question_analyzer_statsoptions_colors,
+        depth: bundleAnalyzer?.stats.depth.question_analyzer_statsoptions_depth,
+        entrypoints:
+          bundleAnalyzer?.stats.entrypoints
+            .question_analyzer_statsoptions_entrypoints,
+        env: bundleAnalyzer?.stats.env.question_analyzer_statsoptions_env,
+        orphanModules:
+          bundleAnalyzer?.stats.orphanModules
+            .question_analyzer_statsoptions_orphan_modules,
+        errors:
+          bundleAnalyzer?.stats.errors.question_analyzer_statsoptions_errors,
+        errorDetails:
+          bundleAnalyzer?.stats.errorDetails
+            .question_analyzer_statsoptions_error_details,
+        errorStack:
+          bundleAnalyzer?.stats.errorStack
+            .question_analyzer_statsoptions_error_stack,
+        excludeAssets:
+          bundleAnalyzer?.stats.excludeAssets
+            .question_analyzer_statsoptions_exclude_assets,
+        excludeModules:
+          bundleAnalyzer?.stats.excludeModules
+            .question_analyzer_statsoptions_exclude_modules,
+        hash: bundleAnalyzer?.stats.hash.question_analyzer_statsoptions_hash,
+        logging:
+          bundleAnalyzer?.stats.logging.question_analyzer_statsoptions_logging,
+        loggingDebug:
+          bundleAnalyzer?.stats.loggingDebug
+            .question_analyzer_statsoptions_logging_debug,
+        loggingTrace:
+          bundleAnalyzer?.stats.loggingTrace
+            .question_analyzer_statsoptions_logging_trace,
+        modules:
+          bundleAnalyzer?.stats.modules.question_analyzer_statsoptions_modules,
+        modulesSort:
+          bundleAnalyzer?.stats.modulesSort
+            .question_analyzer_statsoptions_module_sort,
+        moduleTrace:
+          bundleAnalyzer?.stats.moduleTrace
+            .question_analyzer_statsoptions_module_trace,
+        optimizationBailout:
+          bundleAnalyzer?.stats.optimizationBailout
+            .question_analyzer_statsoptions_optimization_bailout,
+        outputPath:
+          bundleAnalyzer?.stats.outputPath
+            .question_analyzer_statsoptions_output_path,
+        performance:
+          bundleAnalyzer?.stats.performance
+            .question_analyzer_statsoptions_performance,
+        preset:
+          bundleAnalyzer?.stats.preset.question_analyzer_statsoptions_preset,
+        providedExports:
+          bundleAnalyzer?.stats.providedExports
+            .question_analyzer_statsoptions_provided_exports,
+        errorsCount:
+          bundleAnalyzer?.stats.errorsCount
+            .question_analyzer_statsoptions_errors_count,
+        warningsCount:
+          bundleAnalyzer?.stats.warningsCount
+            .question_analyzer_statsoptions_warnings_count,
+        publicPath:
+          bundleAnalyzer?.stats.publicPath
+            .question_analyzer_statsoptions_public_path,
+        reasons:
+          bundleAnalyzer?.stats.reasons.question_analyzer_statsoptions_reasons,
+        reasonsSpace:
+          bundleAnalyzer?.stats.reasonsSpace
+            .question_analyzer_statsoptions_reasons_space,
+        relatedAssets:
+          bundleAnalyzer?.stats.relatedAssets
+            .question_analyzer_statsoptions_related_assets,
+        source:
+          bundleAnalyzer?.stats.source.question_analyzer_statsoptions_source,
+        timings:
+          bundleAnalyzer?.stats.timings.question_analyzer_statsoptions_timings,
+        ids: bundleAnalyzer?.stats.ids.question_analyzer_statsoptions_ids,
+        usedExports:
+          bundleAnalyzer?.stats.usedExports
+            .question_analyzer_statsoptions_used_exports,
+        version:
+          bundleAnalyzer?.stats.version.question_analyzer_statsoptions_version,
+        chunkGroupAuxiliary:
+          bundleAnalyzer?.stats.chunkGroupAuxiliary
+            .question_analyzer_statsoptions_chunk_group_auxiliary,
+        chunkGroupChildren:
+          bundleAnalyzer?.stats.chunkGroupChildren
+            .question_analyzer_statsoptions_chunk_group_children,
+        chunkGroupMaxAssets:
+          bundleAnalyzer?.stats.chunkGroupMaxAssets
+            .question_analyzer_statsoptions_chunk_group_max_assets,
+        warnings:
+          bundleAnalyzer?.stats.warnings.question_analyzer_statsoptions_all,
+      },
+      excludeAssets:
+        bundleAnalyzer?.excludeAssets.question_analyzer_exclude_assets,
+      logLevel: bundleAnalyzer?.logLevel.question_analyzer_log_level,
     },
     isCopyStaticFilesSupport: isCopyStaticFilesSupport.is_copy_static_files,
     filesCatalogesCopySupport:

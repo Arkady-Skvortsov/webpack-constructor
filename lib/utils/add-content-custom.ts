@@ -1,8 +1,4 @@
-import {
-  bannerOptionsSupport,
-  outputDir,
-  setEnvironmentVariables,
-} from "./answers";
+import { outputDir, setEnvironmentVariables } from "./answers";
 import {
   optimizeJSONFiles,
   optimizeProductionCSS,
@@ -45,6 +41,7 @@ import {
   setAvoidStyleErrorPlugin,
   setBannerPlugin,
   setPrefetchPlugin,
+  setBundleAnalyzerSupport,
 } from "./helpers/plugins";
 import { webpackMode } from "./helpers/types";
 import { parseString } from "./text";
@@ -67,12 +64,12 @@ module.exports = {
       ${langLoader(presetType)}
       ${options.isCoffeScriptSupport ? setCoffeeScript() : parseString("")}
       ${
-        options.isHtmlPreprocessorSupport
+        options.isHtmlSupport
           ? setHtmlLoader(options.htmlPreprocessor, presetType)
           : parseString("")
       }
       ${
-        options.isCssPreprocessorSupport
+        options.isCssSupport
           ? setCssPreprocessorLoader(options.cssPreprocessors, mode, presetType)
           : parseString("")
       }
@@ -170,6 +167,11 @@ module.exports = {
     ${
       options.isPrefetchSupport
         ? setPrefetchPlugin(options.prefetchOptionsSupport)
+        : parseString("")
+    }
+    ${
+      options.isBundleAnalyzer
+        ? setBundleAnalyzerSupport(options.bundleAnalyzerOptions)
         : parseString("")
     }
     ${
