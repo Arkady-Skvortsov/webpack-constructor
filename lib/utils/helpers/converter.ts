@@ -15,6 +15,8 @@ const transfromHtmlPreprocessorToExtension = (type: htmlLoader) =>
     ? ".pug"
     : type === "Jade"
     ? ".jade"
+    : type === "PostHTML"
+    ? ".html"
     : parseString("");
 
 const transformCssPreProcessorToExtension = (type: cssLoader) =>
@@ -23,7 +25,7 @@ const transformCssPreProcessorToExtension = (type: cssLoader) =>
     : type === "Less"
     ? ".less"
     : type === "PostCss"
-    ? ""
+    ? ".css"
     : type === "Stylus"
     ? ".styl"
     : parseString("");

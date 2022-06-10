@@ -22,10 +22,10 @@ module.exports = {
     rules: [
       ${(0, loaders_1.langLoader)(presetType)}
       ${options.isCoffeScriptSupport ? (0, loaders_1.setCoffeeScript)() : (0, text_1.parseString)("")}
-      ${options.isHtmlPreprocessorSupport
+      ${options.isHtmlSupport
         ? (0, loaders_1.setHtmlLoader)(options.htmlPreprocessor, presetType)
         : (0, text_1.parseString)("")}
-      ${options.isCssPreprocessorSupport
+      ${options.isCssSupport
         ? (0, loaders_1.setCssPreprocessorLoader)(options.cssPreprocessors, mode, presetType)
         : (0, text_1.parseString)("")}
       ${options.isXmlSupport ? (0, loaders_1.setXmlLoader)() : (0, text_1.parseString)("")}
@@ -76,8 +76,20 @@ module.exports = {
     ${options.devMode === "development"
         ? (0, plugins_1.setWebpackNotifierPlugin)()
         : (0, text_1.parseString)("")}
+    ${options.isAutomaticPrefetchSupport
+        ? (0, plugins_1.setAutomaticPrefetchPlugin)()
+        : (0, text_1.parseString)("")}
     ${options.isHashModuleSupport
         ? (0, plugins_1.setHashModuleIds)(options.hashModuleIdsSupport)
+        : (0, text_1.parseString)("")}
+    ${options.isPrefetchSupport
+        ? (0, plugins_1.setPrefetchPlugin)(options.prefetchOptionsSupport)
+        : (0, text_1.parseString)("")}
+    ${options.isBundleAnalyzer
+        ? (0, plugins_1.setBundleAnalyzerSupport)(options.bundleAnalyzerOptions)
+        : (0, text_1.parseString)("")}
+    ${options.isAutomaticPrefetchSupport
+        ? (0, plugins_1.setAutomaticPrefetchPlugin)()
         : (0, text_1.parseString)("")}
     ${options.isEnvironmentalVariablesSupport
         ? (0, plugins_1.setEnvironmentPlugin)(options.environmentVariable)
@@ -89,6 +101,9 @@ module.exports = {
         ? (0, plugins_1.setCleanWebpackPlugin)(options.cleanPluginSupport)
         : (0, text_1.parseString)("")}
     ${options.isCopyPluginSupport ? (0, plugins_1.setCopyWebpackPlugin)() : (0, text_1.parseString)("")}
+    ${options.isBannerSupport
+        ? (0, plugins_1.setBannerPlugin)(options.bannerOptionsSupport)
+        : (0, text_1.parseString)("")}
   ],
   optimization: {
     minimizer: [

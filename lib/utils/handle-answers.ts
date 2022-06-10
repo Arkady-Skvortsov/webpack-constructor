@@ -83,11 +83,20 @@ import {
   isCss,
   isBundleAnalyzer,
   bundleAnalyzerSupport,
+  isNodeSupport,
+  isTwigSupport,
+  setLuaSupport,
+  setLuaOptions,
+  isElmSupport,
+  setElmSupport,
+  isThread,
+  setThreadLoader,
 } from "./answers";
 import { addContentToCustom } from "./add-content-custom";
 import { customWebpackConfig } from "./helpers/interfaces";
 import { setHashModuleIds } from "./helpers/plugins";
 import { optimizeJSONFiles } from "./dev-mode";
+import { setElmLoader, setNodeModules } from "./helpers/loaders";
 
 async function firstChoose() {
   await start();
@@ -162,6 +171,14 @@ async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
   const isFontsSupport = await isFontsAnswer();
   const fontsExtensionsSupport = await fontsExtensions(isFontsSupport.is_fonts);
   const fontsOutDirSupport = await fontsOutDir(isFontsSupport.is_fonts);
+  const isNodeModulesSupport = await isNodeSupport();
+  const istwigSupport = await isTwigSupport();
+  const isluaSupport = await setLuaSupport();
+  const luaOptions = await setLuaOptions(isluaSupport.question_lua_support);
+  const iselmSupport = await isElmSupport();
+  const elmOptions = await setElmSupport(iselmSupport.question_is_elm_support);
+  const isthreadSupport = await isThread();
+  const threadSupport = await setThreadLoader(isthreadSupport.question_is_thread_support);
   const isLinterSupport = await isLinter();
   const isLinterTypeSupport = await isLinterType(
     isLinterSupport.question_set_linter_support,

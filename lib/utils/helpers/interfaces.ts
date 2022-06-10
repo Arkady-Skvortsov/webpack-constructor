@@ -50,6 +50,15 @@ interface customWebpackConfig {
   imageExtensionsSupport: string;
   isFontsSupport: questionResponse;
   fontsExtensionsSupport: fontsExtensions;
+  isNodeModulesSupport: questionResponse;
+  isMarkDownSupport: questionResponse;
+  isTwigSupport: questionResponse;
+  isLuaSupport: questionResponse;
+  luaOptions: luaOptions;
+  isElmSupport: questionResponse;
+  elmOptions: elmOptions;
+  isThreadSupport: questionResponse;
+  threadOptions: threadOptions;
   isXmlSupport: questionResponse;
   isYamlSupport: questionResponse;
   isCsvSupport: questionResponse;
@@ -385,6 +394,32 @@ interface avoidErrorsOptions {
   quiet: any;
 }
 
+interface markDownOptions {
+
+}
+
+interface threadOptions {
+  workers: number;
+  workerParallelJobs: number;
+  workerNodeArgs: string[];
+  poolRespawn: boolean;
+  poolTimeout: number;
+  poolParallelJobs: number;
+  name: string;
+}
+
+interface luaOptions {
+  strip: boolean;
+}
+
+interface elmOptions {
+  optimize: boolean;
+  debug: boolean;
+  runtimeOptions: string[];
+  files: string[];
+  pathToElm: string;
+}
+
 interface cacheOptions {
   type: cacheType;
   name?: string;
@@ -413,11 +448,14 @@ export {
   dllOptions,
   avoidErrorsOptions,
   esLintOptions,
+  markDownOptions,
   bundleAnalyzerOptions,
   cleanBuildOptions,
   bannerOptions,
   splitChunksOptions,
   tsLintOptions,
+  luaOptions,
+  elmOptions,
   prefetchOptions,
   minifyJSONOptions,
   hashModuleIdsSupport,

@@ -76,7 +76,9 @@ async function installPackagesForPresets(
         customOptions.isXmlSupport ? parseString("xml-loader") : parseString("")
       } ${
         customOptions.isCsvSupport ? parseString("csv-loader") : parseString("")
-      } ${
+      } 
+      ${ customOptions.isLuaSupport ? parseString("fengari-loader") : parseString("") }
+      ${
         customOptions.isPwaAnswer &&
         !["Vue", "React", "Svelte"].includes(presetType)
           ? parseString("workbox-webpack-plugin http-server")

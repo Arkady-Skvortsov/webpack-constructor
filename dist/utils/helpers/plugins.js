@@ -23,18 +23,18 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setCopyWebpackPlugin = exports.setCompressionPlugin = exports.setHashModuleIds = exports.setHMRPlugin = exports.setIntegrationWebpack = exports.setIgnorePlugin = exports.setProfillingPlugin = exports.setI18nPlugin = exports.setCleanWebpackPlugin = exports.setAvoidStyleErrorPlugin = exports.setAutomaticPrefechPlugin = exports.setDLLPlugin = exports.setEnvironmentPlugin = exports.setClosureLibrary = exports.isHtmlWebpackPlugin = exports.LinterChoose = exports.setWebpackNotifierPlugin = void 0;
+exports.setCopyWebpackPlugin = exports.setCompressionPlugin = exports.setHashModuleIds = exports.setHMRPlugin = exports.setIntegrationWebpack = exports.setPrefetchPlugin = exports.setIgnorePlugin = exports.setProfillingPlugin = exports.setI18nPlugin = exports.setCleanWebpackPlugin = exports.setBannerPlugin = exports.setAvoidStyleErrorPlugin = exports.setBundleAnalyzerSupport = exports.setAutomaticPrefetchPlugin = exports.setDLLPlugin = exports.setEnvironmentPlugin = exports.setClosureLibrary = exports.isHtmlWebpackPlugin = exports.LinterChoose = exports.setWebpackNotifierPlugin = void 0;
 const fs = __importStar(require("fs"));
 const webpack_set_content_1 = require("../webpack-set.content");
 const text_1 = require("../text");
 const dev_mode_1 = require("../dev-mode");
 function setWebpackNotifierPlugin() {
     return `
-new WebpackNotifierPlugin({
-  title: 'Webpack', 
-  emoji: true, 
-  alwaysNotify: true
-})`;
+    new WebpackNotifierPlugin({
+      title: 'Webpack', 
+      emoji: true, 
+      alwaysNotify: true
+    })`;
 }
 exports.setWebpackNotifierPlugin = setWebpackNotifierPlugin;
 function LinterChoose(lang, options) {
@@ -68,6 +68,94 @@ function isHtmlWebpackPlugin(presetType, options) {
         : (0, text_1.parseString)("");
 }
 exports.isHtmlWebpackPlugin = isHtmlWebpackPlugin;
+function setBundleAnalyzerSupport(options) {
+    return `
+    new BundleAnalyzer({
+      analyzerMode: ${options.analyzerMode},
+      analyzerHost: ${options.analyzerHost},
+      analyzerPort: ${options.analyzerPort},
+      reportFilename: ${options.reportFilename},
+      defaultSizes: ${options.defaultSizes},
+      openAnalyzer: ${options.openAnalyzer},
+      generateStatsFile: ${options.generateStatsFile},
+      statsFilename: ${options.statsFilename},
+      stats: {
+        all: ${options.stats.all},
+        assets: ${options.stats.assets},
+        assetsSort: ${options.stats.assetsSort},
+        builtAt: ${options.stats.builtAt},
+        moduleAssets: ${options.stats.moduleAssets},
+        chunkModulesSpace: ${options.stats.chunkModulesSpace},
+        nestedModules: ${options.stats.nestedModules},
+        cachedModules: ${options.stats.cachedModules},
+        runtimeModules: ${options.stats.runtimeModules},
+        dependentModules: ${options.stats.dependentModules},
+        groupAssetsByChunk: ${options.stats.groupAssetsByChunk},
+        groupAssetsByEmitStatus: ${options.stats.groupAssetsByEmitStatus},
+        groupAssetsByExtension: ${options.stats.groupAssetsByExtension},
+        groupAssetsByInfo: ${options.stats.groupAssetsByInfo},
+        groupAssetsByPath: ${options.stats.groupAssetsByPath},
+        groupModulesByAttributes: ${options.stats.groupModulesByAttributes},
+        groupModulesByCacheStatus: ${options.stats.groupModulesByCacheStatus},
+        groupModulesByExtension: ${options.stats.groupModulesByExtension},
+        groupModulesByLayer: ${options.stats.groupModulesByLayer},
+        groupModulesByPath: ${options.stats.groupModulesByPath},
+        groupModulesByType: ${options.stats.groupModulesByType},
+        groupReasonsByOrigin: ${options.stats.groupReasonsByOrigin},
+        cachedAssets: ${options.stats.cachedAssets},
+        children: ${options.stats.children},
+        chunks: ${options.stats.chunks},
+        chunkGroups: ${options.stats.chunkGroups},
+        chunkModules: ${options.stats.chunkModules},
+        chunkOrigins: ${options.stats.chunkOrigins},
+        chunkModules: ${options.stats.chunkModules},
+        chunkOrigins: ${options.stats.chunkOrigins},
+        chunksSort: ${options.stats.chunksSort},
+        context: ${options.stats.context},
+        colors: ${options.stats.colors},
+        depth: ${options.stats.depth},
+        entrypoints: ${options.stats.entrypoints},
+        env: ${options.stats.env},
+        orphanModules: ${options.stats.orphanModules},
+        errors: ${options.stats.errors},
+        errorDetails: ${options.stats.errorDetails},
+        errorStack: ${options.stats.excludeAssets},
+        excludeAssets: ${options.stats.excludeAssets}
+        excludeModules: ${options.stats.excludeModules},
+        hash: ${options.stats.hash},
+        logging: ${options.stats.logging},
+        loggingDebug: ${options.stats.loggingDebug},
+        loggingTrace: ${options.stats.loggingTrace},
+        modules: ${options.stats.modules},
+        modulesSort: ${options.stats.modulesSort},
+        moduleTrace: ${options.stats.moduleTrace},
+        optimizationBailout: ${options.stats.optimizationBailout},
+        outputPath: ${options.stats.outputPath},
+        performance: ${options.stats.performance},
+        preset: ${options.stats.preset},
+        providedExports: ${options.stats.providedExports},
+        errorsCount: ${options.stats.errorsCount},
+        warningsCount: ${options.stats.warningsCount},
+        publicPath: ${options.stats.publicPath},
+        reasons: ${options.stats.reasons},
+        reasonsSpace: ${options.stats.reasonsSpace},
+        relatedAassets: ${options.stats.relatedAssets},
+        source: ${options.stats.source},
+        timings: ${options.stats.timings},
+        ids: ${options.stats.ids},
+        usedExports: ${options.stats.usedExports},
+        version: ${options.stats.version},
+        chunkGroupAuxiliary: ${options.stats.chunkGroupAuxiliary},
+        chunkGroupChildren: ${options.stats.chunkGroupChildren},
+        chunkGroupMaxAssets: ${options.stats.chunkGroupMaxAssets},
+        warnings: ${options.stats.warnings}
+      },
+      excludeAssets: ${options.excludeAssets},
+      logLevel: ${options.logLevel}
+    })
+  `;
+}
+exports.setBundleAnalyzerSupport = setBundleAnalyzerSupport;
 function setClosureLibrary() {
     return `new ClosurePlugin(),`;
 }
@@ -95,12 +183,19 @@ function setHashModuleIds(hashModuleDetails) {
   `;
 }
 exports.setHashModuleIds = setHashModuleIds;
-function setAutomaticPrefechPlugin(response) {
-    return response === "Yes"
-        ? `new AutomaticPrefetchPlugin(),`
-        : (0, text_1.parseString)("");
+function setAutomaticPrefetchPlugin() {
+    return `new webpack.AutomaticPrefetchPlugin(),`;
 }
-exports.setAutomaticPrefechPlugin = setAutomaticPrefechPlugin;
+exports.setAutomaticPrefetchPlugin = setAutomaticPrefetchPlugin;
+function setPrefetchPlugin(options) {
+    return `
+    new PrefetchPlugin({
+      context: ${options.context},
+      request: ${options.request}
+    }),
+  `;
+}
+exports.setPrefetchPlugin = setPrefetchPlugin;
 function setI18nPlugin(response) {
     return response === "Yes"
         ? `new I18nPlugin(languageConfig, optionsObj),`
@@ -113,9 +208,6 @@ function setProfillingPlugin() {
        });`;
 }
 exports.setProfillingPlugin = setProfillingPlugin;
-function setMinifyJSON(response) {
-    return response === "Yes" ? `new new JsonMinimizerPlugin()` : (0, text_1.parseString)("");
-}
 function setIgnorePlugin() {
     `new webpack.IgnorePlugin({
         resourceRegExp: /^\.\/locale$/,
@@ -217,6 +309,20 @@ function setCopyWebpackPlugin() {
   ),`;
 }
 exports.setCopyWebpackPlugin = setCopyWebpackPlugin;
+function setBannerPlugin(options) {
+    return `
+    new webpack.BannerPlugin({
+      banner: ${options.banner},
+      raw: ${options.raw},
+      entryOnly: ${options.entryOnly},
+      test: ${options.test},
+      include: ${options.include},
+      exclude: ${options.exclude},
+      footer: ${options.footer}
+    })
+  `;
+}
+exports.setBannerPlugin = setBannerPlugin;
 function setCleanWebpackPlugin(options) {
     return `
     new CleanWebpackPlugin(

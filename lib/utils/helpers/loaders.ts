@@ -1,7 +1,9 @@
+import { LookupAllOptions } from "dns";
 import { setCSSRuleUse } from "../dev-mode";
 import { parseString } from "../text";
 import { preset } from "./enum";
 import { setInExpression } from "./expression";
+import { elmOptions, luaOptions } from "./interfaces";
 import {
   cssLoader,
   fontsExtensions,
@@ -88,10 +90,9 @@ function setHtmlLoader(loaderType: htmlLoader, presetType: preset) {
     ? { expression: /.pug$/, loader: "pug-loader" }
     : loaderType === "Jade"
     ? { expression: /.jade$/, loader: "jade-loader" }
-    : { expression: /.html$/, loader: "html-loader" };
+    : { expression: /.html$/, loader: "html-loader" } 
 
-  return `
-    {
+  return `{
       test: ${type.expression},
       use: [${type.loader}]
     };`;
@@ -109,6 +110,8 @@ async function parseHtmlLoaders(loaderType: string) {
         ? "handlebards-loader"
         : loader === "Jade"
         ? "jade-loader"
+        : loader === "PostHTML" 
+        ? "posthtml-loader"
         : "html-loader"
     );
 }
@@ -207,6 +210,75 @@ function setFontsExtensions(
   `;
 }
 
+function setNodeModules() {
+    `
+    {
+      test: /\.node$/,
+      loader: "node-loader",
+      options: {
+        name: "[path][name].[ext]"
+      }
+    },
+  ` 
+}
+
+function setMarkdownSupport(): string {
+  return `
+    {
+      test: /\.md$/,
+      use: [
+        {
+          loader: "remark-loader",
+          options: {
+            remarkOptions: {
+              plugins: [RemarkHTML],
+            },
+          },
+        },
+      ],
+    }
+  `
+}
+
+function setLuaLoader(options: luaOptions): string {
+  return `
+    {
+      test: /\.lua$/,
+      use: [{ loader: "fengari-loader", options: { strip: ${options.strip} } }]
+    },
+  `
+}
+
+function setElmLoader(options: elmOptions): string {
+  return `
+    {
+      test: /\.elm$/,
+      exclude: [/elm-stuff/, /node_modules/],
+      use: {
+        loader: 'elm-webpack-loader',
+        options: {
+          optimize: ${options.optimize},
+          debug: ${options.debug},
+          runtimeOptions: [${options.runtimeOptions.join(", ")}],
+          files: [${options.files.join(", ")}],
+          pathToElm: ${options.pathToElm}
+        }
+      }
+    },
+  `
+}
+
+function setTwigLoader(): string {
+  return `
+    {
+      test: /\.twig$/,
+      use: {
+        loader: 'twig-loader'
+      }
+    },
+  `
+}
+
 function setCoffeeScript() {
   return `
       {
@@ -263,7 +335,11 @@ export {
   setCoffeeScript,
   parseIntegration,
   setXmlLoader,
+  setElmLoader,
+  setLuaLoader,
+  setTwigLoader,
   setYamlLoader,
+  setNodeModules,
   setCsvLoader,
   setStaticLoader,
   setImageExtensions,

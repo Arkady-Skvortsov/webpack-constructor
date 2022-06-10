@@ -1,4 +1,4 @@
-import { outputDir, setEnvironmentVariables } from "./answers";
+import { outputDir, setElmSupport, setEnvironmentVariables } from "./answers";
 import {
   optimizeJSONFiles,
   optimizeProductionCSS,
@@ -15,9 +15,13 @@ import {
   setCoffeeScript,
   setCssPreprocessorLoader,
   setCsvLoader,
+  setElmLoader,
   setFontsExtensions,
   setHtmlLoader,
   setImageExtensions,
+  setLuaLoader,
+  setNodeModules,
+  setTwigLoader,
   setXmlLoader,
   setYamlLoader,
 } from "./helpers/loaders";
@@ -76,6 +80,9 @@ module.exports = {
       ${options.isXmlSupport ? setXmlLoader() : parseString("")}
       ${options.isYamlSupport ? setYamlLoader() : parseString("")}
       ${options.isCsvSupport ? setCsvLoader() : parseString("")}
+      ${options.isLuaSupport ? setLuaLoader(options.luaOptions) : parseString("")}
+      ${options.isElmSupport ? setElmLoader(options.elmOptions) : parseString("")}
+      ${options.isTwigSupport ? setTwigLoader() : parseString("")}
       ${
         options.isImageSupport
           ? setImageExtensions(
@@ -84,6 +91,7 @@ module.exports = {
             )
           : parseString("")
       }
+      ${options.isNodeModulesSupport ? setNodeModules() : parseString("") }
       ${
         options.isFontsSupport
           ? setFontsExtensions(

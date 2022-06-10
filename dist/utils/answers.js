@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isDiscoverPreviousCompilation = exports.supportSplitBundlesThroughDLL = exports.isSplitBundlesThroughDLL = exports.isFontsExtensionAnswer = exports.isImageExtensionAnswer = exports.isHtmlPreprocessorAnswer = exports.isCssPreprocessorsAnswer = exports.isCsvExtension = exports.cssPreprocessors = exports.contextAnswer = exports.imagesOutDir = exports.isCacheWebpack = exports.isXmlExtension = exports.htmlPreprocessorsAnswer = exports.fontsExtensions = exports.isLazyLoading = exports.isImagesAnswer = exports.isFontsAnswer = exports.isDevServerAnswer = exports.checkPresetFrameworkConfig = exports.checkPresetHTML = exports.chooseWebpackMode = exports.chooseWebpackVersion = exports.chooseBasicPreset = exports.checkPresetTsConfig = exports.fontsDir = exports.devServerPort = exports.chooseWatchFiles = exports.ChooseCacheOptions = exports.cacheTypeOptions = exports.avoidErrorsOptions = exports.isAvoidErrorStyles = exports.basicChoose = exports.isPwaSupport = exports.setUpTsLint = exports.hashModuleIdsSupport = exports.isHashModulePath = exports.splitChunksWebpack = exports.minifyJSONOptions = exports.setUpEslint = exports.isLinterType = exports.isLinter = exports.isMinifyJSONFiles = exports.imageExtensions = exports.isYamlExtension = exports.entryPointsAnswer = exports.supportFromCoffeScriptAnswer = exports.staticLoader = exports.outputDir = exports.integrationInstruments = void 0;
-exports.isIgnoreSomeFilesWatchMode = exports.setFilesForIgnoreInWatchMode = exports.setFilesForIgnore = exports.setAliasAnswer = exports.setMinimumChunkSize = exports.setMaximumChunkSize = exports.isIntegrationInstrument = exports.isIgnoreSomeFiles = exports.isCreateChromeProfileFile = exports.setCompressionOptions = exports.setGlobalVariable = exports.isGlobalVariableAnswer = exports.isCompressionAnswer = exports.isMaximumChunkSize = exports.isMinimumChunkSize = exports.setLocalizeDetails = exports.isHMRAnswer = exports.isLocalizeAnswer = exports.setEnvironmentVariables = exports.setFilesCatalogesCopy = exports.isCopyStaticFiles = exports.isEnvironmentVariables = exports.chooseStaticFilesLoader = exports.isClosureLibrary = exports.addingBannerToChunk = exports.cleanPluginSetup = exports.isCleanPlugin = exports.isCopyPlugin = exports.fontsOutDir = exports.isSplittingChunks = void 0;
+exports.isCssPreprocessorsAnswer = exports.isCsvExtension = exports.cssPreprocessors = exports.contextAnswer = exports.imagesOutDir = exports.isCacheWebpack = exports.isXmlExtension = exports.htmlPreprocessorsAnswer = exports.fontsExtensions = exports.isLazyLoading = exports.isImagesAnswer = exports.isFontsAnswer = exports.isDevServerAnswer = exports.checkPresetFrameworkConfig = exports.checkPresetHTML = exports.chooseWebpackMode = exports.chooseWebpackVersion = exports.chooseBasicPreset = exports.checkPresetTsConfig = exports.fontsDir = exports.devServerPort = exports.chooseWatchFiles = exports.ChooseCacheOptions = exports.copyPluginSetup = exports.cacheTypeOptions = exports.avoidErrorsOptions = exports.isAvoidErrorStyles = exports.basicChoose = exports.isPwaSupport = exports.prefetchOptionsSupport = exports.isAutomaticPrefetch = exports.isPrefetch = exports.bannerOptionsSupport = exports.hashModuleIdsSupport = exports.isCss = exports.isHtml = exports.isHashModulePath = exports.splitChunksWebpack = exports.minifyJSONOptions = exports.setUpEslint = exports.isLinterType = exports.isLinter = exports.isMinifyJSONFiles = exports.imageExtensions = exports.isYamlExtension = exports.entryPointsAnswer = exports.supportFromCoffeScriptAnswer = exports.staticLoader = exports.outputDir = exports.integrationInstruments = void 0;
+exports.isIgnoreSomeFilesWatchMode = exports.setFilesForIgnoreInWatchMode = exports.setFilesForIgnore = exports.setAliasAnswer = exports.setMinimumChunkSize = exports.setMaximumChunkSize = exports.isIntegrationInstrument = exports.isIgnoreSomeFiles = exports.isCreateChromeProfileFile = exports.setCompressionOptions = exports.setGlobalVariable = exports.isGlobalVariableAnswer = exports.isCompressionAnswer = exports.isMaximumChunkSize = exports.isMinimumChunkSize = exports.setLocalizeDetails = exports.isHMRAnswer = exports.isLocalizeAnswer = exports.setEnvironmentVariables = exports.setFilesCatalogesCopy = exports.isCopyStaticFiles = exports.isEnvironmentVariables = exports.chooseStaticFilesLoader = exports.isClosureLibrary = exports.isBundleAnalyzer = exports.bundleAnalyzerSupport = exports.isBannerPlugin = exports.cleanPluginSetup = exports.isCleanPlugin = exports.isCopyPlugin = exports.fontsOutDir = exports.isSplittingChunks = exports.isDiscoverPreviousCompilation = exports.supportSplitBundlesThroughDLL = exports.isSplitBundlesThroughDLL = exports.isFontsExtensionAnswer = exports.isImageExtensionAnswer = exports.isHtmlPreprocessorAnswer = void 0;
 const inquirer_1 = __importDefault(require("inquirer"));
 const extensions_1 = require("./helpers/extensions");
 async function basicChoose() {
@@ -458,13 +458,15 @@ async function setFilesForIgnoreInWatchMode() {
     });
 }
 exports.setFilesForIgnoreInWatchMode = setFilesForIgnoreInWatchMode;
-async function isHtmlPreprocessorAnswer() {
-    return await inquirer_1.default.prompt({
-        name: "question_is_html_preprocessor",
-        type: "list",
-        message: "Do you want to support by html preprocessor(s) ?",
-        choices: ["Yes", "No"],
-    });
+async function isHtmlPreprocessorAnswer(response) {
+    return response === "Yes"
+        ? await inquirer_1.default.prompt({
+            name: "question_is_html_preprocessor",
+            type: "list",
+            message: "Do you want to support by html preprocessor(s) ?",
+            choices: ["Yes", "No"],
+        })
+        : void 0;
 }
 exports.isHtmlPreprocessorAnswer = isHtmlPreprocessorAnswer;
 async function htmlPreprocessorsAnswer(response) {
@@ -518,13 +520,15 @@ async function isDiscoverPreviousCompilation() {
     });
 }
 exports.isDiscoverPreviousCompilation = isDiscoverPreviousCompilation;
-async function isCssPreprocessorsAnswer() {
-    return await inquirer_1.default.prompt({
-        name: "question_is_css_preprocessor",
-        type: "list",
-        message: "Do you want to support by css preprocessor(s) ?",
-        choices: ["Yes", "No"],
-    });
+async function isCssPreprocessorsAnswer(response) {
+    return response === "Yes"
+        ? await inquirer_1.default.prompt({
+            name: "question_is_css_preprocessor",
+            type: "list",
+            message: "Do you want to support by css preprocessor(s) ?",
+            choices: ["Yes", "No"],
+        })
+        : void 0;
 }
 exports.isCssPreprocessorsAnswer = isCssPreprocessorsAnswer;
 async function cssPreprocessors(response) {
@@ -644,17 +648,95 @@ async function isSplittingChunks() {
     });
 }
 exports.isSplittingChunks = isSplittingChunks;
-async function addingBannerToChunk(response) {
+async function isPrefetch() {
+    return await inquirer_1.default.prompt({
+        name: "question_is_prefetch_plugin",
+        type: "list",
+        message: "Do you want to realise prefetch normal module requests, causing them to be resolved and built before the first import or require of that module occurs. (Using this plugin can boost performance. Try to profile the build first to determine clever prefetching points) ?",
+        choices: ["Yes", "No"],
+    });
+}
+exports.isPrefetch = isPrefetch;
+async function prefetchOptionsSupport(response) {
     return response === "Yes"
-        ? await inquirer_1.default.prompt({
-            name: "question_adding_banner_to_chunk",
-            type: "list",
-            message: "Do you want to adding banner to chunk ?",
-            choices: ["Yes", "No"],
-        })
+        ? {
+            context: await inquirer_1.default.prompt({
+                name: "question_context",
+                type: "input",
+                message: "What is the absolute path would be to directory ?",
+            }),
+            request: await inquirer_1.default.prompt({
+                name: "question_request",
+                type: "input",
+                message: "What is the request string for a normal module ?",
+            }),
+        }
         : void 0;
 }
-exports.addingBannerToChunk = addingBannerToChunk;
+exports.prefetchOptionsSupport = prefetchOptionsSupport;
+async function isAutomaticPrefetch() {
+    return await inquirer_1.default.prompt({
+        name: "question_automatic_prefetch",
+        type: "list",
+        message: "Do you want to discover all modules from the previous compilation upfront while watching for changes, trying to improve the incremental build times ?",
+        choices: ["Yes", "No"],
+    });
+}
+exports.isAutomaticPrefetch = isAutomaticPrefetch;
+async function isBannerPlugin() {
+    return await inquirer_1.default.prompt({
+        name: "question_adding_banner_to_chunk",
+        type: "list",
+        message: "Do you want to adding banner to chunk ?",
+        choices: ["Yes", "No"],
+    });
+}
+exports.isBannerPlugin = isBannerPlugin;
+async function bannerOptionsSupport(response) {
+    return response === "Yes"
+        ? {
+            banner: await inquirer_1.default.prompt({
+                name: "question_copy_concurrency",
+                type: "input",
+                message: "What is the name of you'r banner would be ?",
+            }),
+            raw: await inquirer_1.default.prompt({
+                name: "question_copy_concurrency",
+                type: "list",
+                message: "Do you want that you'r banner would be wrapped in a comment ?",
+                choices: ["Yes", "No"],
+            }),
+            entryOnly: await inquirer_1.default.prompt({
+                name: "question_copy_concurrency",
+                type: "list",
+                message: "Do you want that you'r banner would be only added to the entry chunks ?",
+                choices: ["Yes", "No"],
+            }),
+            test: await inquirer_1.default.prompt({
+                name: "question_copy_concurrency",
+                type: "input",
+                message: "How many limits the number of simultaneous requests would be to fs ?",
+            }),
+            include: await inquirer_1.default.prompt({
+                name: "question_copy_concurrency",
+                type: "input",
+                message: "How many limits the number of simultaneous requests would be to fs ?",
+            }),
+            exclude: await inquirer_1.default.prompt({
+                name: "question_copy_concurrency",
+                type: "input",
+                message: "How many limits the number of simultaneous requests would be to fs ?",
+            }),
+            footer: await inquirer_1.default.prompt({
+                name: "question_copy_concurrency",
+                type: "list",
+                message: "Do you want that you'r banner would be placed at the end of the compilation ?",
+                choices: ["Yes", "No"],
+            }),
+        }
+        : void 0;
+}
+exports.bannerOptionsSupport = bannerOptionsSupport;
 async function isClosureLibrary() {
     return await inquirer_1.default.prompt({
         name: "question_closure_library",
@@ -664,6 +746,561 @@ async function isClosureLibrary() {
     });
 }
 exports.isClosureLibrary = isClosureLibrary;
+async function isHtml() {
+    return await inquirer_1.default.prompt({
+        name: "question_is_html",
+        type: "list",
+        message: "Do you want to use html in you'r project ?",
+        choices: ["Yes", "No"],
+    });
+}
+exports.isHtml = isHtml;
+async function isCss() {
+    return await inquirer_1.default.prompt({
+        name: "question_is_css",
+        type: "list",
+        message: "Do you want to use css in you'r project ?",
+        choices: ["Yes", "No"],
+    });
+}
+exports.isCss = isCss;
+async function isBundleAnalyzer() {
+    return await inquirer_1.default.prompt({
+        name: "question_is_bundle_analyzer",
+        type: "list",
+        message: "Do you want to analyze you'r bundle ?",
+        choices: ["Yes", "No"],
+    });
+}
+exports.isBundleAnalyzer = isBundleAnalyzer;
+async function bundleAnalyzerSupport(response) {
+    return response === "Yes"
+        ? {
+            analyzerMode: await inquirer_1.default.prompt({
+                name: "question_analyzer_mode",
+                type: "list",
+                message: "(BundleAnalyzer) What is the mode for analyzer would be ?",
+                choices: ["server", "static", "json", "disabled"],
+                default: "server",
+            }),
+            analyzerHost: await inquirer_1.default.prompt({
+                name: "question_analyzer_host",
+                type: "input",
+                message: "(BundleAnalyzer) What is the host for analyzer would be (example: 127.0.0.1) ?",
+            }),
+            analyzerPort: await inquirer_1.default.prompt({
+                name: "question_analyzer_port",
+                type: "input",
+                message: "(BundleAnalyzer) What is the port would be using in server mode(example: 8888) ?",
+            }),
+            reportFilename: await inquirer_1.default.prompt({
+                name: "question_analyzer_report_filename",
+                type: "input",
+                message: "(BundleAnalyzer) What is the path would be to report file (example: report.html) ?",
+            }),
+            reportTitle: await inquirer_1.default.prompt({
+                name: "question_analyzer_report_title",
+                type: "input",
+                message: "(BundleAnalyzer)",
+            }),
+            defaultSizes: await inquirer_1.default.prompt({
+                name: "question_analyzer_default_sizes",
+                type: "list",
+                message: "(BundleAnalyzer) What is the size would be to show in report by default ?",
+                choices: ["stat", "parsed", "gzip"],
+            }),
+            openAnalyzer: await inquirer_1.default.prompt({
+                name: "question_analyzer_open",
+                type: "list",
+                message: "(BundleAnalyzer) Do you want to automatically open report in default browser ?",
+                choices: ["Yes", "No"],
+            }),
+            generateStatsFile: await inquirer_1.default.prompt({
+                name: "question_analyzer_generate_stats_file",
+                type: "list",
+                message: "(BundleAnalyzer) Do you want to generate webpack stats JSON file in bundle output directory ?",
+                choices: ["Yes", "No"],
+            }),
+            statsFilename: await inquirer_1.default.prompt({
+                name: "question_analyzer_stats_filename",
+                type: "input",
+                message: "(BundleAnalyzer) What is the name would be at webpack stats JSON file ?",
+            }),
+            stats: {
+                all: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_all",
+                    type: "input",
+                    message: "(BundleAnalyzer.stats) What is the A fallback value for stats options would be (when an option is not defined. It has precedence over local webpack defaults) ?",
+                }),
+                assets: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_assets",
+                    type: "list",
+                    message: "(BundleAnalyzer.stats) Do you want to see an assets information ?",
+                    choices: ["Yes", "No"],
+                }),
+                assetsSort: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_assets_sort",
+                    type: "input",
+                    message: "(BundleAnalyzer) What is the A fallback value for stats options would be (when an option is not defined. It has precedence over local webpack defaults) ?",
+                }),
+                buildAt: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_build_at",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want that stats would added build data and the build time information ? ?",
+                    choices: ["Yes", "No"],
+                }),
+                moduleAssets: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_module_assets",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want that added information about assets inside modules ?",
+                    choices: ["Yes", "No"],
+                }),
+                assetsSpace: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_assets_space",
+                    type: "input",
+                    message: "(BundleAnalyzer) How many items of assets should be displayed (example: 15) ?",
+                }),
+                modulesSpace: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_modules_space",
+                    type: "input",
+                    message: "(BundleAnalyzer) How many items of modules should be displayed (example: 15) ?",
+                }),
+                chunkModulesSpace: await inquirer_1.default.prompt({
+                    name: "question_chunk_modules_space",
+                    type: "input",
+                    message: "(BundleAnalyzer) How many items of chunk modules should be displayed (groups will be collapsed to fit this space) ?",
+                }),
+                nestedModules: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_nested_modules",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to add information about modules nested in other modules ?",
+                    choices: ["Yes", "No"],
+                }),
+                nestedModulesSpace: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_nested_modules_space",
+                    type: "input",
+                    message: "(BundleAnalyzer) How many items of nested modules should be displayed (example: 15) ?",
+                }),
+                cachedModules: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_cached_modules",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to add information about cached (not built) modules ?",
+                    choices: ["Yes", "No"],
+                }),
+                runtimeModules: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_runtime_modules",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to add information about runtime modules ?",
+                    choices: ["Yes", "No"],
+                }),
+                dependentModules: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_dependent_modules",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to show chunk modules that are dependencies of other modules of the chunk ?",
+                    choices: ["Yes", "No"],
+                }),
+                groupAssetsByChunk: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_group_assets_by_chunk",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to group assets by how their are related to chunks ?",
+                    choices: ["Yes", "No"],
+                }),
+                groupAssetsByEmitStatus: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_all",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to group assets by their status (emitted, compared for emit or cache) ?",
+                    choices: ["Yes", "No"],
+                }),
+                groupAssetsByExtension: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_all",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to group assets by their extension ?",
+                    choices: ["Yes", "No"],
+                }),
+                groupAssetsByInfo: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_group_assets_by_info",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to group assets by their asset info (immutable, development, hotModuleReplacement and etc) ?",
+                    choices: ["Yes", "No"],
+                }),
+                groupAssetsByPath: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_group_assets_by_path",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to group assets by their asset path ?",
+                    choices: ["Yes", "No"],
+                }),
+                groupModulesByAttributes: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_group_modules_by_attributes",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to group modules by their attributes (errors, warnings, assets, optional, orphan or dependent) ?",
+                    choices: ["Yes", "No"],
+                }),
+                groupModulesByCacheStatus: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_group_modules_by_cache_status",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to group modules by their cache status (cached or built and cacheable) ?",
+                    choices: ["Yes", "No"],
+                }),
+                groupModulesByExtension: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_group_modules_by_extension",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to group modules by their extension ?",
+                    choices: ["Yes", "No"],
+                }),
+                groupModulesByLayer: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_group_modules_by_layer",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to group modules by their layer ?",
+                    choices: ["Yes", "No"],
+                }),
+                groupModulesByPath: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_group_modules_by_path",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to group modules by their path ?",
+                    choices: ["Yes", "No"],
+                }),
+                groupModulesByType: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_group_modules_by_type",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to group modules by their type ?",
+                    choices: ["Yes", "No"],
+                }),
+                groupReasonsByOrigin: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_group_reasons_by_origin",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to group reasons by their origin module to avoid large set of reasons ?",
+                    choices: ["Yes", "No"],
+                }),
+                cachedAssets: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_cached_assets",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to add information about the cached assets (if 'No' - it's tell to only show the emitted files) ?",
+                    choices: ["Yes", "No"],
+                }),
+                children: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_children",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to add information about the children ?",
+                    choices: ["Yes", "No"],
+                }),
+                chunks: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_chunks",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to add information about the chunk ?",
+                    choices: ["Yes", "No"],
+                }),
+                chunkGroups: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_chunk_groups",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to add information about the namedChunkGroups ?",
+                    choices: ["Yes", "No"],
+                }),
+                chunkModules: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_chunk_modules",
+                    type: "input",
+                    message: "(BundleAnalyzer) Do you want to add information about the built modules to information about the chunk ?",
+                }),
+                chunkOrigins: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_chunk_origins",
+                    type: "input",
+                    message: "(BundleAnalyzer) Do you want to add information about the origins of chunks merging ?",
+                }),
+                chunkSort: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_chunk_sort",
+                    type: "list",
+                    message: "(BundleAnalyzer) What is the field would be for .... ?",
+                    choices: [
+                        "id",
+                        "name",
+                        "size",
+                        "chunks",
+                        "erros",
+                        "warnings",
+                        "failed",
+                        "cacheable",
+                        "built",
+                        "prefetched",
+                        "optional",
+                        "identifier",
+                        "index",
+                        "index2",
+                        "profile",
+                        "issuer",
+                        "issuerId",
+                        "issuerName",
+                        "issuerPath",
+                    ],
+                }),
+                context: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_context",
+                    type: "input",
+                    message: "(BundleAnalyzer) What is the directory path for shortening the request information would be ?",
+                }),
+                colors: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_colors",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to have output in the different colors ?",
+                    choices: ["Yes", "No"],
+                }),
+                depth: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_depth",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to display the distance from the entry point for each module ?",
+                    choices: ["Yes", "No"],
+                }),
+                entrypoints: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_entrypoints",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to display the entry points with the corresponding bundles ?",
+                    choices: ["Yes", "No"],
+                }),
+                env: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_env",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to display the --env information ?",
+                    choices: ["Yes", "No"],
+                }),
+                orphanModules: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_orphan_modules",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to hide orhpan modules (orphan - it's modules, which not included in any chunk) ?",
+                    choices: ["Yes", "No"],
+                }),
+                errors: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_errors",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to display errors ?",
+                    choices: ["Yes", "No"],
+                }),
+                errorDetails: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_error_details",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to add the details to the erros ?",
+                    choices: ["Yes", "No"],
+                }),
+                errorStack: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_error_stack",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to show stack trace of errors ?",
+                    choices: ["Yes", "No"],
+                }),
+                excludeAssets: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_exclude_assets",
+                    type: "input",
+                    message: "(BundleAnalyzer) What is the A fallback value for stats options would be (when an option is not defined. It has precedence over local webpack defaults) ?",
+                }),
+                excludeModules: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_exclude_modules",
+                    type: "input",
+                    message: "(BundleAnalyzer) What is the A fallback value for stats options would be (when an option is not defined. It has precedence over local webpack defaults) ?",
+                }),
+                hash: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_hash",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to add information about the hash of the compilation ?",
+                    choices: ["Yes", "No"],
+                }),
+                logging: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_logging",
+                    type: "list",
+                    message: "(BundleAnalyzer) What is the logging output do you want to add ?",
+                    choices: ["none", "error", "info", "warn", "log", "verbose"],
+                }),
+                loggingDebug: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_logging_debug",
+                    type: "input",
+                    message: "(BundleAnalyzer) What is the A fallback value for stats options would be (when an option is not defined. It has precedence over local webpack defaults) ?",
+                }),
+                loggingTrace: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_logging_trace",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to enable stack straces in the logging ouput for errors, warning and traces ?",
+                    choices: ["Yes", "No"],
+                }),
+                modules: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_modules",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to add information about the built modules ?",
+                    choices: ["Yes", "No"],
+                }),
+                modulesSort: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_module_sort",
+                    type: "list",
+                    message: "(BundleAnalyzer) What is the field you want to use for sort the modules ?",
+                    choices: [
+                        "id",
+                        "name",
+                        "size",
+                        "chunks",
+                        "erros",
+                        "warnings",
+                        "failed",
+                        "cacheable",
+                        "built",
+                        "prefetched",
+                        "optional",
+                        "identifier",
+                        "index",
+                        "index2",
+                        "profile",
+                        "issuer",
+                        "issuerId",
+                        "issuerName",
+                        "issuerPath",
+                    ],
+                }),
+                moduleTrace: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_module_trace",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to show dependencies and the origin of warnings/erros ?",
+                    choices: ["Yes", "No"],
+                }),
+                optimizationBailout: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_optimization_bailout",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to show the reasons why optimization bailed out for modules ?",
+                    choices: ["Yes", "No"],
+                }),
+                outputPath: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_output_path",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to show an outputPath ?",
+                    choices: ["Yes", "No"],
+                }),
+                performance: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_performance",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to show performance hint when the file size exceeds ?",
+                    choices: ["Yes", "No"],
+                }),
+                preset: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_preset",
+                    type: "list",
+                    message: "(BundleAnalyzer) What is the type of preset you would choose that gets displayed ?",
+                    choices: [
+                        "errors-only",
+                        "errors-warnings",
+                        "minimal",
+                        "none",
+                        "normal",
+                        "verbose",
+                        "detailed",
+                        "summary",
+                    ],
+                }),
+                providedExports: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_provided_exports",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to show the exports of the modules ?",
+                    choices: ["Yes", "No"],
+                }),
+                errorsCount: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_errors_count",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to add errors count ?",
+                    choices: ["Yes", "No"],
+                }),
+                warningsCount: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_warnings_count",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to add warnings count ?",
+                    choices: ["Yes", "No"],
+                }),
+                publicPath: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_public_path",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to show the publicPath ?",
+                    choices: ["Yes", "No"],
+                }),
+                reasons: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_reasons",
+                    type: "list",
+                    message: "(BundleAnalyzer) Do you want to add information about the reasons of why modules are included ?",
+                    choices: ["Yes", "No"],
+                }),
+                reasonsSpace: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_reasons_space",
+                    type: "input",
+                    message: "(BundleAnalyzer) How many reasons would be displayed (example: 100000) ?",
+                }),
+                relatedAssets: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_related_assets",
+                    type: "list",
+                    message: "(BundleAnalyzer.stats) Do you want to add information about assets that are related to other assets(like SourceMaps for assets) ?",
+                    choices: ["Yes", "No"],
+                }),
+                source: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_source",
+                    type: "list",
+                    message: "(BundleAnalyzer.stats) Do you want to add the source code of modules ?",
+                    choices: ["Yes", "No"],
+                }),
+                timings: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_timings",
+                    type: "list",
+                    message: "(BundleAnalyzer.stats) Do you want to add the timings information ?",
+                    choices: ["Yes", "No"],
+                }),
+                ids: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_ids",
+                    type: "list",
+                    message: "(BundleAnalyzer.stats) Do you want to add IDs of modules and chunks ?",
+                    choices: ["Yes", "No"],
+                }),
+                usedExports: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_used_exports",
+                    type: "list",
+                    message: "(BundleAnalyzer.stats) Do you want to show which exports of a module are used ?",
+                    choices: ["Yes", "No"],
+                }),
+                version: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_version",
+                    type: "list",
+                    message: "(BundleAnalyzer.stats) Do you want to add information about the webpack version used ?",
+                    choices: ["Yes", "No"],
+                }),
+                chunkGroupAuxiliary: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_chunk_group_auxiliary",
+                    type: "list",
+                    message: "(BundleAnalyzer.stats) Do you want to display auxiliary assets in chunk groups",
+                    choices: ["Yes", "No"],
+                }),
+                chunkGroupChildren: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_chunk_group_children",
+                    type: "list",
+                    message: "(BundleAnalyzer.stats) Do you want to display children of the chunk groups (e.g. prefetched, preloaded chunks and assets) ?",
+                    choices: ["Yes", "No"],
+                }),
+                chunkGroupMaxAssets: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_chunk_group_max_assets",
+                    type: "input",
+                    message: "(BundleAnalyzer.stats) What is the limit of assets displayed in chunk groups would be ?",
+                }),
+                warnings: await inquirer_1.default.prompt({
+                    name: "question_analyzer_statsoptions_all",
+                    type: "list",
+                    message: "(BundleAnalyzer.stats) Do you want to add warnings ?",
+                    choices: ["Yes", "No"],
+                }),
+            },
+            excludeAssets: await inquirer_1.default.prompt({
+                name: "question_analyzer_exclude_assets",
+                type: "input",
+                message: "What is the assets do you want to exclude ?",
+            }),
+            logLevel: await inquirer_1.default.prompt({
+                name: "question_analyzer_log_level",
+                type: "list",
+                message: "(BundleAnalyzer) What is the log level would be used for checked how much details the plugin outputs ?",
+                choices: ["info", "warn", "error", "silent"],
+            }),
+        }
+        : void 0;
+}
+exports.bundleAnalyzerSupport = bundleAnalyzerSupport;
+async function closureLibrarySupport(response) {
+    return response === "Yes" ? {} : void 0;
+}
 async function isEnvironmentVariables() {
     return await inquirer_1.default.prompt({
         name: "question_environment_variables",
@@ -698,7 +1335,7 @@ async function isLinter() {
 }
 exports.isLinter = isLinter;
 async function isLinterType(response, type) {
-    return type === "Typescript" ? setUpTsLint() : setUpEslint(response);
+    return setUpEslint(response);
 }
 exports.isLinterType = isLinterType;
 async function setUpEslint(response) {
@@ -820,8 +1457,6 @@ async function hashModuleIdsSupport(response) {
         : void 0;
 }
 exports.hashModuleIdsSupport = hashModuleIdsSupport;
-async function setUpTsLint() { }
-exports.setUpTsLint = setUpTsLint;
 async function isLocalizeAnswer() {
     return await inquirer_1.default.prompt({
         name: "question_is_localize",
@@ -1066,6 +1701,72 @@ async function chooseStaticFilesLoader(response) {
         : void 0;
 }
 exports.chooseStaticFilesLoader = chooseStaticFilesLoader;
+async function copyPluginSetup() {
+    return {
+        patterns: {
+            from: await inquirer_1.default.prompt({
+                name: "question_copy_concurrency",
+                type: "input",
+                message: "How many limits the number of simultaneous requests would be to fs ?",
+            }),
+            to: await inquirer_1.default.prompt({
+                name: "question_copy_concurrency",
+                type: "input",
+                message: "How many limits the number of simultaneous requests would be to fs ?",
+            }),
+            context: await inquirer_1.default.prompt({
+                name: "question_copy_concurrency",
+                type: "input",
+                message: "How many limits the number of simultaneous requests would be to fs ?",
+            }),
+            globOptions: {
+                ignore: await inquirer_1.default.prompt({
+                    name: "question_copy_concurrency",
+                    type: "input",
+                    message: "How many limits the number of simultaneous requests would be to fs ?",
+                }),
+            },
+            filter: await inquirer_1.default.prompt({
+                name: "question_copy_concurrency",
+                type: "input",
+                message: "How many limits the number of simultaneous requests would be to fs ?",
+            }),
+            toType: await inquirer_1.default.prompt({
+                name: "question_copy_concurrency",
+                type: "input",
+                message: "How many limits the number of simultaneous requests would be to fs ?",
+            }),
+            force: await inquirer_1.default.prompt({
+                name: "question_copy_concurrency",
+                type: "input",
+                message: "How many limits the number of simultaneous requests would be to fs ?",
+            }),
+            priority: await inquirer_1.default.prompt({
+                name: "question_copy_concurrency",
+                type: "input",
+                message: "How many limits the number of simultaneous requests would be to fs ?",
+            }),
+            cache: await inquirer_1.default.prompt({
+                name: "question_copy_concurrency",
+                type: "input",
+                message: "How many limits the number of simultaneous requests would be to fs ?",
+            }),
+            noErrorOnMissing: await inquirer_1.default.prompt({
+                name: "question_copy_concurrency",
+                type: "input",
+                message: "How many limits the number of simultaneous requests would be to fs ?",
+            }),
+        },
+        options: {
+            concurrency: await inquirer_1.default.prompt({
+                name: "question_copy_concurrency",
+                type: "input",
+                message: "How many limits the number of simultaneous requests would be to fs ?",
+            }),
+        },
+    };
+}
+exports.copyPluginSetup = copyPluginSetup;
 async function isIgnoreSomeFiles() {
     return await inquirer_1.default.prompt({
         name: "question_is_ignore_some_files",
