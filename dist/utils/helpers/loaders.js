@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setFontsExtensions = exports.setImageExtensions = exports.setStaticLoader = exports.setCsvLoader = exports.setYamlLoader = exports.setXmlLoader = exports.parseIntegration = exports.setCoffeeScript = exports.parseHtmlLoaders = exports.parseCssLoaders = exports.setHtmlLoader = exports.setCssPreprocessorLoader = exports.langLoader = void 0;
+exports.setFontsExtensions = exports.setImageExtensions = exports.setStaticLoader = exports.setCsvLoader = exports.setNodeModules = exports.setYamlLoader = exports.setTwigLoader = exports.setLuaLoader = exports.setElmLoader = exports.setXmlLoader = exports.parseIntegration = exports.setCoffeeScript = exports.parseHtmlLoaders = exports.parseCssLoaders = exports.setHtmlLoader = exports.setCssPreprocessorLoader = exports.langLoader = void 0;
 const dev_mode_1 = require("../dev-mode");
 const text_1 = require("../text");
 const expression_1 = require("./expression");
@@ -73,8 +73,7 @@ function setHtmlLoader(loaderType, presetType) {
                     : loaderType === "Jade"
                         ? { expression: /.jade$/, loader: "jade-loader" }
                         : { expression: /.html$/, loader: "html-loader" };
-    return `
-    {
+    return `{
       test: ${type.expression},
       use: [${type.loader}]
     };`;
@@ -91,7 +90,9 @@ async function parseHtmlLoaders(loaderType) {
                 ? "handlebards-loader"
                 : loader === "Jade"
                     ? "jade-loader"
-                    : "html-loader");
+                    : loader === "PostHTML"
+                        ? "posthtml-loader"
+                        : "html-loader");
 }
 exports.parseHtmlLoaders = parseHtmlLoaders;
 async function parseCssLoaders(loaderType) {
@@ -176,6 +177,56 @@ function setFontsExtensions(loaderType, staticLoader, fontsDir) {
   `;
 }
 exports.setFontsExtensions = setFontsExtensions;
+function setNodeModules() {
+    `
+    {
+      test: /\.node$/,
+      loader: "node-loader",
+      options: {
+        name: "[path][name].[ext]"
+      }
+    },
+  `;
+}
+exports.setNodeModules = setNodeModules;
+function setLuaLoader(options) {
+    return `
+    {
+      test: /\.lua$/,
+      use: [{ loader: "fengari-loader", options: { strip: ${options.strip} } }]
+    },
+  `;
+}
+exports.setLuaLoader = setLuaLoader;
+function setElmLoader(options) {
+    return `
+    {
+      test: /\.elm$/,
+      exclude: [/elm-stuff/, /node_modules/],
+      use: {
+        loader: 'elm-webpack-loader',
+        options: {
+          optimize: ${options.optimize},
+          debug: ${options.debug},
+          runtimeOptions: [${options.runtimeOptions.join(", ")}],
+          files: [${options.files.join(", ")}]
+        }
+      }
+    },
+  `;
+}
+exports.setElmLoader = setElmLoader;
+function setTwigLoader() {
+    return `
+    {
+      test: /\.twig$/,
+      use: {
+        loader: 'twig-loader'
+      }
+    },
+  `;
+}
+exports.setTwigLoader = setTwigLoader;
 function setCoffeeScript() {
     return `
       {

@@ -1,4 +1,4 @@
-import { outputDir, setElmSupport, setEnvironmentVariables } from "./answers";
+import { outputDir, setEnvironmentVariables } from "./answers";
 import {
   optimizeJSONFiles,
   optimizeProductionCSS,

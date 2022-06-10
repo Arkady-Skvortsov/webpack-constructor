@@ -4,7 +4,6 @@ import inquirer from "inquirer";
 import { preset } from "./helpers/enum";
 import { generateExtensions } from "./helpers/extensions";
 import { cacheType, linterChoose, questionResponse } from "./helpers/types";
-import { parseString } from "./text";
 
 async function basicChoose() {
   return await inquirer.prompt({
@@ -1488,15 +1487,6 @@ async function isNodeSupport() {
   })
 }
 
-async function isMarkdownSupport() {
-  return await inquirer.prompt({
-    name: "question_is_markdown_loader",
-    type: "list",
-    message: "Do you want to load .md files ?",
-    choices: ["Yes", "No"]
-  })
-}
-
 async function isElmSupport() {
   return await inquirer.prompt({
     name: "question_is_elm_support",
@@ -2192,7 +2182,8 @@ async function minifyJSONOptions(response: questionResponse) {
             name: "question_is_space",
             type: "input",
             message:
-              "(minifyJSON) What is the space would be for json minimizer (example: \t) ?",
+              "(minifyJSON) What is the space would be for json minimizer (example: /\t) ?",
+            default: "/\t"
           }),
         },
       }
@@ -2228,7 +2219,6 @@ export {
   hashModuleIdsSupport,
   bannerOptionsSupport,
   isPrefetch,
-  isMarkdownSupport,
   isNodeSupport,
   isAutomaticPrefetch,
   prefetchOptionsSupport,

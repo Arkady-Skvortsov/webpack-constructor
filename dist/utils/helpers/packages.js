@@ -39,7 +39,9 @@ async function installPackagesForPresets(presetType, mode, version, type, custom
             : (0, text_1.parseString)("")}
           ${customOptions.isCoffeScriptSupport
             ? (0, text_1.parseString)("coffeescript coffee-loader")
-            : (0, text_1.parseString)("")} ${customOptions.isXmlSupport ? (0, text_1.parseString)("xml-loader") : (0, text_1.parseString)("")} ${customOptions.isCsvSupport ? (0, text_1.parseString)("csv-loader") : (0, text_1.parseString)("")} ${customOptions.isPwaAnswer &&
+            : (0, text_1.parseString)("")} ${customOptions.isXmlSupport ? (0, text_1.parseString)("xml-loader") : (0, text_1.parseString)("")} ${customOptions.isCsvSupport ? (0, text_1.parseString)("csv-loader") : (0, text_1.parseString)("")} 
+      ${customOptions.isLuaSupport ? (0, text_1.parseString)("fengari-loader") : (0, text_1.parseString)("")}
+      ${customOptions.isPwaAnswer &&
             !["Vue", "React", "Svelte"].includes(presetType)
             ? (0, text_1.parseString)("workbox-webpack-plugin http-server")
             : (0, text_1.parseString)("")} ${customOptions.isCompressionSupport

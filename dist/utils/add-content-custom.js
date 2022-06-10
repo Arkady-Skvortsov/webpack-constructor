@@ -31,9 +31,13 @@ module.exports = {
       ${options.isXmlSupport ? (0, loaders_1.setXmlLoader)() : (0, text_1.parseString)("")}
       ${options.isYamlSupport ? (0, loaders_1.setYamlLoader)() : (0, text_1.parseString)("")}
       ${options.isCsvSupport ? (0, loaders_1.setCsvLoader)() : (0, text_1.parseString)("")}
+      ${options.isLuaSupport ? (0, loaders_1.setLuaLoader)(options.luaOptions) : (0, text_1.parseString)("")}
+      ${options.isElmSupport ? (0, loaders_1.setElmLoader)(options.elmOptions) : (0, text_1.parseString)("")}
+      ${options.isTwigSupport ? (0, loaders_1.setTwigLoader)() : (0, text_1.parseString)("")}
       ${options.isImageSupport
         ? (0, loaders_1.setImageExtensions)(options.imageExtensionsSupport, options.staticLoader)
         : (0, text_1.parseString)("")}
+      ${options.isNodeModulesSupport ? (0, loaders_1.setNodeModules)() : (0, text_1.parseString)("")}
       ${options.isFontsSupport
         ? (0, loaders_1.setFontsExtensions)(options.fontsExtensionsSupport, options.staticLoader, options.fontsOutputDirectory)
         : (0, text_1.parseString)("")}

@@ -42,6 +42,14 @@ async function WebpackConfigCustom(presetType, mode) {
     const isFontsSupport = await (0, answers_1.isFontsAnswer)();
     const fontsExtensionsSupport = await (0, answers_1.fontsExtensions)(isFontsSupport.is_fonts);
     const fontsOutDirSupport = await (0, answers_1.fontsOutDir)(isFontsSupport.is_fonts);
+    const isNodeModulesSupport = await (0, answers_1.isNodeSupport)();
+    const istwigSupport = await (0, answers_1.isTwigSupport)();
+    const isluaSupport = await (0, answers_1.setLuaSupport)();
+    const luaOptions = await (0, answers_1.setLuaOptions)(isluaSupport.question_lua_support);
+    const iselmSupport = await (0, answers_1.isElmSupport)();
+    const elmOptions = await (0, answers_1.setElmSupport)(iselmSupport.question_is_elm_support);
+    const isthreadSupport = await (0, answers_1.isThread)();
+    const threadSupport = await (0, answers_1.setThreadLoader)(isthreadSupport.question_is_thread_support);
     const isLinterSupport = await (0, answers_1.isLinter)();
     const isLinterTypeSupport = await (0, answers_1.isLinterType)(isLinterSupport.question_set_linter_support, checkLangPreset?.langForFramework.question_preset_framework_config);
     const setUpEslintSupport = await (0, answers_1.setUpEslint)(isLinterSupport.question_set_linter_support);
@@ -114,6 +122,29 @@ async function WebpackConfigCustom(presetType, mode) {
         isFontsSupport: isFontsSupport.is_fonts,
         fontsExtensionsSupport: fontsExtensionsSupport?.question_fonts_extensions,
         fontsOutputDirectory: fontsOutDirSupport?.question_fonts_dir,
+        isNodeModulesSupport: isNodeModulesSupport.question_is_node_loader,
+        isTwigSupport: istwigSupport.question_is_twig_support,
+        isLuaSupport: isluaSupport.question_lua_support,
+        luaOptions: {
+            strip: luaOptions?.question_lua_options,
+        },
+        isElmSupport: iselmSupport.question_is_elm_support,
+        elmOptions: {
+            optimize: elmOptions?.optimize.question_is_optimize,
+            debug: elmOptions?.debug.question_is_debug,
+            runtimeOptions: elmOptions?.runtimeOptions.question_runtime_options,
+            files: elmOptions?.files.question_files_options,
+        },
+        isThreadSupport: isthreadSupport.question_is_thread_support,
+        threadOptions: {
+            name: threadSupport?.name.question_pool_name,
+            workers: threadSupport?.wokers.question_workers,
+            workerParallelJobs: threadSupport?.workerParallelJobs.question_worker_parallel_jobs,
+            workerNodeArgs: threadSupport?.workerNodeArgs.question_woker_nodejs_arguments,
+            poolRespawn: threadSupport?.poolRespawn.question_if_pool_respawn,
+            poolTimeout: threadSupport?.poolTimeout.question_pool_timeout,
+            poolParallelJobs: threadSupport?.poolParallelJobs.question_parallel_jobs
+        },
         isXmlSupport: isXmlSupport.question_xml_exension,
         isYamlSupport: isYamlSupport.question_yaml_extension,
         isCsvSupport: isCsvSupport.question_csv_extension,

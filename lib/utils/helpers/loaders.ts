@@ -1,4 +1,3 @@
-import { LookupAllOptions } from "dns";
 import { setCSSRuleUse } from "../dev-mode";
 import { parseString } from "../text";
 import { preset } from "./enum";
@@ -8,8 +7,6 @@ import {
   cssLoader,
   fontsExtensions,
   htmlLoader,
-  imageExtensions,
-  questionResponse,
   staticLoader,
   webpackMode,
 } from "./types";
@@ -222,24 +219,6 @@ function setNodeModules() {
   ` 
 }
 
-function setMarkdownSupport(): string {
-  return `
-    {
-      test: /\.md$/,
-      use: [
-        {
-          loader: "remark-loader",
-          options: {
-            remarkOptions: {
-              plugins: [RemarkHTML],
-            },
-          },
-        },
-      ],
-    }
-  `
-}
-
 function setLuaLoader(options: luaOptions): string {
   return `
     {
@@ -260,8 +239,7 @@ function setElmLoader(options: elmOptions): string {
           optimize: ${options.optimize},
           debug: ${options.debug},
           runtimeOptions: [${options.runtimeOptions.join(", ")}],
-          files: [${options.files.join(", ")}],
-          pathToElm: ${options.pathToElm}
+          files: [${options.files.join(", ")}]
         }
       }
     },

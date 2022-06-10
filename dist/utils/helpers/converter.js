@@ -14,14 +14,16 @@ const transfromHtmlPreprocessorToExtension = (type) => type === "EJS"
             ? ".pug"
             : type === "Jade"
                 ? ".jade"
-                : (0, text_1.parseString)("");
+                : type === "PostHTML"
+                    ? ".html"
+                    : (0, text_1.parseString)("");
 exports.transfromHtmlPreprocessorToExtension = transfromHtmlPreprocessorToExtension;
 const transformCssPreProcessorToExtension = (type) => type === "(Sass/Scss)"
     ? ".sass .scss".split("\n").join(" ")
     : type === "Less"
         ? ".less"
         : type === "PostCss"
-            ? ""
+            ? ".css"
             : type === "Stylus"
                 ? ".styl"
                 : (0, text_1.parseString)("");

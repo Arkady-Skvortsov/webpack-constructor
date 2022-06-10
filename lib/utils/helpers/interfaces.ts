@@ -51,7 +51,6 @@ interface customWebpackConfig {
   isFontsSupport: questionResponse;
   fontsExtensionsSupport: fontsExtensions;
   isNodeModulesSupport: questionResponse;
-  isMarkDownSupport: questionResponse;
   isTwigSupport: questionResponse;
   isLuaSupport: questionResponse;
   luaOptions: luaOptions;
@@ -394,10 +393,6 @@ interface avoidErrorsOptions {
   quiet: any;
 }
 
-interface markDownOptions {
-
-}
-
 interface threadOptions {
   workers: number;
   workerParallelJobs: number;
@@ -417,7 +412,6 @@ interface elmOptions {
   debug: boolean;
   runtimeOptions: string[];
   files: string[];
-  pathToElm: string;
 }
 
 interface cacheOptions {
@@ -448,7 +442,6 @@ export {
   dllOptions,
   avoidErrorsOptions,
   esLintOptions,
-  markDownOptions,
   bundleAnalyzerOptions,
   cleanBuildOptions,
   bannerOptions,

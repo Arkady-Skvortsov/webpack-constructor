@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isCssPreprocessorsAnswer = exports.isCsvExtension = exports.cssPreprocessors = exports.contextAnswer = exports.imagesOutDir = exports.isCacheWebpack = exports.isXmlExtension = exports.htmlPreprocessorsAnswer = exports.fontsExtensions = exports.isLazyLoading = exports.isImagesAnswer = exports.isFontsAnswer = exports.isDevServerAnswer = exports.checkPresetFrameworkConfig = exports.checkPresetHTML = exports.chooseWebpackMode = exports.chooseWebpackVersion = exports.chooseBasicPreset = exports.checkPresetTsConfig = exports.fontsDir = exports.devServerPort = exports.chooseWatchFiles = exports.ChooseCacheOptions = exports.copyPluginSetup = exports.cacheTypeOptions = exports.avoidErrorsOptions = exports.isAvoidErrorStyles = exports.basicChoose = exports.isPwaSupport = exports.prefetchOptionsSupport = exports.isAutomaticPrefetch = exports.isPrefetch = exports.bannerOptionsSupport = exports.hashModuleIdsSupport = exports.isCss = exports.isHtml = exports.isHashModulePath = exports.splitChunksWebpack = exports.minifyJSONOptions = exports.setUpEslint = exports.isLinterType = exports.isLinter = exports.isMinifyJSONFiles = exports.imageExtensions = exports.isYamlExtension = exports.entryPointsAnswer = exports.supportFromCoffeScriptAnswer = exports.staticLoader = exports.outputDir = exports.integrationInstruments = void 0;
-exports.isIgnoreSomeFilesWatchMode = exports.setFilesForIgnoreInWatchMode = exports.setFilesForIgnore = exports.setAliasAnswer = exports.setMinimumChunkSize = exports.setMaximumChunkSize = exports.isIntegrationInstrument = exports.isIgnoreSomeFiles = exports.isCreateChromeProfileFile = exports.setCompressionOptions = exports.setGlobalVariable = exports.isGlobalVariableAnswer = exports.isCompressionAnswer = exports.isMaximumChunkSize = exports.isMinimumChunkSize = exports.setLocalizeDetails = exports.isHMRAnswer = exports.isLocalizeAnswer = exports.setEnvironmentVariables = exports.setFilesCatalogesCopy = exports.isCopyStaticFiles = exports.isEnvironmentVariables = exports.chooseStaticFilesLoader = exports.isClosureLibrary = exports.isBundleAnalyzer = exports.bundleAnalyzerSupport = exports.isBannerPlugin = exports.cleanPluginSetup = exports.isCleanPlugin = exports.isCopyPlugin = exports.fontsOutDir = exports.isSplittingChunks = exports.isDiscoverPreviousCompilation = exports.supportSplitBundlesThroughDLL = exports.isSplitBundlesThroughDLL = exports.isFontsExtensionAnswer = exports.isImageExtensionAnswer = exports.isHtmlPreprocessorAnswer = void 0;
+exports.fontsExtensions = exports.isLazyLoading = exports.isImagesAnswer = exports.isFontsAnswer = exports.isDevServerAnswer = exports.checkPresetFrameworkConfig = exports.checkPresetHTML = exports.chooseWebpackMode = exports.chooseWebpackVersion = exports.chooseBasicPreset = exports.checkPresetTsConfig = exports.fontsDir = exports.devServerPort = exports.chooseWatchFiles = exports.ChooseCacheOptions = exports.copyPluginSetup = exports.cacheTypeOptions = exports.avoidErrorsOptions = exports.isAvoidErrorStyles = exports.basicChoose = exports.isPwaSupport = exports.setThreadLoader = exports.isThread = exports.isTwigSupport = exports.setLuaOptions = exports.setLuaSupport = exports.setElmSupport = exports.isElmSupport = exports.prefetchOptionsSupport = exports.isAutomaticPrefetch = exports.isNodeSupport = exports.isPrefetch = exports.bannerOptionsSupport = exports.hashModuleIdsSupport = exports.isCss = exports.isHtml = exports.isHashModulePath = exports.splitChunksWebpack = exports.minifyJSONOptions = exports.setUpEslint = exports.isLinterType = exports.isLinter = exports.isMinifyJSONFiles = exports.imageExtensions = exports.isYamlExtension = exports.entryPointsAnswer = exports.supportFromCoffeScriptAnswer = exports.staticLoader = exports.outputDir = exports.integrationInstruments = void 0;
+exports.isIgnoreSomeFilesWatchMode = exports.setFilesForIgnoreInWatchMode = exports.setFilesForIgnore = exports.setAliasAnswer = exports.setMinimumChunkSize = exports.setMaximumChunkSize = exports.isIntegrationInstrument = exports.isIgnoreSomeFiles = exports.isCreateChromeProfileFile = exports.setCompressionOptions = exports.setGlobalVariable = exports.isGlobalVariableAnswer = exports.isCompressionAnswer = exports.isMaximumChunkSize = exports.isMinimumChunkSize = exports.setLocalizeDetails = exports.isHMRAnswer = exports.isLocalizeAnswer = exports.setEnvironmentVariables = exports.setFilesCatalogesCopy = exports.isCopyStaticFiles = exports.isEnvironmentVariables = exports.chooseStaticFilesLoader = exports.isClosureLibrary = exports.isBundleAnalyzer = exports.bundleAnalyzerSupport = exports.isBannerPlugin = exports.cleanPluginSetup = exports.isCleanPlugin = exports.isCopyPlugin = exports.fontsOutDir = exports.isSplittingChunks = exports.isDiscoverPreviousCompilation = exports.supportSplitBundlesThroughDLL = exports.isSplitBundlesThroughDLL = exports.isFontsExtensionAnswer = exports.isImageExtensionAnswer = exports.isHtmlPreprocessorAnswer = exports.isCssPreprocessorsAnswer = exports.isCsvExtension = exports.cssPreprocessors = exports.contextAnswer = exports.imagesOutDir = exports.isCacheWebpack = exports.isXmlExtension = exports.htmlPreprocessorsAnswer = void 0;
 const inquirer_1 = __importDefault(require("inquirer"));
 const extensions_1 = require("./helpers/extensions");
 async function basicChoose() {
@@ -40,7 +40,7 @@ async function chooseWebpackMode() {
         name: "question_is_webpack_mode",
         type: "list",
         message: "What is the development mode do you want for webpack ?",
-        choices: ["development", "production"],
+        choices: ["development", "production", "both"],
     });
 }
 exports.chooseWebpackMode = chooseWebpackMode;
@@ -371,41 +371,41 @@ async function cleanPluginSetup(response) {
             dry: await inquirer_1.default.prompt({
                 name: "question_is_copy_plugin",
                 type: "list",
-                message: "Do you want to simulate the removal of files ?",
+                message: "(cleanPlugin) Do you want to simulate the removal of files ?",
                 choices: ["Yes", "No"],
             }),
             verbose: await inquirer_1.default.prompt({
                 name: "question_is_copy_plugin",
                 type: "list",
-                message: "Do you want to write logs in console ?",
+                message: "(cleanPlugin) Do you want to write logs in console ?",
                 choices: ["Yes", "No"],
             }),
             cleanStaleWebpackAssets: await inquirer_1.default.prompt({
                 name: "question_is_copy_plugin",
                 type: "list",
-                message: "Do you want to automatically remove all unused webpack assets on rebuild ?",
+                message: "(cleanPlugin) Do you want to automatically remove all unused webpack assets on rebuild ?",
                 choices: ["Yes", "No"],
             }),
             protectWebpackAssets: await inquirer_1.default.prompt({
                 name: "question_is_copy_plugin",
                 type: "list",
-                message: "Do you want to not allow removal of current webpack assets ?",
+                message: "(cleanPlugin) Do you want to not allow removal of current webpack assets ?",
                 choices: ["Yes", "No"],
             }),
             cleanOnceBeforeBuildPlugin: await inquirer_1.default.prompt({
                 name: "question_clean_once_before_build_plugin",
                 type: "input",
-                message: "What is the files would be to remove after every build (including watch mode) that match this pattern(Used for files that are not created directly by Webpack) ?",
+                message: "(cleanPlugin) What is the files would be to remove after every build (including watch mode) that match this pattern(Used for files that are not created directly by Webpack) ?",
             }),
             cleanAfterEveryBuildPatterns: await inquirer_1.default.prompt({
                 name: "question_clean_after_every_build_patterns",
                 type: "input",
-                message: "What is the files would be to Removes files once prior to Webpack compilation. Not included in rebuilds (watch mode)?",
+                message: "(cleanPlugin) What is the files would be to Removes files once prior to Webpack compilation. Not included in rebuilds (watch mode)?",
             }),
             dangerouslyAllowCleanPatternsOutsideProject: await inquirer_1.default.prompt({
                 name: "question_dangerously_allow_clean_patterns_outside_project",
                 type: "list",
-                message: "Do you want to allow clean patterns outside of process.cwd() (requires dry option to be explicitly set) ?",
+                message: "(cleanPlugin) Do you want to allow clean patterns outside of process.cwd() (requires dry option to be explicitly set) ?",
                 choices: ["Yes", "No"],
             }),
         }
@@ -416,7 +416,7 @@ async function isCopyStaticFiles() {
     return await inquirer_1.default.prompt({
         name: "is_copy_static_files",
         type: "list",
-        message: "Do you want copy ready catalogs/files in build folders ",
+        message: "(copyStaticFiles) Do you want copy ready catalogs/files in build folders ",
         choices: ["Yes", "No"],
     });
 }
@@ -475,7 +475,7 @@ async function htmlPreprocessorsAnswer(response) {
             name: "question_html_preprocessor",
             type: "checkbox",
             message: "What is html preprocessor(s) do you want to use ?",
-            choices: ["Pug", "Jade", "EJS", "HandleBars"],
+            choices: ["Pug", "Jade", "EJS", "HandleBars", "POSTHTML(⚠)"],
         })
         : void 0;
 }
@@ -663,12 +663,12 @@ async function prefetchOptionsSupport(response) {
             context: await inquirer_1.default.prompt({
                 name: "question_context",
                 type: "input",
-                message: "What is the absolute path would be to directory ?",
+                message: "(prefetchOptions) What is the absolute path would be to directory ?",
             }),
             request: await inquirer_1.default.prompt({
                 name: "question_request",
                 type: "input",
-                message: "What is the request string for a normal module ?",
+                message: "(prefetchOptions) What is the request string for a normal module ?",
             }),
         }
         : void 0;
@@ -698,39 +698,39 @@ async function bannerOptionsSupport(response) {
             banner: await inquirer_1.default.prompt({
                 name: "question_copy_concurrency",
                 type: "input",
-                message: "What is the name of you'r banner would be ?",
+                message: "(bannerOptions) What is the name of you'r banner would be ?",
             }),
             raw: await inquirer_1.default.prompt({
                 name: "question_copy_concurrency",
                 type: "list",
-                message: "Do you want that you'r banner would be wrapped in a comment ?",
+                message: "(bannerOptions) Do you want that you'r banner would be wrapped in a comment ?",
                 choices: ["Yes", "No"],
             }),
             entryOnly: await inquirer_1.default.prompt({
                 name: "question_copy_concurrency",
                 type: "list",
-                message: "Do you want that you'r banner would be only added to the entry chunks ?",
+                message: "(bannerOptions) Do you want that you'r banner would be only added to the entry chunks ?",
                 choices: ["Yes", "No"],
             }),
             test: await inquirer_1.default.prompt({
                 name: "question_copy_concurrency",
                 type: "input",
-                message: "How many limits the number of simultaneous requests would be to fs ?",
+                message: "(bannerOptions) How many limits the number of simultaneous requests would be to fs ?",
             }),
             include: await inquirer_1.default.prompt({
                 name: "question_copy_concurrency",
                 type: "input",
-                message: "How many limits the number of simultaneous requests would be to fs ?",
+                message: "(bannerOptions) How many limits the number of simultaneous requests would be to fs ?",
             }),
             exclude: await inquirer_1.default.prompt({
                 name: "question_copy_concurrency",
                 type: "input",
-                message: "How many limits the number of simultaneous requests would be to fs ?",
+                message: "(bannerOptions) How many limits the number of simultaneous requests would be to fs ?",
             }),
             footer: await inquirer_1.default.prompt({
                 name: "question_copy_concurrency",
                 type: "list",
-                message: "Do you want that you'r banner would be placed at the end of the compilation ?",
+                message: "(bannerOptions) Do you want that you'r banner would be placed at the end of the compilation ?",
                 choices: ["Yes", "No"],
             }),
         }
@@ -1315,16 +1315,138 @@ async function setEnvironmentVariables() {
         name: await inquirer_1.default.prompt({
             name: "set_environment_names",
             type: "input",
-            message: "What is name would be for environment variable (example: PG_DB PG_PORT) ?",
+            message: "(env_variables) What is name would be for environment variable (example: PG_DB PG_PORT) ?",
         }),
         value: await inquirer_1.default.prompt({
             name: "set_environment_values",
             type: "input",
-            message: "What is value would be for environment variable (example: mydatabase 5423)",
+            message: "(env_variables) What is value would be for environment variable (example: mydatabase 5423)",
         }),
     };
 }
 exports.setEnvironmentVariables = setEnvironmentVariables;
+async function isTwigSupport() {
+    return await inquirer_1.default.prompt({
+        name: "question_is_twig_support",
+        type: "list",
+        message: "Do you want to support Twig.js templates ?",
+        choices: ["Yes", "No"]
+    });
+}
+exports.isTwigSupport = isTwigSupport;
+async function setLuaSupport() {
+    return await inquirer_1.default.prompt({
+        name: "question_lua_support",
+        type: "list",
+        message: "Do you want to support Lua ?",
+        choices: ["Yes", "No"]
+    });
+}
+exports.setLuaSupport = setLuaSupport;
+async function setLuaOptions(response) {
+    return response === "Yes" ? await inquirer_1.default.prompt({
+        name: "question_lua_options",
+        type: "list",
+        message: "Do you want to emit stripped lua bytecode instead of source ?",
+        choices: ["Yes", "No"]
+    }) : void 0;
+}
+exports.setLuaOptions = setLuaOptions;
+async function isNodeSupport() {
+    return await inquirer_1.default.prompt({
+        name: "question_is_node_loader",
+        type: "list",
+        message: "Do you want to allows to connect native code modules with .node extension (⚠ only works on the node/async-node/electron-main/electron-renderer/electron-preload targets) ?",
+        choices: ["Yes", "No"]
+    });
+}
+exports.isNodeSupport = isNodeSupport;
+async function isElmSupport() {
+    return await inquirer_1.default.prompt({
+        name: "question_is_elm_support",
+        type: "list",
+        message: "Do you want to support Elm ?",
+        choices: ["Yes", "No"]
+    });
+}
+exports.isElmSupport = isElmSupport;
+async function setElmSupport(response) {
+    return response === "Yes" ? {
+        optimize: await inquirer_1.default.prompt({
+            name: "question_is_optimize",
+            type: "list",
+            message: "Do you want to compile bundle in optimize mode ?",
+            choices: ["Yes", "No"]
+        }),
+        debug: await inquirer_1.default.prompt({
+            name: "question_is_debug",
+            type: "list",
+            message: "Do you want to enable Elm's time traveling debugger ?",
+            choices: ["Yes", "No"]
+        }),
+        runtimeOptions: await inquirer_1.default.prompt({
+            name: "question_runtime_options",
+            type: "input",
+            message: "What is additional flag(s) do you want to set for give more memory for (example: -A128M -H128M -n8m) ?"
+        }),
+        files: await inquirer_1.default.prompt({
+            name: "question_files_options",
+            type: "input",
+            message: "What is the files allows you to do the same within webpack (example: Path/to/Main.elm) ?"
+        })
+    } : void 0;
+}
+exports.setElmSupport = setElmSupport;
+async function isThread() {
+    return await inquirer_1.default.prompt({
+        name: "question_is_thread_support",
+        type: "list",
+        message: "Do you want to support thread loader ?",
+        choices: ["Yes", "No"]
+    });
+}
+exports.isThread = isThread;
+async function setThreadLoader(response) {
+    return response === "Yes" ? {
+        wokers: await inquirer_1.default.prompt({
+            name: "question_workers",
+            type: "input",
+            message: "(ThreadSupport) What is the number of spawned workers would be ?"
+        }),
+        workerParallelJobs: await inquirer_1.default.prompt({
+            name: "question_worker_parallel_jobs",
+            type: "input",
+            message: "(ThreadSupport) What is the number of jobs a worker processes in parallel would be ?"
+        }),
+        workerNodeArgs: await inquirer_1.default.prompt({
+            name: "question_woker_nodejs_arguments",
+            type: "input",
+            message: "(ThreadSupport) What is the args ?"
+        }),
+        poolRespawn: await inquirer_1.default.prompt({
+            name: "question_if_pool_respawn",
+            type: "list",
+            message: "(ThreadSupport) Do you want to allow to respawn a dead worker pool (No - for development mode) ?",
+            choices: ["Yes", "No"]
+        }),
+        poolTimeout: await inquirer_1.default.prompt({
+            name: "question_pool_timeout",
+            type: "input",
+            message: "(ThreadSupport) What is the number of timeout for killing the worker processes ?"
+        }),
+        poolParallelJobs: await inquirer_1.default.prompt({
+            name: "question_parallel_jobs",
+            type: "input",
+            message: "(ThreadSupport) What is the number of jobs the poll distributes to the workers would be?"
+        }),
+        name: await inquirer_1.default.prompt({
+            name: "question_pool_name",
+            type: "input",
+            message: "(ThreadSupport) What is the name of the pool would be?"
+        })
+    } : void 0;
+}
+exports.setThreadLoader = setThreadLoader;
 async function isLinter() {
     return await inquirer_1.default.prompt({
         name: "question_set_linter_support",
@@ -1344,74 +1466,74 @@ async function setUpEslint(response) {
             context: await inquirer_1.default.prompt({
                 name: "question_is_context",
                 type: "input",
-                message: "What is the root would be for eslint(example: ./src/utils)?",
+                message: "(EsLint) What is the root would be for eslint(example: ./src/utils)?",
             }),
             eslintPath: await inquirer_1.default.prompt({
                 name: "question_is_eslint_path",
                 type: "input",
-                message: "What is the path to eslint instance that would be used for linting (default: eslint)?",
+                message: "(EsLint) What is the path to eslint instance that would be used for linting (default: eslint)?",
                 default: "eslint",
             }),
             extensions: await inquirer_1.default.prompt({
                 name: "question_eslint_extensions",
                 type: "input",
-                message: "What is the specify extensions that would be checked (example: .js .ts .tsx)?",
+                message: "(EsLint) What is the specify extensions that would be checked (example: .js .ts .tsx)?",
             }),
             exclude: await inquirer_1.default.prompt({
                 name: "question_is_exclude",
                 type: "input",
-                message: "What is the specify files and/or directories to exclude(example: node_modules file.js file2.js)?",
+                message: "(EsLint) What is the specify files and/or directories to exclude(example: node_modules file.js file2.js)?",
             }),
             files: await inquirer_1.default.prompt({
                 name: "question_is_files",
                 type: "input",
-                message: "What is the specify directories, files, or globs would be (example: ./src/utils)?",
+                message: "(EsLint) What is the specify directories, files, or globs would be (example: ./src/utils)?",
             }),
             fix: await inquirer_1.default.prompt({
                 name: "question_is_fix",
                 type: "list",
-                message: "Be careful: this option will change source files",
+                message: "(EsLint) Be careful: this option will change source files",
                 choices: ["Yes", "No"],
             }),
             linDirtyModulesOnly: await inquirer_1.default.prompt({
                 name: "question_is_lin_dirty_modules_only",
                 type: "list",
-                message: "Do you want to lint only changed files, skip lint on start ?",
+                message: "(EsLint) Do you want to lint only changed files, skip lint on start ?",
                 choices: ["Yes", "No"],
             }),
             threads: await inquirer_1.default.prompt({
                 name: "question_is_threads",
                 type: "input",
-                message: "What is the pool size would be for run lint tasks across thread pool (example: 2) ?",
+                message: "(EsLint) What is the pool size would be for run lint tasks across thread pool (example: 2) ?",
             }),
             emitError: await inquirer_1.default.prompt({
                 name: "question_is_emit_error",
                 type: "list",
-                message: "Do you want, that errors found will always be emitted ?",
+                message: "(EsLint) Do you want, that errors found will always be emitted ?",
                 choices: ["Yes", "No"],
             }),
             emitWarning: await inquirer_1.default.prompt({
                 name: "question_is_emit_warning",
                 type: "list",
-                message: "Do you want, that warnings found will always be emitted ?",
+                message: "(EsLint) Do you want, that warnings found will always be emitted ?",
                 choices: ["Yes", "No"],
             }),
             failOnError: await inquirer_1.default.prompt({
                 name: "question_is_fail_on_error",
                 type: "list",
-                message: "Do you want, that will cause the module build to fail if there are any errors ?",
+                message: "(EsLint) Do you want, that will cause the module build to fail if there are any errors ?",
                 choices: ["Yes", "No"],
             }),
             failOnWarning: await inquirer_1.default.prompt({
                 name: "question_is_fail_on_warning",
                 type: "list",
-                message: "Do you want, that will cause the module build to fail if there are any warnings ?",
+                message: "(EsLint) Do you want, that will cause the module build to fail if there are any warnings ?",
                 choices: ["Yes", "No"],
             }),
             quiet: await inquirer_1.default.prompt({
                 name: "question_is_quiet",
                 type: "list",
-                message: "Do you want, that will process and report erros only and ignore warnings ?",
+                message: "(EsLint) Do you want, that will process and report erros only and ignore warnings ?",
                 choices: ["Yes", "No"],
             }),
         }
@@ -1422,7 +1544,7 @@ async function isHashModulePath() {
     return await inquirer_1.default.prompt({
         name: "question_is_hash_module_path",
         type: "list",
-        message: "Do you want to cause hashes to be based on the relative path of the module, generating a four character string as the module id ?",
+        message: "(hashModulePath) Do you want to cause hashes to be based on the relative path of the module, generating a four character string as the module id ?",
         choices: ["Yes", "No"],
     });
 }
@@ -1433,24 +1555,24 @@ async function hashModuleIdsSupport(response) {
             context: await inquirer_1.default.prompt({
                 name: "question_is_context",
                 type: "input",
-                message: "What is the context directory(absolute path) would be for creating names ?",
+                message: "(hashModuleIds) What is the context directory(absolute path) would be for creating names ?",
             }),
             hashFunction: await inquirer_1.default.prompt({
                 name: "question_is_hash_algorithm",
                 type: "input",
-                message: "What is the hashing algorithm would be to use (defaut: md4) ?",
+                message: "(hashModuleIds) What is the hashing algorithm would be to use (defaut: md4) ?",
                 default: "md4",
             }),
             hashDigest: await inquirer_1.default.prompt({
                 name: "question_is_hash_digest",
                 type: "input",
-                message: "What is the encoding to use when generating the hash (default: base64) ?",
+                message: "(hashModuleIds) What is the encoding to use when generating the hash (default: base64) ?",
                 default: "base64",
             }),
             hashDigestLength: await inquirer_1.default.prompt({
                 name: "question_is_hash_digest_list",
                 type: "input",
-                message: "What is the prefix length of the hash digest to use (default: 4) ?",
+                message: "(hashModuleIds) What is the prefix length of the hash digest to use (default: 4) ?",
                 default: "4",
             }),
         }
@@ -1470,7 +1592,7 @@ async function isHMRAnswer() {
     return await inquirer_1.default.prompt({
         name: "question_is_hmr",
         type: "list",
-        message: "Do you want to enable HMR(Hot module replacement) in webpack ?",
+        message: "(HotModuleReplacement) Do you want to enable HMR(Hot module replacement) in webpack ?",
         choices: ["Yes", "No"],
     });
 }
@@ -1490,7 +1612,7 @@ async function isMinimumChunkSize(response) {
         ? await inquirer_1.default.prompt({
             name: "question_is_minimum_chunk_size",
             type: "list",
-            message: "Do you want to set minimum chunk size ?",
+            message: "(MinimumChunkSize) Do you want to set minimum chunk size ?",
             choices: ["Yes", "No"],
         })
         : void 0;
@@ -1501,7 +1623,7 @@ async function isMaximumChunkSize(response) {
         ? await inquirer_1.default.prompt({
             name: "question_is_maximum_chunk_size",
             type: "list",
-            message: "Do you want to set maximum chunk size ?",
+            message: "(MaximumChunkSize) Do you want to set maximum chunk size ?",
             choices: ["Yes", "No"],
         })
         : void 0;
@@ -1511,7 +1633,7 @@ async function isCompressionAnswer() {
     return await inquirer_1.default.prompt({
         name: "question_is_compression_answer",
         type: "list",
-        message: "Do you want to compress webpack ?",
+        message: "(IsCompression) Do you want to compress webpack ?",
         choices: ["Yes", "No"],
     });
 }
@@ -1531,12 +1653,12 @@ async function setGlobalVariable(response) {
             name: await inquirer_1.default.prompt({
                 name: "question_set_global_variable_name",
                 type: "input",
-                message: "What is the name(s) do you want for you variable(s) (example: PRODUCTION BROWSER_SUPPORTS_HTML5) ?",
+                message: "(globalVariable) What is the name(s) do you want for you variable(s) (example: PRODUCTION BROWSER_SUPPORTS_HTML5) ?",
             }),
             value: await inquirer_1.default.prompt({
                 name: "question_set_global_variable_value",
                 type: "input",
-                message: "What is the value(s) do you want for you variable(s) (example: true true) ?",
+                message: "(globalVariable) What is the value(s) do you want for you variable(s) (example: true true) ?",
             }),
         }
         : void 0;
@@ -1547,7 +1669,7 @@ async function cacheTypeOptions(response) {
         ? await inquirer_1.default.prompt({
             name: "question_cache_type",
             type: "list",
-            message: "What is the cache type would be ?",
+            message: "(Cache) What is the cache type would be ?",
             choices: ["memory", "filesystem"],
         })
         : void 0;
@@ -1560,77 +1682,77 @@ async function ChooseCacheOptions(cacheType) {
             name: await inquirer_1.default.prompt({
                 name: "question_cache_name",
                 type: "input",
-                message: "What is the name would be a cache (example: someCache) ?",
+                message: "(Cache) What is the name would be a cache (example: someCache) ?",
             }),
             allowCollectingMemory: await inquirer_1.default.prompt({
                 name: "question_allow_collecting_memory",
                 type: "list",
-                message: "Do you want to collect unused memory allocated during deserialization ?",
+                message: "(Cache) Do you want to collect unused memory allocated during deserialization ?",
                 choices: ["Yes", "No"],
             }),
             cacheDirectory: await inquirer_1.default.prompt({
                 name: "question_cache_directory",
                 type: "input",
-                message: "What is the path to cache directory would be (example: ./src/cache) ?",
+                message: "(Cache) What is the path to cache directory would be (example: ./src/cache) ?",
             }),
             cacheLocation: await inquirer_1.default.prompt({
                 name: "question_cache_location",
                 type: "input",
-                message: "What is the location of cache would be (example: ./src/cache/name_of_cache) ?",
+                message: "(Cache) What is the location of cache would be (example: ./src/cache/name_of_cache) ?",
             }),
             compression: await inquirer_1.default.prompt({
                 name: "question_cache_compression",
                 type: "list",
-                message: "What is the cache compression would be ?",
+                message: "(Cache) What is the cache compression would be ?",
                 choices: ["gzip", "brotli"],
             }),
             hashAlgorithm: await inquirer_1.default.prompt({
                 name: "question_cache_hash_algorithm",
                 type: "input",
-                message: "What is the hash algorithm would be for cache (example: sha256)?",
+                message: "(Cache) What is the hash algorithm would be for cache (example: sha256)?",
             }),
             idleTimeout: await inquirer_1.default.prompt({
                 name: "question_cache_idle_timeout",
                 type: "input",
-                message: "What is the period of time after which the cache should be saved (example: 10) ?",
+                message: "(Cache) What is the period of time after which the cache should be saved (example: 10) ?",
             }),
             idleTimeoutAfterLargeChanges: await inquirer_1.default.prompt({
                 name: "question_cache_idle_timeout_after_large_changes",
                 type: "input",
-                message: "What is the time period after which the cache storing should happen when larger changes have been detected (example: 200) ?",
+                message: "(Cache) What is the time period after which the cache storing should happen when larger changes have been detected (example: 200) ?",
             }),
             idleTimeoutForInitialStore: await inquirer_1.default.prompt({
                 name: "question_cache_idle_timeout_for_initial_store",
                 type: "input",
-                message: " is the time period after which the initial cache storing should happen (example: 200) ?",
+                message: "(Cache) Is the time period after which the initial cache storing should happen (example: 200) ?",
             }),
             maxAge: await inquirer_1.default.prompt({
                 name: "question_cache_max_age",
                 type: "input",
-                message: "What is the amount of time, in milliseconds, that unused cache entries can remain in the filesystem cache(the default is one month) ?",
+                message: "(Cache) What is the amount of time, in milliseconds, that unused cache entries can remain in the filesystem cache(the default is one month) ?",
             }),
             maxMemoryGenerations: await inquirer_1.default.prompt({
                 name: "question_cache_memory_generations",
                 type: "list",
-                message: "What will be the lifetime of unused cache entries in memory cache?",
+                message: "(Cache) What will be the lifetime of unused cache entries in memory cache?",
                 choices: ["0", "1", "10"],
             }),
             profile: await inquirer_1.default.prompt({
                 name: "question_cache_profile",
                 type: "list",
-                message: "Do you want to track and log detailed timing information for individual cache items ?",
+                message: "(Cache) Do you want to track and log detailed timing information for individual cache items ?",
                 choices: ["Yes", "No"],
             }),
             store: await inquirer_1.default.prompt({
                 name: "question_cache_store",
                 type: "list",
-                message: "Do you want to store data when the compiler is idle in one file for all cached items ?",
+                message: "(Cache) Do you want to store data when the compiler is idle in one file for all cached items ?",
                 choices: ["Yes", "No"],
             }),
             version: await inquirer_1.default.prompt({
                 name: "question_cache_version",
                 type: "input",
-                message: "What version of the data cache will be? (details: different versions do not allow cache reuse and override existing content. Update the version if the configuration is changed in such a way that it does not allow cache reuse. This will invalidate the cache)",
+                message: "(Cache) What version of the data cache will be? (details: different versions do not allow cache reuse and override existing content. Update the version if the configuration is changed in such a way that it does not allow cache reuse. This will invalidate the cache)",
             }),
         }
         : cacheType === "memory"
@@ -1638,7 +1760,7 @@ async function ChooseCacheOptions(cacheType) {
                 maxGenerations: await inquirer_1.default.prompt({
                     name: "question_cache_max_generations",
                     type: "list",
-                    message: "What will be the lifetime of unused cache entries in memory cache?",
+                    message: "(Cache) What will be the lifetime of unused cache entries in memory cache?",
                     choices: ["1", "Infinity"],
                 }),
             }
@@ -1651,7 +1773,7 @@ async function setCompressionOptions(response) {
             ratio: await inquirer_1.default.prompt({
                 name: "question_set_level_ratio_compression",
                 type: "list",
-                message: "What is ratio level do you want to set for compression ?",
+                message: "(CompressionOptions) What is ratio level do you want to set for compression ?",
                 choices: [
                     "0",
                     "0.1",
@@ -1669,13 +1791,13 @@ async function setCompressionOptions(response) {
             compressionLevel: await inquirer_1.default.prompt({
                 name: "question_compression_level",
                 type: "list",
-                message: "What is the level for compression do you want to choose ?",
+                message: "(CompressionOptions) What is the level for compression do you want to choose ?",
                 choices: ["1", "2", "3", "4"],
             }),
             threshold: await inquirer_1.default.prompt({
                 name: "question_threshold_level",
                 type: "input",
-                message: "How many threshold would be for compression (example: 5320) ?",
+                message: "(CompressionOptions) How many threshold would be for compression (example: 5320) ?",
             }),
         }
         : void 0;
@@ -1707,61 +1829,61 @@ async function copyPluginSetup() {
             from: await inquirer_1.default.prompt({
                 name: "question_copy_concurrency",
                 type: "input",
-                message: "How many limits the number of simultaneous requests would be to fs ?",
+                message: "(copyPlugin) How many limits the number of simultaneous requests would be to fs ?",
             }),
             to: await inquirer_1.default.prompt({
                 name: "question_copy_concurrency",
                 type: "input",
-                message: "How many limits the number of simultaneous requests would be to fs ?",
+                message: "(copyPlugin) How many limits the number of simultaneous requests would be to fs ?",
             }),
             context: await inquirer_1.default.prompt({
                 name: "question_copy_concurrency",
                 type: "input",
-                message: "How many limits the number of simultaneous requests would be to fs ?",
+                message: "(CopyPlugin) How many limits the number of simultaneous requests would be to fs ?",
             }),
             globOptions: {
                 ignore: await inquirer_1.default.prompt({
                     name: "question_copy_concurrency",
                     type: "input",
-                    message: "How many limits the number of simultaneous requests would be to fs ?",
+                    message: "(CopyPlugin) How many limits the number of simultaneous requests would be to fs ?",
                 }),
             },
             filter: await inquirer_1.default.prompt({
                 name: "question_copy_concurrency",
                 type: "input",
-                message: "How many limits the number of simultaneous requests would be to fs ?",
+                message: "(CopyPlugin) How many limits the number of simultaneous requests would be to fs ?",
             }),
             toType: await inquirer_1.default.prompt({
                 name: "question_copy_concurrency",
                 type: "input",
-                message: "How many limits the number of simultaneous requests would be to fs ?",
+                message: "(CopyPlugin) How many limits the number of simultaneous requests would be to fs ?",
             }),
             force: await inquirer_1.default.prompt({
                 name: "question_copy_concurrency",
                 type: "input",
-                message: "How many limits the number of simultaneous requests would be to fs ?",
+                message: "(CopyPlugin) How many limits the number of simultaneous requests would be to fs ?",
             }),
             priority: await inquirer_1.default.prompt({
                 name: "question_copy_concurrency",
                 type: "input",
-                message: "How many limits the number of simultaneous requests would be to fs ?",
+                message: "(CopyPlugin) How many limits the number of simultaneous requests would be to fs ?",
             }),
             cache: await inquirer_1.default.prompt({
                 name: "question_copy_concurrency",
                 type: "input",
-                message: "How many limits the number of simultaneous requests would be to fs ?",
+                message: "(CopyPlugin) How many limits the number of simultaneous requests would be to fs ?",
             }),
             noErrorOnMissing: await inquirer_1.default.prompt({
                 name: "question_copy_concurrency",
                 type: "input",
-                message: "How many limits the number of simultaneous requests would be to fs ?",
+                message: "(CopyPlugin) How many limits the number of simultaneous requests would be to fs ?",
             }),
         },
         options: {
             concurrency: await inquirer_1.default.prompt({
                 name: "question_copy_concurrency",
                 type: "input",
-                message: "How many limits the number of simultaneous requests would be to fs ?",
+                message: "(CopyPlugin) How many limits the number of simultaneous requests would be to fs ?",
             }),
         },
     };
@@ -1809,7 +1931,7 @@ async function setMaximumChunkSize(response) {
         ? await inquirer_1.default.prompt({
             name: "question_maximum_chunk_size",
             type: "input",
-            message: "What is the maximum chunk size would be (example: 2400) ?",
+            message: "(maximumChunkSize) What is the maximum chunk size would be (example: 2400) ?",
         })
         : void 0;
 }
@@ -1830,7 +1952,7 @@ async function fontsDir(response) {
         ? await inquirer_1.default.prompt({
             name: "question_fonts_dir",
             type: "input",
-            message: `What is the folder do you want, that be an output for fonts ?`,
+            message: `(fontsDir) What is the folder do you want, that be an output for fonts ?`,
         })
         : void 0;
 }
@@ -1839,7 +1961,7 @@ async function outputDir() {
     return await inquirer_1.default.prompt({
         name: "question_output_dir",
         type: "input",
-        message: "What is the folder do you want, that be an output (default: ./dist)",
+        message: "(outputFolder) What is the folder do you want, that be an output (default: ./dist)",
         default: "./dist",
     });
 }
@@ -1848,7 +1970,7 @@ async function devServerPort() {
     return await inquirer_1.default.prompt({
         name: "question_dev_server_port",
         type: "input",
-        message: "What is the port would be in Dev Server (default: 3500) ?",
+        message: "(devServer) What is the port would be in Dev Server (default: 3500) ?",
         default: 3500,
     });
 }
@@ -1857,7 +1979,7 @@ async function isMinifyJSONFiles() {
     return await inquirer_1.default.prompt({
         name: "question_is_minify_json_files",
         type: "list",
-        message: "If you have a .json files, than you want to minimize them ?",
+        message: "(minifyJSON) If you have a .json files, than you want to minimize them ?",
         choices: ["Yes", "No"],
     });
 }
@@ -1868,24 +1990,24 @@ async function minifyJSONOptions(response) {
             test: await inquirer_1.default.prompt({
                 name: "question_is_test_regexp",
                 type: "input",
-                message: "What is the test regular expression would be (default: /.json(?.*)?$/i) ?",
+                message: "(minifyJSON) What is the test regular expression would be (default: /.json(?.*)?$/i) ?",
                 default: "/.json(?.*)?$/i",
             }),
             include: await inquirer_1.default.prompt({
                 name: "question_is_include_files",
                 type: "input",
-                message: "What is the files would be include like a regular expression (example: /includes/) ?",
+                message: "(minifyJSON) What is the files would be include like a regular expression (example: /includes/) ?",
             }),
             exclude: await inquirer_1.default.prompt({
                 name: "question_is_exclude_files",
                 type: "input",
-                message: "What is the files would be exclude like a regular expression (example: /excludes/) ?",
+                message: "(minifyJSON) What is the files would be exclude like a regular expression (example: /excludes/) ?",
             }),
             minimizerOptions: {
                 space: await inquirer_1.default.prompt({
                     name: "question_is_space",
                     type: "input",
-                    message: "What is the space would be for json minimizer (example: \t) ?",
+                    message: "(minifyJSON) What is the space would be for json minimizer (example: \t) ?",
                 }),
             },
         }

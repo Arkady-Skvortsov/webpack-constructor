@@ -94,9 +94,6 @@ import {
 } from "./answers";
 import { addContentToCustom } from "./add-content-custom";
 import { customWebpackConfig } from "./helpers/interfaces";
-import { setHashModuleIds } from "./helpers/plugins";
-import { optimizeJSONFiles } from "./dev-mode";
-import { setElmLoader, setNodeModules } from "./helpers/loaders";
 
 async function firstChoose() {
   await start();
@@ -297,6 +294,29 @@ async function WebpackConfigCustom(presetType: preset, mode: webpackMode) {
     isFontsSupport: isFontsSupport.is_fonts,
     fontsExtensionsSupport: fontsExtensionsSupport?.question_fonts_extensions,
     fontsOutputDirectory: fontsOutDirSupport?.question_fonts_dir,
+    isNodeModulesSupport: isNodeModulesSupport.question_is_node_loader,
+    isTwigSupport: istwigSupport.question_is_twig_support,
+    isLuaSupport: isluaSupport.question_lua_support,
+    luaOptions: {
+      strip: luaOptions?.question_lua_options,
+    },
+    isElmSupport: iselmSupport.question_is_elm_support,
+    elmOptions: {
+      optimize: elmOptions?.optimize.question_is_optimize,
+      debug: elmOptions?.debug.question_is_debug,
+      runtimeOptions: elmOptions?.runtimeOptions.question_runtime_options,
+      files: elmOptions?.files.question_files_options,
+    },
+    isThreadSupport: isthreadSupport.question_is_thread_support,
+    threadOptions: {
+      name: threadSupport?.name.question_pool_name,
+      workers: threadSupport?.wokers.question_workers,
+      workerParallelJobs: threadSupport?.workerParallelJobs.question_worker_parallel_jobs,
+      workerNodeArgs: threadSupport?.workerNodeArgs.question_woker_nodejs_arguments,
+      poolRespawn: threadSupport?.poolRespawn.question_if_pool_respawn,
+      poolTimeout: threadSupport?.poolTimeout.question_pool_timeout,
+      poolParallelJobs: threadSupport?.poolParallelJobs.question_parallel_jobs
+    },
     isXmlSupport: isXmlSupport.question_xml_exension,
     isYamlSupport: isYamlSupport.question_yaml_extension,
     isCsvSupport: isCsvSupport.question_csv_extension,
